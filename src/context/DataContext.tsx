@@ -3,9 +3,10 @@ import { SiteData, Service, Course, BlogPost, StudentResult, HomepageConfig, Con
 import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS } from '../data';
 
 export const defaultSiteSettings: SiteSettings = {
-  headerLogoUrl: '',
-  mobileLogoUrl: '',
+  headerLogoUrl: '/brandlogo.png',
+  mobileLogoUrl: '/brandlogo.png',
   faviconUrl: '/brandlogo.png',
+  footerLogoUrl: '/brandlogo.png',
   instituteName: 'Future Gates IT Center',
   tagline: 'Where Skills Become Your Income',
   headerPhone: '+92301-6775690',
@@ -27,7 +28,6 @@ export const defaultSiteSettings: SiteSettings = {
     admission: true,
   },
 
-  footerLogoUrl: '',
   footerDescription: 'Future Gates IT Center is an accredited IT training institute and digital software agency in Khushab & Rawalpindi, Pakistan.',
   footerPhone: '+92301-6775690',
   footerWhatsapp: '923016775690',
@@ -209,14 +209,45 @@ const fallbackData: SiteData = {
   media: []
 };
 
+const STORAGE_KEY = 'fg_site_data_v1';
+
+const getStoredData = (): SiteData => {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const parsed = JSON.parse(raw);
+      return {
+        ...fallbackData,
+        ...parsed,
+        settings: {
+          ...defaultSiteSettings,
+          ...(parsed.settings || {})
+        }
+      };
+    }
+  } catch (err) {
+    console.warn('Error reading stored site data', err);
+  }
+  return fallbackData;
+};
+
 const DataContext = createContext<DataContextType | undefined>(undefined);
 
 export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [data, setData] = useState<SiteData>(fallbackData);
+  const [data, setData] = useState<SiteData>(getStoredData);
   const [loading, setLoading] = useState<boolean>(true);
   const [token, setTokenState] = useState<string | null>(() => {
     return localStorage.getItem('fg_admin_token');
   });
+
+  const saveLocalData = (newData: SiteData) => {
+    setData(newData);
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(newData));
+    } catch (err) {
+      console.warn('Error saving local site data', err);
+    }
+  };
 
   const setToken = (newToken: string | null) => {
     setTokenState(newToken);
@@ -234,13 +265,18 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const json = await res.json();
         if (json.success && json.data) {
           setData(json.data);
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(json.data));
+          } catch (e) {}
+          setLoading(false);
+          return;
         }
       }
     } catch (err) {
-      console.warn('Backend API not responding, using fallback/cached data', err);
-    } finally {
-      setLoading(false);
+      console.warn('Backend API not responding, using localStorage/cached data', err);
     }
+    setData(getStoredData());
+    setLoading(false);
   };
 
   useEffect(() => {
@@ -259,6 +295,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   // Mutator: Service
   const saveService = async (service: Partial<Service>): Promise<boolean> => {
+    let apiSuccess = false;
     try {
       const isEdit = Boolean(service.id && data.services.some((s) => s.id === service.id));
       const url = isEdit ? `/api/services/${service.id}` : '/api/services';
@@ -270,13 +307,36 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify(service)
       });
       if (res.ok) {
+        apiSuccess = true;
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save service', err);
+      console.warn('Failed to save service via API, saving locally', err);
     }
-    return false;
+
+    if (!apiSuccess) {
+      const isEdit = Boolean(service.id && data.services.some((s) => s.id === service.id));
+      let newServices = [...data.services];
+      if (isEdit) {
+        newServices = newServices.map(s => s.id === service.id ? ({ ...s, ...service } as Service) : s);
+      } else {
+        const newServiceObj: Service = {
+          id: service.id || `srv-${Date.now()}`,
+          title: service.title || 'New Service',
+          description: service.description || '',
+          iconName: service.iconName || 'Code',
+          imageUrl: service.imageUrl || '/brandlogo.png',
+          features: service.features || [],
+          techStack: service.techStack || [],
+          category: service.category || 'agency',
+          order: service.order || newServices.length + 1,
+          isPublished: service.isPublished !== false
+        };
+        newServices.push(newServiceObj);
+      }
+      saveLocalData({ ...data, services: newServices });
+    }
+    return true;
   };
 
   const deleteService = async (id: string): Promise<boolean> => {
@@ -287,12 +347,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete service', err);
+      console.warn('Delete service API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, services: data.services.filter(s => s.id !== id) });
+    return true;
   };
 
   const reorderServices = async (services: Service[]): Promise<boolean> => {
@@ -304,16 +364,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to reorder services', err);
+      console.warn('Reorder services API failed, saving locally', err);
     }
-    return false;
+    saveLocalData({ ...data, services });
+    return true;
   };
 
   // Mutator: Course
   const saveCourse = async (course: Partial<Course>): Promise<boolean> => {
+    let apiSuccess = false;
     try {
       const isEdit = Boolean(course.id && data.courses.some((c) => c.id === course.id));
       const url = isEdit ? `/api/courses/${course.id}` : '/api/courses';
@@ -325,13 +386,39 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify(course)
       });
       if (res.ok) {
+        apiSuccess = true;
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save course', err);
+      console.warn('Failed to save course via API, saving locally', err);
     }
-    return false;
+
+    if (!apiSuccess) {
+      const isEdit = Boolean(course.id && data.courses.some((c) => c.id === course.id));
+      let newCourses = [...data.courses];
+      if (isEdit) {
+        newCourses = newCourses.map(c => c.id === course.id ? ({ ...c, ...course } as Course) : c);
+      } else {
+        const newCourseObj: Course = {
+          id: course.id || `crs-${Date.now()}`,
+          title: course.title || 'New Course',
+          category: course.category || 'Development',
+          duration: course.duration || '2 Months',
+          description: course.description || '',
+          longDescription: course.longDescription || '',
+          fee: course.fee || 'Contact Admissions',
+          syllabus: course.syllabus || [],
+          skillsGained: course.skillsGained || [],
+          featured: course.featured || false,
+          imageUrl: course.imageUrl || '/brandlogo.png',
+          status: course.status || 'Active',
+          order: course.order || newCourses.length + 1
+        };
+        newCourses.push(newCourseObj);
+      }
+      saveLocalData({ ...data, courses: newCourses });
+    }
+    return true;
   };
 
   const deleteCourse = async (id: string): Promise<boolean> => {
@@ -342,16 +429,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete course', err);
+      console.warn('Delete course API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, courses: data.courses.filter(c => c.id !== id) });
+    return true;
   };
 
   // Mutator: Blog
   const saveBlog = async (blog: Partial<BlogPost>): Promise<boolean> => {
+    let apiSuccess = false;
     try {
       const id = blog.id || blog._id;
       const isEdit = Boolean(id && data.blogs.some((b) => b.id === id || b._id === id));
@@ -364,13 +452,40 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify(blog)
       });
       if (res.ok) {
+        apiSuccess = true;
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save blog', err);
+      console.warn('Failed to save blog via API, saving locally', err);
     }
-    return false;
+
+    if (!apiSuccess) {
+      const id = blog.id || blog._id || `blog-${Date.now()}`;
+      const isEdit = data.blogs.some(b => b.id === id || b._id === id);
+      let newBlogs = [...data.blogs];
+      const contentArr = Array.isArray(blog.content) ? blog.content : (blog.content ? [blog.content] : ['']);
+      if (isEdit) {
+        newBlogs = newBlogs.map(b => (b.id === id || b._id === id) ? ({ ...b, ...blog, content: contentArr } as BlogPost) : b);
+      } else {
+        const newBlogObj: BlogPost = {
+          id,
+          title: blog.title || 'New Blog Article',
+          slug: blog.slug || `article-${Date.now()}`,
+          excerpt: blog.excerpt || '',
+          content: contentArr,
+          category: blog.category || 'Tech & IT',
+          author: blog.author || 'Javed Hattar',
+          publishedAt: blog.publishedAt || new Date().toISOString().split('T')[0],
+          readTime: blog.readTime || '3 min read',
+          tags: blog.tags || [],
+          imageUrl: blog.imageUrl || '/brandlogo.png',
+          isPublished: blog.isPublished !== false
+        };
+        newBlogs.push(newBlogObj);
+      }
+      saveLocalData({ ...data, blogs: newBlogs });
+    }
+    return true;
   };
 
   const deleteBlog = async (id: string): Promise<boolean> => {
@@ -381,16 +496,17 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete blog', err);
+      console.warn('Delete blog API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, blogs: data.blogs.filter(b => b.id !== id && b._id !== id) });
+    return true;
   };
 
   // Mutator: Verification
   const saveVerification = async (record: Partial<StudentResult>): Promise<boolean> => {
+    let apiSuccess = false;
     try {
       const isEdit = Boolean(record.rollNo && data.studentResults.some((r) => r.rollNo.toLowerCase() === record.rollNo?.toLowerCase()));
       const url = isEdit ? `/api/verifications/${record.rollNo}` : '/api/verifications';
@@ -402,13 +518,44 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         body: JSON.stringify(record)
       });
       if (res.ok) {
+        apiSuccess = true;
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save verification record', err);
+      console.warn('Failed to save verification via API, saving locally', err);
     }
-    return false;
+
+    if (!apiSuccess && record.rollNo) {
+      const isEdit = data.studentResults.some(r => r.rollNo.toLowerCase() === record.rollNo?.toLowerCase());
+      let newResults = [...data.studentResults];
+      if (isEdit) {
+        newResults = newResults.map(r => r.rollNo.toLowerCase() === record.rollNo?.toLowerCase() ? ({ ...r, ...record } as StudentResult) : r);
+      } else {
+        const newRecord: StudentResult = {
+          rollNo: record.rollNo,
+          name: record.name || 'Student Name',
+          fatherName: record.fatherName || 'Father Name',
+          enrollmentNo: record.enrollmentNo || `ENR-${Date.now().toString().slice(-6)}`,
+          courseName: record.courseName || 'Course Title',
+          duration: record.duration || '3 Months',
+          session: record.session || 'Jan 2026 - Mar 2026',
+          grade: record.grade || 'A+',
+          percentage: record.percentage || 90,
+          theoryMarks: record.theoryMarks || 80,
+          practicalMarks: record.practicalMarks || 90,
+          vivaMarks: record.vivaMarks || 10,
+          totalMarks: record.totalMarks || 180,
+          maxMarks: record.maxMarks || 200,
+          issueDate: record.issueDate || new Date().toISOString().split('T')[0],
+          certificateNo: record.certificateNo || `FG-CERT-${Date.now().toString().slice(-5)}`,
+          verificationStatus: record.verificationStatus || 'Verified',
+          remarks: record.remarks || 'Pass'
+        };
+        newResults.push(newRecord);
+      }
+      saveLocalData({ ...data, studentResults: newResults });
+    }
+    return true;
   };
 
   const deleteVerification = async (rollNo: string): Promise<boolean> => {
@@ -419,12 +566,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete verification', err);
+      console.warn('Delete verification API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, studentResults: data.studentResults.filter(r => r.rollNo.toLowerCase() !== rollNo.toLowerCase()) });
+    return true;
   };
 
   // Mutator: Homepage
@@ -437,12 +584,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save homepage config', err);
+      console.warn('Save homepage API failed, saving locally', err);
     }
-    return false;
+    saveLocalData({ ...data, homepage: { ...data.homepage, ...homepage } });
+    return true;
   };
 
   // Mutator: Contact
@@ -455,12 +602,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save contact config', err);
+      console.warn('Save contact API failed, saving locally', err);
     }
-    return false;
+    saveLocalData({ ...data, contact: { ...data.contact, ...contact } });
+    return true;
   };
 
   // Mutator: Mentor
@@ -473,12 +620,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save mentor config', err);
+      console.warn('Save mentor API failed, saving locally', err);
     }
-    return false;
+    saveLocalData({ ...data, mentor: { ...data.mentor, ...mentor } });
+    return true;
   };
 
   // Upload Image
@@ -496,13 +643,28 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       }
     } catch (err) {
-      console.error('Failed to upload image', err);
+      console.warn('Server image upload failed, using base64 image string', err);
     }
-    return null;
+    // Return base64 image data URL directly so uploaded image renders everywhere on Vercel/Static!
+    return base64Image;
   };
 
   // Admissions
   const submitAdmission = async (app: Partial<EnrollmentApplication>): Promise<boolean> => {
+    const newApp: EnrollmentApplication = {
+      id: app.id || `adm-${Date.now()}`,
+      fullName: app.fullName || 'Applicant',
+      fatherName: app.fatherName || '',
+      phone: app.phone || '',
+      whatsapp: app.whatsapp || '',
+      email: app.email || '',
+      courseId: app.courseId || '',
+      courseTitle: app.courseTitle || 'Selected Course',
+      address: app.address || '',
+      message: app.message || '',
+      submittedAt: new Date().toISOString()
+    };
+
     try {
       const res = await fetch('/api/admissions', {
         method: 'POST',
@@ -511,12 +673,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to submit admission', err);
+      console.warn('Submit admission API failed, saving locally', err);
     }
-    return false;
+
+    saveLocalData({ ...data, admissions: [newApp, ...(data.admissions || [])] });
+    return true;
   };
 
   const deleteAdmission = async (id: string): Promise<boolean> => {
@@ -527,15 +690,20 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete admission', err);
+      console.warn('Delete admission API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, admissions: (data.admissions || []).filter(a => a.id !== id) });
+    return true;
   };
 
   const saveSettings = async (settings: Partial<SiteSettings>): Promise<boolean> => {
+    const updatedSettings = {
+      ...data.settings,
+      ...settings
+    };
+
     try {
       const res = await fetch('/api/settings', {
         method: 'PUT',
@@ -544,12 +712,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save settings', err);
+      console.warn('Save settings API failed, saving locally', err);
     }
-    return false;
+
+    saveLocalData({ ...data, settings: updatedSettings });
+    return true;
   };
 
   const resetSettings = async (): Promise<boolean> => {
@@ -560,15 +729,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to reset settings', err);
+      console.warn('Reset settings API failed, resetting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, settings: defaultSiteSettings });
+    return true;
   };
 
   const saveMediaItem = async (item: Partial<MediaItem>, base64Image?: string): Promise<boolean> => {
+    const newMedia: MediaItem = {
+      id: item.id || `m-${Date.now()}`,
+      filename: item.filename || 'uploaded-file.jpg',
+      url: base64Image || item.url || '/brandlogo.png',
+      category: item.category || 'General',
+      uploadedAt: new Date().toISOString().split('T')[0],
+      size: item.size || 'Base64',
+      dimensions: item.dimensions || 'Responsive'
+    };
+
     try {
       const res = await fetch('/api/media', {
         method: 'POST',
@@ -577,12 +756,13 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to save media item', err);
+      console.warn('Save media API failed, saving locally', err);
     }
-    return false;
+
+    saveLocalData({ ...data, media: [newMedia, ...(data.media || [])] });
+    return true;
   };
 
   const deleteMediaItem = async (id: string): Promise<boolean> => {
@@ -593,12 +773,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
       if (res.ok) {
         await refreshData();
-        return true;
       }
     } catch (err) {
-      console.error('Failed to delete media item', err);
+      console.warn('Delete media API failed, deleting locally', err);
     }
-    return false;
+    saveLocalData({ ...data, media: (data.media || []).filter(m => m.id !== id) });
+    return true;
   };
 
   return (

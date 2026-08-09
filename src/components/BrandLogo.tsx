@@ -37,6 +37,14 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     logoSrc = settings.headerLogoUrl;
   }
 
+  const [hasError, setHasError] = React.useState(false);
+
+  React.useEffect(() => {
+    setHasError(false);
+  }, [logoSrc]);
+
+  const activeLogoSrc = hasError ? brandLogo : (logoSrc || brandLogo);
+
   const instituteName = settings?.instituteName || 'Future Gates IT Center';
   const tagline = settings?.tagline || 'Where Skills Become Your Income';
 
@@ -49,13 +57,14 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     <div className={`flex items-center gap-3 select-none ${className}`}>
       {/* Official Brand Seal Logo Mark */}
       <img
-        src={logoSrc}
+        src={activeLogoSrc}
         alt={`${instituteName} Logo`}
         width={size}
         height={size}
         style={{ width: `${size}px`, height: `${size}px` }}
         className="object-contain shrink-0 filter drop-shadow-sm hover:scale-105 transition-transform"
         referrerPolicy="no-referrer"
+        onError={() => setHasError(true)}
       />
 
       {!iconOnly && (
