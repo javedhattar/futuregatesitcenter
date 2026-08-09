@@ -274,11 +274,11 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
         <div className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-brand-blue text-white p-4 sm:p-5 flex items-center justify-between border-b border-white/10 shrink-0">
           <div className="flex items-center gap-3">
             <img
-              src={brandLogo}
+              src={data.settings?.headerLogoUrl || brandLogo}
               alt="Future Gates IT Center Seal"
               width={46}
               height={46}
-              className="w-11 h-11 object-contain shrink-0 filter drop-shadow-md"
+              className="w-11 h-11 object-contain shrink-0 filter drop-shadow-md bg-white/10 rounded-lg p-1"
               referrerPolicy="no-referrer"
             />
             <div>
@@ -312,7 +312,7 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
             <div className="max-w-md mx-auto py-8 space-y-6">
               <div className="text-center space-y-2">
                 <img
-                  src={brandLogo}
+                  src={data.settings?.headerLogoUrl || brandLogo}
                   alt="Future Gates IT Center Official Seal"
                   width={80}
                   height={80}

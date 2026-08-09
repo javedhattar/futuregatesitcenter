@@ -4,7 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
-import { DataProvider } from './context/DataContext';
+import { DataProvider, useData } from './context/DataContext';
 import { Header } from './components/Header';
 import { Footer } from './components/Footer';
 import { EnrollmentModal } from './components/EnrollmentModal';
@@ -20,6 +20,31 @@ import { BlogsView } from './pages/BlogsView';
 import { ContactView } from './pages/ContactView';
 import { AdmissionView } from './pages/AdmissionView';
 import { LegalView } from './pages/LegalViews';
+
+function SiteHeadSync() {
+  const { data } = useData();
+  const settings = data?.settings;
+
+  useEffect(() => {
+    if (!settings) return;
+
+    if (settings.instituteName) {
+      document.title = `${settings.instituteName}${settings.tagline ? ` — ${settings.tagline}` : ''}`;
+    }
+
+    if (settings.faviconUrl) {
+      let iconLink = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
+      if (!iconLink) {
+        iconLink = document.createElement('link');
+        iconLink.rel = 'shortcut icon';
+        document.getElementsByTagName('head')[0].appendChild(iconLink);
+      }
+      iconLink.href = settings.faviconUrl;
+    }
+  }, [settings?.instituteName, settings?.tagline, settings?.faviconUrl]);
+
+  return null;
+}
 
 export default function App() {
   const [currentTab, setCurrentTab] = useState<string>('home');
@@ -74,6 +99,7 @@ export default function App() {
 
   return (
     <DataProvider>
+      <SiteHeadSync />
       <div className="flex flex-col min-h-screen bg-brand-bg text-slate-800 font-sans selection:bg-brand-orange selection:text-white">
         {/* Header Bar */}
         <Header

@@ -70,6 +70,21 @@ export const SiteCustomizationPanel: React.FC = () => {
     }
   };
 
+  // Quick save for individual logo fields
+  const handleQuickSaveLogoField = async (targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl', url: string) => {
+    const updated = {
+      ...settingsForm,
+      [targetField]: url
+    };
+    setSettingsForm(updated);
+    const ok = await saveSettings(updated);
+    if (ok) {
+      showNotification(`Logo updated and saved permanently!`);
+    } else {
+      showNotification(`Failed to save logo setting.`, 'error');
+    }
+  };
+
   // Helper for logo file uploads
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl') => {
     const file = e.target.files?.[0];
@@ -85,11 +100,17 @@ export const SiteCustomizationPanel: React.FC = () => {
       const base64 = reader.result as string;
       const uploadedUrl = await uploadImage(base64);
       if (uploadedUrl) {
-        setSettingsForm(prev => ({
-          ...prev,
+        const updated = {
+          ...settingsForm,
           [targetField]: uploadedUrl
-        }));
-        showNotification(`${targetField} updated successfully!`);
+        };
+        setSettingsForm(updated);
+        const ok = await saveSettings(updated);
+        if (ok) {
+          showNotification(`Logo uploaded and saved permanently!`);
+        } else {
+          showNotification(`Logo uploaded but failed to save settings.`, 'error');
+        }
         // Also register in media library
         saveMediaItem({
           filename: file.name,
@@ -275,107 +296,213 @@ export const SiteCustomizationPanel: React.FC = () => {
             <p className="text-xs text-slate-500 mt-1">Manage header logos, tagline, contact strip, and navigation tab visibility.</p>
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
             {/* Header Logo */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label className="text-xs font-bold text-slate-800 block">Desktop Header Logo</label>
-              <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                {settingsForm.headerLogoUrl ? (
-                  <img src={settingsForm.headerLogoUrl} alt="Header Logo" className="max-h-full max-w-full object-contain" />
-                ) : (
-                  <span className="text-[11px] text-slate-400 font-medium">Using Default Brand Mark</span>
-                )}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800">Desktop Header Logo</label>
+                  {settingsForm.headerLogoUrl && (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  )}
+                </div>
+                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
+                  {settingsForm.headerLogoUrl ? (
+                    <img src={settingsForm.headerLogoUrl} alt="Header Logo" className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">Using Default Seal</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')} />
+                  </label>
+                  {settingsForm.headerLogoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickSaveLogoField('headerLogoUrl', '')}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
-                  <Upload className="w-3.5 h-3.5" />
-                  Upload
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')} />
-                </label>
-                {settingsForm.headerLogoUrl && (
-                  <button
-                    onClick={() => setSettingsForm(prev => ({ ...prev, headerLogoUrl: '' }))}
-                    className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                )}
+
+              <div className="flex gap-1 pt-1">
+                <input
+                  type="text"
+                  placeholder="Paste Logo URL..."
+                  value={settingsForm.headerLogoUrl || ''}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, headerLogoUrl: e.target.value }))}
+                  className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleQuickSaveLogoField('headerLogoUrl', settingsForm.headerLogoUrl || '')}
+                  className="px-2.5 py-1.5 bg-slate-900 hover:bg-blue-600 text-white text-[11px] font-bold rounded-lg cursor-pointer shrink-0"
+                >
+                  Apply
+                </button>
               </div>
-              <input
-                type="text"
-                placeholder="Or paste image URL"
-                value={settingsForm.headerLogoUrl || ''}
-                onChange={(e) => setSettingsForm(prev => ({ ...prev, headerLogoUrl: e.target.value }))}
-                className="w-full text-xs px-3 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500"
-              />
             </div>
 
             {/* Mobile Logo */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label className="text-xs font-bold text-slate-800 block">Mobile Header Logo</label>
-              <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                {settingsForm.mobileLogoUrl ? (
-                  <img src={settingsForm.mobileLogoUrl} alt="Mobile Logo" className="max-h-full max-w-full object-contain" />
-                ) : (
-                  <span className="text-[11px] text-slate-400 font-medium">Same as Desktop Logo</span>
-                )}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800">Mobile Header Logo</label>
+                  {settingsForm.mobileLogoUrl && (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  )}
+                </div>
+                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
+                  {settingsForm.mobileLogoUrl ? (
+                    <img src={settingsForm.mobileLogoUrl} alt="Mobile Logo" className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">Same as Desktop</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')} />
+                  </label>
+                  {settingsForm.mobileLogoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickSaveLogoField('mobileLogoUrl', '')}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
-                  <Upload className="w-3.5 h-3.5" />
-                  Upload
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')} />
-                </label>
-                {settingsForm.mobileLogoUrl && (
-                  <button
-                    onClick={() => setSettingsForm(prev => ({ ...prev, mobileLogoUrl: '' }))}
-                    className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                )}
+
+              <div className="flex gap-1 pt-1">
+                <input
+                  type="text"
+                  placeholder="Paste Logo URL..."
+                  value={settingsForm.mobileLogoUrl || ''}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, mobileLogoUrl: e.target.value }))}
+                  className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleQuickSaveLogoField('mobileLogoUrl', settingsForm.mobileLogoUrl || '')}
+                  className="px-2.5 py-1.5 bg-slate-900 hover:bg-blue-600 text-white text-[11px] font-bold rounded-lg cursor-pointer shrink-0"
+                >
+                  Apply
+                </button>
               </div>
-              <input
-                type="text"
-                placeholder="Or paste image URL"
-                value={settingsForm.mobileLogoUrl || ''}
-                onChange={(e) => setSettingsForm(prev => ({ ...prev, mobileLogoUrl: e.target.value }))}
-                className="w-full text-xs px-3 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500"
-              />
+            </div>
+
+            {/* Footer Logo */}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800">Footer Logo (Light)</label>
+                  {settingsForm.footerLogoUrl && (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  )}
+                </div>
+                <div className="h-20 bg-slate-900 rounded-lg border border-slate-800 p-2 flex items-center justify-center relative overflow-hidden">
+                  {settingsForm.footerLogoUrl ? (
+                    <img src={settingsForm.footerLogoUrl} alt="Footer Logo" className="max-h-full max-w-full object-contain" />
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">Same as Header</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')} />
+                  </label>
+                  {settingsForm.footerLogoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickSaveLogoField('footerLogoUrl', '')}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="flex gap-1 pt-1">
+                <input
+                  type="text"
+                  placeholder="Paste Logo URL..."
+                  value={settingsForm.footerLogoUrl || ''}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, footerLogoUrl: e.target.value }))}
+                  className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleQuickSaveLogoField('footerLogoUrl', settingsForm.footerLogoUrl || '')}
+                  className="px-2.5 py-1.5 bg-slate-900 hover:bg-blue-600 text-white text-[11px] font-bold rounded-lg cursor-pointer shrink-0"
+                >
+                  Apply
+                </button>
+              </div>
             </div>
 
             {/* Favicon */}
-            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
-              <label className="text-xs font-bold text-slate-800 block">Favicon Mark</label>
-              <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                {settingsForm.faviconUrl ? (
-                  <img src={settingsForm.faviconUrl} alt="Favicon" className="w-8 h-8 object-contain" />
-                ) : (
-                  <span className="text-[11px] text-slate-400 font-medium">Default Favicon</span>
-                )}
+            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
+              <div className="space-y-2">
+                <div className="flex justify-between items-center">
+                  <label className="text-xs font-bold text-slate-800">Favicon Mark</label>
+                  {settingsForm.faviconUrl && (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  )}
+                </div>
+                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
+                  {settingsForm.faviconUrl ? (
+                    <img src={settingsForm.faviconUrl} alt="Favicon" className="w-8 h-8 object-contain" />
+                  ) : (
+                    <span className="text-[11px] text-slate-400 font-medium">Default Seal</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                    <Upload className="w-3.5 h-3.5" />
+                    Upload
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'faviconUrl')} />
+                  </label>
+                  {settingsForm.faviconUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickSaveLogoField('faviconUrl', '')}
+                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
               </div>
-              <div className="flex gap-2">
-                <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
-                  <Upload className="w-3.5 h-3.5" />
-                  Upload
-                  <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'faviconUrl')} />
-                </label>
-                {settingsForm.faviconUrl && (
-                  <button
-                    onClick={() => setSettingsForm(prev => ({ ...prev, faviconUrl: '' }))}
-                    className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
-                  >
-                    Reset
-                  </button>
-                )}
+
+              <div className="flex gap-1 pt-1">
+                <input
+                  type="text"
+                  placeholder="Favicon URL..."
+                  value={settingsForm.faviconUrl || ''}
+                  onChange={(e) => setSettingsForm(prev => ({ ...prev, faviconUrl: e.target.value }))}
+                  className="w-full text-xs px-2.5 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500 font-mono"
+                />
+                <button
+                  type="button"
+                  onClick={() => handleQuickSaveLogoField('faviconUrl', settingsForm.faviconUrl || '')}
+                  className="px-2.5 py-1.5 bg-slate-900 hover:bg-blue-600 text-white text-[11px] font-bold rounded-lg cursor-pointer shrink-0"
+                >
+                  Apply
+                </button>
               </div>
-              <input
-                type="text"
-                placeholder="Favicon URL"
-                value={settingsForm.faviconUrl || ''}
-                onChange={(e) => setSettingsForm(prev => ({ ...prev, faviconUrl: e.target.value }))}
-                className="w-full text-xs px-3 py-1.5 rounded-lg border border-slate-200 focus:outline-none focus:border-blue-500"
-              />
             </div>
           </div>
 
@@ -1058,30 +1185,53 @@ export const SiteCustomizationPanel: React.FC = () => {
                   <p className="text-[11px] font-bold text-slate-800 truncate" title={m.filename}>{m.filename}</p>
                   <p className="text-[10px] text-slate-400">{m.size || 'Auto'} • {m.dimensions || 'N/A'}</p>
 
-                  <div className="flex items-center justify-between pt-1">
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(m.url);
-                        showNotification('Image URL copied to clipboard!');
-                      }}
-                      className="p-1 bg-white hover:bg-slate-200 text-slate-700 rounded border border-slate-200 cursor-pointer text-[10px] flex items-center gap-1 font-semibold"
-                      title="Copy URL"
-                    >
-                      <Copy className="w-3 h-3" />
-                      Copy URL
-                    </button>
+                  <div className="flex flex-col gap-1 pt-1.5 border-t border-slate-100">
+                    <div className="flex items-center justify-between">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          navigator.clipboard.writeText(m.url);
+                          showNotification('Image URL copied to clipboard!');
+                        }}
+                        className="p-1 bg-white hover:bg-slate-200 text-slate-700 rounded border border-slate-200 cursor-pointer text-[10px] flex items-center gap-1 font-semibold"
+                        title="Copy URL"
+                      >
+                        <Copy className="w-3 h-3" />
+                        Copy URL
+                      </button>
 
-                    <button
-                      onClick={() => {
-                        if (confirm(`Delete image "${m.filename}" from Media Library?`)) {
-                          deleteMediaItem(m.id);
-                        }
-                      }}
-                      className="p-1 bg-red-50 hover:bg-red-100 text-red-600 rounded cursor-pointer"
-                      title="Delete Image"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </button>
+                      <button
+                        type="button"
+                        onClick={() => {
+                          if (confirm(`Delete image "${m.filename}" from Media Library?`)) {
+                            deleteMediaItem(m.id);
+                          }
+                        }}
+                        className="p-1 bg-red-50 hover:bg-red-100 text-red-600 rounded cursor-pointer"
+                        title="Delete Image"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-1 pt-1">
+                      <button
+                        type="button"
+                        onClick={() => handleQuickSaveLogoField('headerLogoUrl', m.url)}
+                        className="px-1.5 py-1 bg-blue-50 hover:bg-blue-600 hover:text-white text-blue-700 rounded text-[9.5px] font-bold transition-colors text-center"
+                        title="Set as Desktop Header Logo"
+                      >
+                        Use as Logo
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleQuickSaveLogoField('footerLogoUrl', m.url)}
+                        className="px-1.5 py-1 bg-slate-100 hover:bg-slate-800 hover:text-white text-slate-700 rounded text-[9.5px] font-bold transition-colors text-center"
+                        title="Set as Footer Logo"
+                      >
+                        Footer Logo
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

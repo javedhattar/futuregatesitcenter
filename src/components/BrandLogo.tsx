@@ -29,11 +29,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
 
   // Determine active logo URL
   let logoSrc = brandLogo;
-  if (customLogoUrl) {
+  if (customLogoUrl && customLogoUrl.trim() !== '') {
     logoSrc = customLogoUrl;
-  } else if (isLight && settings?.footerLogoUrl) {
+  } else if (isLight && settings?.footerLogoUrl && settings.footerLogoUrl.trim() !== '') {
     logoSrc = settings.footerLogoUrl;
-  } else if (!isLight && settings?.headerLogoUrl) {
+  } else if (!isLight && settings?.headerLogoUrl && settings.headerLogoUrl.trim() !== '') {
     logoSrc = settings.headerLogoUrl;
   }
 
