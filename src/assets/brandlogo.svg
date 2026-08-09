@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
+  <defs>
+    <!-- Top Arc Path for FUTURE GATES i.T CENTER -->
+    <path id="topArc" d="M 125,400 A 275,275 0 1,1 675,400" />
+    <!-- Bottom Arc Path for Where Skills Become Your Income -->
+    <path id="bottomArc" d="M 675,400 A 275,275 0 0,1 125,400" />
+    
+    <!-- Filter for crisp drop shadow -->
+    <filter id="shadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="6" flood-color="#000000" flood-opacity="0.15" />
+    </filter>
+  </defs>
+
+  <!-- 1. Outer Dark Blue Scalloped Badge Border (24 Scallops) -->
+  <path d="
+    M 400 20 
+    Q 415 28 429 23 Q 443 18 456 28 Q 469 38 482 35 Q 496 32 507 44 Q 518 56 530 55 Q 542 55 551 69 Q 560 83 571 85 Q 582 87 589 102 Q 596 117 605 122 Q 614 127 618 143 Q 622 159 629 166 Q 636 173 638 190 Q 640 207 644 216 Q 648 225 647 242 Q 646 259 648 269 Q 650 279 646 296 Q 642 313 642 324 Q 642 335 635 351 Q 628 367 626 378 Q 624 389 614 403
+    Q 624 411 626 422 Q 628 433 635 449 Q 642 465 642 476 Q 642 487 646 504 Q 650 521 648 531 Q 646 541 647 558 Q 648 575 644 584 Q 640 593 638 610 Q 636 627 629 634 Q 622 641 618 657 Q 614 673 605 678 Q 596 683 589 698 Q 582 713 571 715 Q 560 717 551 731 Q 542 745 530 745 Q 518 744 507 756 Q 496 768 482 765 Q 469 762 456 772 Q 443 782 429 777 Q 415 772 400 780
+    Q 385 772 371 777 Q 357 782 344 772 Q 331 762 318 765 Q 304 768 293 756 Q 282 744 270 745 Q 258 745 249 731 Q 240 717 229 715 Q 218 713 211 698 Q 204 683 195 678 Q 186 673 182 657 Q 178 641 171 634 Q 164 627 162 610 Q 160 593 156 584 Q 152 575 153 558 Q 154 541 152 531 Q 150 521 154 504 Q 158 487 158 476 Q 158 465 165 449 Q 172 433 174 422 Q 176 411 186 397
+    Q 176 389 174 378 Q 172 367 165 351 Q 158 335 158 324 Q 158 313 152 296 Q 148 279 150 269 Q 152 259 153 242 Q 154 225 156 216 Q 160 207 162 190 Q 164 173 171 166 Q 178 159 182 143 Q 186 127 195 122 Q 204 117 211 102 Q 218 87 229 85 Q 240 83 249 69 Q 258 55 270 55 Q 282 56 293 44 Q 304 32 318 35 Q 331 38 344 28 Q 357 18 371 23 Q 385 28 400 20 Z"
+    fill="#021B4E" />
+
+  <!-- 2. Outer Navy Circle Body -->
+  <circle cx="400" cy="400" r="365" fill="#021B4E" />
+  <circle cx="400" cy="400" r="350" fill="none" stroke="#FFFFFF" stroke-width="4" />
+
+  <!-- 3. Outer Ring Text: TOP ARC (FUTURE GATES i.T CENTER) -->
+  <text fill="#FFFFFF" font-family="'Plus Jakarta Sans', 'Arial Black', sans-serif" font-weight="900" font-size="44" letter-spacing="4">
+    <textPath href="#topArc" startOffset="50%" text-anchor="middle">FUTURE GATES i.T CENTER</textPath>
+  </text>
+
+  <!-- Left & Right Separator Stars -->
+  <!-- Left Star -->
+  <polygon points="125,400 131,382 149,382 134,371 140,353 125,364 110,353 116,371 101,382 119,382" fill="#FFFFFF" transform="translate(-10, 0)" />
+  <!-- Right Star -->
+  <polygon points="675,400 681,382 699,382 684,371 690,353 675,364 660,353 666,371 651,382 669,382" fill="#FFFFFF" transform="translate(10, 0)" />
+
+  <!-- 4. Outer Ring Text: BOTTOM ARC (Where Skills Become Your Income) -->
+  <text fill="#FFFFFF" font-family="'Plus Jakarta Sans', Arial, sans-serif" font-weight="800" font-size="38" letter-spacing="2">
+    <textPath href="#bottomArc" startOffset="50%" text-anchor="middle">Where Skills Become Your Income</textPath>
+  </text>
+
+  <!-- 5. Inner White Scalloped Ring Border -->
+  <circle cx="400" cy="400" r="248" fill="#FFFFFF" />
+  <circle cx="400" cy="400" r="238" fill="#021B4E" />
+  <circle cx="400" cy="400" r="230" fill="#FFFFFF" />
+
+  <!-- 6. Center White Circle Background -->
+  <circle cx="400" cy="400" r="225" fill="#FFFFFF" />
+
+  <!-- 7. Center Graphics -->
+  <g transform="translate(400, 400)">
+    <!-- Outer Circular Ring Arcs (broken top and bottom) -->
+    <path d="M -115,-70 A 135,135 0 0,1 115,-70" fill="none" stroke="#021B4E" stroke-width="16" stroke-linecap="round" />
+    <path d="M -115,70 A 135,135 0 0,0 115,70" fill="none" stroke="#021B4E" stroke-width="16" stroke-linecap="round" />
+
+    <!-- Laptop Frame -->
+    <!-- Screen Box -->
+    <rect x="-170" y="-120" width="340" height="230" rx="20" fill="none" stroke="#021B4E" stroke-width="18" />
+    <!-- Laptop Base Tray -->
+    <path d="M -200,125 L 200,125 A 8,8 0 0,1 200,140 L -200,140 A 8,8 0 0,1 -200,125 Z" fill="#021B4E" />
+
+    <!-- Graduation Cap (Mortarboard) perched on top-right corner -->
+    <g transform="translate(110, -115)">
+      <!-- Diamond Top -->
+      <polygon points="0,-40 60,-15 0,10 -60,-15" fill="#021B4E" />
+      <!-- Skull Cap Underneath -->
+      <path d="M -30,-3 L -30,22 C -30,32 30,32 30,22 L 30,-3 Z" fill="#021B4E" />
+      <!-- Tassel Rope & Fringe -->
+      <path d="M 0,-15 L 45,15 L 45,35" fill="none" stroke="#021B4E" stroke-width="4" stroke-linecap="round" />
+      <circle cx="45" cy="38" r="4" fill="#021B4E" />
+    </g>
+
+    <!-- Circuit Handshake Emblem inside Laptop Screen -->
+    <!-- Left Hand & Circuits (Orange #E85A00) -->
+    <g fill="#E85A00" stroke="#E85A00">
+      <!-- Circuit Traces & Nodes -->
+      <circle cx="-135" cy="-30" r="8" />
+      <circle cx="-135" cy="0" r="8" />
+      <circle cx="-135" cy="30" r="8" />
+      <path d="M -135,-30 L -100,-30 L -75,-10" stroke-width="6" fill="none" stroke-linecap="round" />
+      <path d="M -135,0 L -75,0" stroke-width="6" fill="none" stroke-linecap="round" />
+      <path d="M -135,30 L -100,30 L -75,10" stroke-width="6" fill="none" stroke-linecap="round" />
+      
+      <!-- Left Arm & Hand clasping -->
+      <path d="M -75,-18 C -55,-18 -40,-12 -20,-8 L -5,-5 C 5,0 12,5 15,12 C 12,18 2,22 -8,18 L -30,12 C -45,8 -60,18 -75,18 Z" stroke="none" />
+      <!-- Thumb -->
+      <path d="M -30,-12 C -20,-20 -10,-18 0,-12 C -5,-8 -15,-8 -25,-6 Z" stroke="none" />
+    </g>
+
+    <!-- Right Hand & Circuits (Navy Blue #021B4E) -->
+    <g fill="#021B4E" stroke="#021B4E">
+      <!-- Circuit Traces & Nodes -->
+      <circle cx="135" cy="-30" r="8" />
+      <circle cx="135" cy="0" r="8" />
+      <circle cx="135" cy="30" r="8" />
+      <path d="M 135,-30 L 100,-30 L 75,-10" stroke-width="6" fill="none" stroke-linecap="round" />
+      <path d="M 135,0 L 75,0" stroke-width="6" fill="none" stroke-linecap="round" />
+      <path d="M 135,30 L 100,30 L 75,10" stroke-width="6" fill="none" stroke-linecap="round" />
+
+      <!-- Right Arm & Hand clasping fingers -->
+      <path d="M 75,-18 C 55,-18 40,-12 20,-8 L 5,2 C -5,10 -10,22 5,25 C 20,25 35,15 50,12 C 60,10 70,18 75,18 Z" stroke="none" />
+      <!-- Clasping Fingers Overlay -->
+      <path d="M -12,2 L 8,5 C 15,7 18,15 12,20 C 5,22 -2,18 -8,12 Z" stroke="none" />
+    </g>
+  </g>
+</svg>

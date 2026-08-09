@@ -1,0 +1,263 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
+import React from 'react';
+import { Facebook, Twitter, Linkedin, Github, Youtube, Mail, Phone, MapPin, Shield, CheckCircle2 } from 'lucide-react';
+import { BrandLogo } from './BrandLogo';
+import { useData } from '../context/DataContext';
+
+interface FooterProps {
+  setTab: (tab: string) => void;
+  onOpenAdmin: () => void;
+}
+
+export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
+  const { data } = useData();
+  const settings = data?.settings;
+  const contact = data?.contact || {};
+  const currentYear = new Date().getFullYear();
+
+  const footerDesc = settings?.footerDescription || 'Future Gates IT Center is an accredited IT training institute and digital agency situated in Khushab & Rawalpindi, Punjab, Pakistan. Built on the core ethos "Where Skills Become Your Income", we empower students with job-ready technical skills and verifiable certifications.';
+  const footerPhone = settings?.footerPhone || contact.phone || '+92301-6775690';
+  const footerWhatsapp = settings?.footerWhatsapp || contact.whatsapp || '923016775690';
+  const footerEmail = settings?.footerEmail || contact.email || 'futuregatesitcenter@gmail.com';
+  const footerAddress = settings?.footerAddress || contact.address || 'Future Gates IT Center, Main Campus, Khushab & Rawalpindi, Punjab, Pakistan';
+  const footerCopyright = settings?.footerCopyrightText || `© ${currentYear} Future Gates IT Center, Pakistan. All Rights Reserved.`;
+
+  const social = settings?.socialMedia || {
+    facebook: contact.facebook || 'https://facebook.com',
+    twitter: contact.twitter || 'https://twitter.com',
+    linkedin: contact.linkedin || 'https://linkedin.com',
+    github: contact.github || 'https://github.com',
+    youtube: contact.youtube || 'https://youtube.com',
+    instagram: '',
+    tiktok: '',
+    whatsapp: `https://wa.me/${footerWhatsapp}`
+  };
+
+  const handleLinkClick = (tabId: string) => {
+    setTab(tabId);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  return (
+    <footer className="bg-slate-900 border-t border-slate-800 text-slate-300 no-print">
+      {/* Upper Footer Widget Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
+          
+          {/* Main Info Container */}
+          <div className="space-y-5">
+            <BrandLogo variant="light" customLogoUrl={settings?.footerLogoUrl} />
+            <p className="text-xs text-slate-400 leading-relaxed pt-1">
+              {footerDesc}
+            </p>
+
+            {/* Social Media Links - Only displayed if URL provided */}
+            <div className="flex items-center flex-wrap gap-2 pt-1 font-bold">
+              {social.facebook && social.facebook.trim() !== '' && (
+                <a
+                  href={social.facebook}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400"
+                  aria-label="Facebook Profile"
+                >
+                  <Facebook className="w-4 h-4" />
+                </a>
+              )}
+              {social.twitter && social.twitter.trim() !== '' && (
+                <a
+                  href={social.twitter}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400"
+                  aria-label="Twitter Profile"
+                >
+                  <Twitter className="w-4 h-4" />
+                </a>
+              )}
+              {social.linkedin && social.linkedin.trim() !== '' && (
+                <a
+                  href={social.linkedin}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400"
+                  aria-label="LinkedIn Profile"
+                >
+                  <Linkedin className="w-4 h-4" />
+                </a>
+              )}
+              {social.github && social.github.trim() !== '' && (
+                <a
+                  href={social.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-blue-600 hover:text-white transition-all text-slate-400"
+                  aria-label="GitHub"
+                >
+                  <Github className="w-4 h-4" />
+                </a>
+              )}
+              {social.youtube && social.youtube.trim() !== '' && (
+                <a
+                  href={social.youtube}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-orange-500 hover:text-white transition-all text-slate-400"
+                  aria-label="YouTube Channel"
+                >
+                  <Youtube className="w-4 h-4" />
+                </a>
+              )}
+            </div>
+          </div>
+
+          {/* Quick Nav Links */}
+          {(settings?.showFooterQuickLinks !== false) && (
+            <div className="space-y-4">
+              <h3 className="text-white text-xs font-bold tracking-widest uppercase border-l-2 border-orange-500 pl-2">
+                Institute Navigation
+              </h3>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <button onClick={() => handleLinkClick('home')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Home Portal
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('about')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    About Future Gates
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('courses')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Technical Courses
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('services')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Software Services & Printing
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('blogs')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Blog Resources
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('verification')} className="hover:text-orange-400 transition-all font-semibold cursor-pointer text-slate-400">
+                    Student Certificate Check
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('contact')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Inquiries & Contact Us
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('admission')} className="hover:text-orange-400 transition-all cursor-pointer text-orange-400 font-bold uppercase tracking-wider">
+                    Online Admission Form
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {/* Legal Pages */}
+          {(settings?.showFooterLegal !== false) && (
+            <div className="space-y-4">
+              <h3 className="text-white text-xs font-bold tracking-widest uppercase border-l-2 border-blue-500 pl-2">
+                Legal Pages & Portal
+              </h3>
+              <ul className="space-y-2 text-xs">
+                <li>
+                  <button onClick={() => handleLinkClick('privacy')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Privacy Policy
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('cookies')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Cookie Policy
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('terms')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Terms & Conditions
+                  </button>
+                </li>
+                <li>
+                  <button onClick={() => handleLinkClick('disclaimer')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                    Disclaimer Notice
+                  </button>
+                </li>
+                <li className="pt-2">
+                  <button onClick={onOpenAdmin} className="text-xs text-orange-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
+                    <Shield className="w-3.5 h-3.5" /> Staff Admin Dashboard
+                  </button>
+                </li>
+              </ul>
+            </div>
+          )}
+
+          {/* Contacts Info */}
+          <div className="space-y-4">
+            <h3 className="text-white text-xs font-bold tracking-widest uppercase border-l-2 border-emerald-500 pl-2">
+              Head Office Contact
+            </h3>
+            <ul className="space-y-3 text-xs">
+              <li className="flex items-start gap-2.5">
+                <MapPin className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+                <span className="text-slate-400 leading-relaxed">
+                  {footerAddress}
+                </span>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
+                <a href={`https://wa.me/${footerWhatsapp}`} target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono font-bold">
+                  {footerPhone}
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5">
+                <Mail className="w-4 h-4 text-blue-400 shrink-0" />
+                <a href={`mailto:${footerEmail}`} className="text-slate-300 hover:text-blue-400 transition-colors font-mono">
+                  {footerEmail}
+                </a>
+              </li>
+              <li className="flex items-center gap-2.5 pt-2 border-t border-slate-800">
+                <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                <span className="text-[11px] text-emerald-400 font-semibold">
+                  Accredited Professional IT Skills Board
+                </span>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+      </div>
+
+      {/* Under Footer Copyright & Verification Disclaimer */}
+      <div className="bg-slate-950 py-6 border-t border-slate-800 text-slate-500 text-xs">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col md:flex-row justify-between items-center gap-3 text-center md:text-left">
+          <div className="space-y-1">
+            <p>{footerCopyright}</p>
+            <p className="text-[10px] text-slate-500">
+              Disclaimer: Certificate verification values offered on this portal represent official records sanctioned under certification program guidelines of Future Gates I.T Center Punjab.
+            </p>
+          </div>
+          <div className="flex flex-wrap justify-center md:justify-end gap-x-3 gap-y-1 text-[11px] text-slate-400">
+            <button onClick={() => handleLinkClick('terms')} className="hover:text-orange-400 cursor-pointer">Terms</button>
+            <span>•</span>
+            <button onClick={() => handleLinkClick('privacy')} className="hover:text-orange-400 cursor-pointer">Privacy</button>
+            <span>•</span>
+            <button onClick={() => handleLinkClick('cookies')} className="hover:text-orange-400 cursor-pointer">Cookie Policy</button>
+            <span>•</span>
+            <button onClick={() => handleLinkClick('disclaimer')} className="hover:text-orange-400 cursor-pointer">Disclaimer</button>
+          </div>
+        </div>
+      </div>
+    </footer>
+  );
+};

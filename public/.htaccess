@@ -1,0 +1,10 @@
+RewriteEngine On
+RewriteBase /
+
+# Handle trailing slashes
+RewriteRule ^index\.html$ - [L]
+
+# Route all requests to index.html if file/directory does not exist
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule . /index.html [L]

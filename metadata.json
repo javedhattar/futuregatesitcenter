@@ -1,0 +1,6 @@
+{
+  "name": "Future Gates IT Center",
+  "description": "Where Skills Become Your Income. Official portal for professional technical training, IT courses, student certificate verification, and software development services.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
