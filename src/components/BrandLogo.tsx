@@ -37,13 +37,16 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
     logoSrc = settings.headerLogoUrl;
   }
 
-  const [hasError, setHasError] = React.useState(false);
+  const [errorCount, setErrorCount] = React.useState(0);
 
   React.useEffect(() => {
-    setHasError(false);
+    setErrorCount(0);
   }, [logoSrc]);
 
-  const activeLogoSrc = hasError ? brandLogo : (logoSrc || brandLogo);
+  let activeLogoSrc = logoSrc || brandLogo;
+  if (errorCount === 1) {
+    activeLogoSrc = brandLogo;
+  }
 
   const instituteName = settings?.instituteName || 'Future Gates IT Center';
   const tagline = settings?.tagline || 'Where Skills Become Your Income';
@@ -56,16 +59,25 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   return (
     <div className={`flex items-center gap-3 select-none ${className}`}>
       {/* Official Brand Seal Logo Mark */}
-      <img
-        src={activeLogoSrc}
-        alt={`${instituteName} Logo`}
-        width={size}
-        height={size}
-        style={{ width: `${size}px`, height: `${size}px` }}
-        className="object-contain shrink-0 filter drop-shadow-sm hover:scale-105 transition-transform"
-        referrerPolicy="no-referrer"
-        onError={() => setHasError(true)}
-      />
+      {errorCount >= 2 ? (
+        <div
+          style={{ width: `${size}px`, height: `${size}px` }}
+          className="rounded-xl bg-gradient-to-br from-blue-600 via-slate-900 to-orange-500 flex items-center justify-center text-white font-extrabold text-lg shadow-md shrink-0 border border-white/20"
+        >
+          FG
+        </div>
+      ) : (
+        <img
+          src={activeLogoSrc}
+          alt={`${instituteName} Logo`}
+          width={size}
+          height={size}
+          style={{ width: `${size}px`, height: `${size}px` }}
+          className="object-contain shrink-0 filter drop-shadow-sm hover:scale-105 transition-transform"
+          referrerPolicy="no-referrer"
+          onError={() => setErrorCount((prev) => prev + 1)}
+        />
+      )}
 
       {!iconOnly && (
         <div className="flex flex-col justify-center">

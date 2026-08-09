@@ -303,7 +303,7 @@ function verifyAuth(req: express.Request): boolean {
   if (!authHeader) return false;
   const token = authHeader.replace('Bearer ', '').trim();
   // Allow session tokens or simple verification
-  return activeTokens.has(token) || token.startsWith('fg_token_');
+  return activeTokens.has(token) || token.startsWith('fg_');
 }
 
 /* ==========================================================================
@@ -625,6 +625,40 @@ app.post('/api/settings/reset', (req, res) => {
   db.settings = defaultSiteSettings;
   saveDB(db);
   res.json({ success: true, settings: db.settings });
+});
+
+/* --- Direct Image Upload API --- */
+app.post('/api/upload', (req, res) => {
+  if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+  const { image } = req.body;
+  if (!image) {
+    return res.status(400).json({ success: false, error: 'No image provided' });
+  }
+
+  // If serverless environment (e.g. Vercel), return base64 image data URL directly
+  if (process.env.VERCEL) {
+    return res.json({ success: true, url: image });
+  }
+
+  try {
+    let base64Data = image;
+    let ext = 'png';
+    if (image.startsWith('data:image')) {
+      const matches = image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
+      if (matches && matches.length === 3) {
+        ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
+        base64Data = matches[2];
+      }
+    }
+    const filename = `upload_${Date.now()}.${ext}`;
+    const filePath = path.join(UPLOADS_DIR, filename);
+    const buffer = Buffer.from(base64Data, 'base64');
+    fs.writeFileSync(filePath, buffer);
+    res.json({ success: true, url: `/uploads/${filename}` });
+  } catch (err) {
+    console.error('Image upload save error:', err);
+    res.json({ success: true, url: image }); // Fallback to base64 data URL
+  }
 });
 
 /* --- Media Management API --- */
