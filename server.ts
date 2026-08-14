@@ -6,7 +6,7 @@ import { createServer as createViteServer } from 'vite';
 import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS } from './src/data';
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
 
 // Increase payload limit for base64 photo uploads
 app.use(express.json({ limit: '50mb' }));
