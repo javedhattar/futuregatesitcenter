@@ -4,7 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { GraduationCap, CheckCircle2, Send, PhoneCall } from 'lucide-react';
+import { GraduationCap, CheckCircle2, PhoneCall } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { COURSES } from '../data';
 
 export const AdmissionView: React.FC = () => {
@@ -98,13 +99,15 @@ export const AdmissionView: React.FC = () => {
               <div className="flex flex-col sm:flex-row justify-center gap-3 pt-2">
                 <button
                   onClick={handleWhatsAppSend}
-                  className="px-6 py-3 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow"
+                  className="px-6 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer hover:scale-[1.01]"
                 >
-                  <Send className="w-4 h-4" /> Send Application Copy via WhatsApp
+                  <WhatsAppIcon className="w-4 h-4 text-white" />
+                  <span>Send Application via WhatsApp</span>
+                  <span className="font-mono text-white/95 text-[11px] font-semibold">(+92301-6775690)</span>
                 </button>
                 <button
                   onClick={() => setSubmitted(false)}
-                  className="px-6 py-3 bg-slate-200 text-slate-800 font-bold text-xs rounded-xl"
+                  className="px-6 py-3 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold text-xs rounded-xl transition-colors cursor-pointer"
                 >
                   Submit Another Form
                 </button>
@@ -203,7 +206,7 @@ export const AdmissionView: React.FC = () => {
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. Khushab / Rawalpindi / Sargodha"
+                  placeholder="e.g. Khushab / Joharabad / Sargodha"
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-brand-blue focus:outline-none"
                 />
               </div>

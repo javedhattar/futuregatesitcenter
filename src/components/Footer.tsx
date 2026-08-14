@@ -6,6 +6,7 @@
 import React from 'react';
 import { Facebook, Twitter, Linkedin, Github, Youtube, Mail, Phone, MapPin, Shield, CheckCircle2 } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
 interface FooterProps {
@@ -19,11 +20,11 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
   const contact = data?.contact || {};
   const currentYear = new Date().getFullYear();
 
-  const footerDesc = settings?.footerDescription || 'Future Gates IT Center is an accredited IT training institute and digital agency situated in Khushab & Rawalpindi, Punjab, Pakistan. Built on the core ethos "Where Skills Become Your Income", we empower students with job-ready technical skills and verifiable certifications.';
+  const footerDesc = settings?.footerDescription || 'Future Gates IT Center is an accredited IT training institute and digital agency situated in Khushab, Punjab, Pakistan. Built on the core ethos "Where Skills Become Your Income", we empower students with job-ready technical skills and verifiable certifications.';
   const footerPhone = settings?.footerPhone || contact.phone || '+92301-6775690';
   const footerWhatsapp = settings?.footerWhatsapp || contact.whatsapp || '923016775690';
   const footerEmail = settings?.footerEmail || contact.email || 'futuregatesitcenter@gmail.com';
-  const footerAddress = settings?.footerAddress || contact.address || 'Future Gates IT Center, Main Campus, Khushab & Rawalpindi, Punjab, Pakistan';
+  const footerAddress = settings?.footerAddress || contact.address || 'Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan';
   const footerCopyright = settings?.footerCopyrightText || `© ${currentYear} Future Gates IT Center, Pakistan. All Rights Reserved.`;
 
   const social = settings?.socialMedia || {
@@ -110,6 +111,18 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
                   aria-label="YouTube Channel"
                 >
                   <Youtube className="w-4 h-4" />
+                </a>
+              )}
+              {social.whatsapp && social.whatsapp.trim() !== '' && (
+                <a
+                  href={social.whatsapp}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="w-8 h-8 rounded-lg bg-slate-800 flex items-center justify-center hover:bg-[#25D366] hover:text-white transition-all text-slate-400"
+                  aria-label="Official WhatsApp"
+                  title="Chat on WhatsApp"
+                >
+                  <WhatsAppIcon className="w-4 h-4" />
                 </a>
               )}
             </div>
@@ -217,9 +230,20 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
                 </span>
               </li>
               <li className="flex items-center gap-2.5">
-                <Phone className="w-4 h-4 text-emerald-400 shrink-0" />
-                <a href={`https://wa.me/${footerWhatsapp}`} target="_blank" rel="noopener noreferrer" className="text-slate-300 hover:text-emerald-400 transition-colors font-mono font-bold">
-                  {footerPhone}
+                <div className="w-5 h-5 rounded-full bg-[#25D366]/20 flex items-center justify-center shrink-0">
+                  <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" />
+                </div>
+                <a
+                  href={`https://wa.me/${footerWhatsapp}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-slate-300 hover:text-[#25D366] transition-colors font-mono font-bold flex items-center gap-2 flex-wrap"
+                  title="Click to Chat on WhatsApp"
+                >
+                  <span>{footerPhone}</span>
+                  <span className="text-[10px] font-sans font-extrabold uppercase px-1.5 py-0.5 rounded bg-[#25D366]/20 text-[#25D366] border border-[#25D366]/30">
+                    WhatsApp
+                  </span>
                 </a>
               </li>
               <li className="flex items-center gap-2.5">

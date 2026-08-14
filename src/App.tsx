@@ -10,6 +10,7 @@ import { Footer } from './components/Footer';
 import { EnrollmentModal } from './components/EnrollmentModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { CookieBanner } from './components/CookieBanner';
+import { FloatingWhatsApp } from './components/FloatingWhatsApp';
 
 import { HomeView } from './pages/HomeView';
 import { AboutView } from './pages/AboutView';
@@ -181,6 +182,9 @@ export default function App() {
 
         {/* AdSense / GDPR Cookie Consent Banner */}
         <CookieBanner onNavigateToCookies={() => handleSetTab('cookies')} />
+
+        {/* Global Floating Official WhatsApp CTA */}
+        <FloatingWhatsApp />
       </div>
     </DataProvider>
   );

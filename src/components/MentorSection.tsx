@@ -9,12 +9,12 @@ import {
   Globe,
   FileSpreadsheet,
   TrendingUp,
-  MessageSquare,
   GraduationCap,
   Award,
   Star,
   Quote
 } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
 interface MentorSectionProps {
@@ -232,9 +232,13 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ onOpenEnrollment }
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2"
+                className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
               >
-                <MessageSquare className="w-4 h-4" /> Direct Mentor Consultation
+                <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
+                  <WhatsAppIcon className="w-3 h-3 text-white" />
+                </div>
+                <span>Mentor WhatsApp Consultation</span>
+                <span className="font-mono text-white/90 text-[11px] font-semibold">(+92301-6775690)</span>
               </a>
             </div>
           </div>

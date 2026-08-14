@@ -4,7 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { X, CheckCircle2, GraduationCap, Send, PhoneCall } from 'lucide-react';
+import { X, CheckCircle2, GraduationCap, PhoneCall } from 'lucide-react';
+import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
 interface EnrollmentModalProps {
@@ -133,9 +134,11 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   onClick={handleWhatsAppSend}
-                  className="flex-1 py-3 px-4 bg-emerald-600 hover:bg-emerald-500 text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md transition-all cursor-pointer"
+                  className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer hover:scale-[1.01]"
                 >
-                  <Send className="w-4 h-4" /> Send Application via WhatsApp
+                  <WhatsAppIcon className="w-4 h-4 text-white" />
+                  <span>Send to WhatsApp</span>
+                  <span className="font-mono text-white/95 text-[11px] font-semibold">(+92301-6775690)</span>
                 </button>
                 <button
                   onClick={handleReset}
@@ -252,7 +255,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   type="text"
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
-                  placeholder="e.g. Khushab / Rawalpindi / Sargodha"
+                  placeholder="e.g. Khushab / Joharabad / Sargodha"
                   className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
                 />
               </div>

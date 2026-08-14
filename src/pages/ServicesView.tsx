@@ -6,7 +6,8 @@
 import React, { useState } from 'react';
 import { useData } from '../context/DataContext';
 import { Service } from '../types';
-import { CheckCircle2, MessageSquare, Sparkles, Building2, Store } from 'lucide-react';
+import { CheckCircle2, Sparkles, Building2, Store } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 export const ServicesView: React.FC = () => {
   const { data } = useData();
@@ -138,9 +139,11 @@ export const ServicesView: React.FC = () => {
               <div className="p-5 bg-slate-50 border-t border-slate-100 flex justify-end">
                 <button
                   onClick={() => handleInquire(service)}
-                  className="w-full py-2.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl flex items-center justify-center gap-2 shadow transition-all cursor-pointer"
+                  className="w-full py-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider rounded-xl flex items-center justify-center gap-2 shadow-md shadow-emerald-500/20 transition-all cursor-pointer hover:scale-[1.01]"
                 >
-                  <MessageSquare className="w-4 h-4" /> Inquire via WhatsApp
+                  <WhatsAppIcon className="w-4 h-4 text-white" />
+                  <span>Inquire via WhatsApp</span>
+                  <span className="font-mono text-white/90 text-[11px] font-semibold">(+92301-6775690)</span>
                 </button>
               </div>
             </div>

@@ -7,6 +7,7 @@ import React from 'react';
 import { Award, ShieldCheck, Target, Eye, BookOpen, CheckCircle2, Users, Flame, Globe } from 'lucide-react';
 import { BrandLogo } from '../components/BrandLogo';
 import { MentorSection } from '../components/MentorSection';
+import { AboutFAQ } from '../components/AboutFAQ';
 
 interface AboutViewProps {
   setTab: (tab: string) => void;
@@ -15,7 +16,7 @@ interface AboutViewProps {
 
 export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }) => {
   return (
-    <div className="pb-16 space-y-12">
+    <div className="pb-16 space-y-16">
       {/* Page Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-14 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-5xl mx-auto text-center space-y-4">
@@ -43,7 +44,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
               Transforming Students Into Skilled IT Professionals
             </h2>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-              <strong>Future Gates I.T Center</strong> is a premier, certified technology bootcamp and professional skills development institute situated in Khushab & Rawalpindi, Punjab, Pakistan.
+              <strong>Future Gates I.T Center</strong> is a premier, certified technology bootcamp and professional skills development institute situated in Khushab, Punjab, Pakistan.
             </p>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               We specialize in hands-on practical training across full-stack web engineering, mobile application development, graphic design, UI/UX, SEO, digital marketing, AI tools, and office automation. Additionally, our software agency unit provides corporate web applications, branding, and printing solutions for businesses across Pakistan and internationally.
@@ -134,6 +135,12 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
 
       {/* Meet Our Mentor Section */}
       <MentorSection onOpenEnrollment={onOpenEnrollment} />
+
+      {/* Frequently Asked Questions (FAQ) Section */}
+      <AboutFAQ
+        onOpenEnrollment={onOpenEnrollment}
+        onNavigateContact={() => setTab('contact')}
+      />
 
       {/* Call To Action */}
       <section className="max-w-4xl mx-auto px-4 text-center">

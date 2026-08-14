@@ -4,7 +4,8 @@
  */
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, MessageSquare, Clock, CheckCircle2 } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Clock, CheckCircle2 } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
 export const ContactView: React.FC = () => {
@@ -83,19 +84,23 @@ export const ContactView: React.FC = () => {
                 <div>
                   <h4 className="font-bold text-xs text-slate-900 uppercase">Campus Location</h4>
                   <p className="text-xs text-slate-600 leading-relaxed mt-0.5">
-                    Future Gates I.T Center, Main Campus, Khushab & Rawalpindi, Punjab, Pakistan
+                    Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan
                   </p>
                 </div>
               </div>
 
               <div className="flex items-start gap-3 bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
-                <div className="w-10 h-10 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
-                  <Phone className="w-5 h-5" />
+                <div className="w-10 h-10 rounded-xl bg-[#25D366]/15 text-[#25D366] flex items-center justify-center shrink-0">
+                  <WhatsAppIcon className="w-5 h-5 text-[#25D366]" />
                 </div>
                 <div>
-                  <h4 className="font-bold text-xs text-slate-900 uppercase">Phone & WhatsApp Helpline</h4>
-                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-brand-blue font-bold font-mono hover:underline mt-0.5 block">
-                    +92301-6775690 (Click to Chat on WhatsApp)
+                  <h4 className="font-bold text-xs text-slate-900 uppercase flex items-center gap-1.5">
+                    <span>Phone & WhatsApp Helpline</span>
+                    <span className="text-[10px] bg-[#25D366]/20 text-[#128C7E] px-1.5 py-0.2 rounded font-sans font-bold">Active</span>
+                  </h4>
+                  <a href={whatsappUrl} target="_blank" rel="noopener noreferrer" className="text-xs text-[#128C7E] hover:text-[#075E54] font-bold font-mono hover:underline mt-0.5 flex items-center gap-1.5">
+                    <span>+92301-6775690</span>
+                    <span className="text-[11px] font-sans font-normal text-slate-500">(Click to Chat on WhatsApp)</span>
                   </a>
                 </div>
               </div>
@@ -130,9 +135,13 @@ export const ContactView: React.FC = () => {
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full py-3.5 bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-2xl flex items-center justify-center gap-2 shadow-lg transition-all cursor-pointer"
+              className="w-full py-3.5 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold text-xs uppercase tracking-wider rounded-2xl flex items-center justify-center gap-2.5 shadow-lg shadow-emerald-500/25 transition-all hover:scale-[1.01] cursor-pointer"
             >
-              <MessageSquare className="w-5 h-5" /> Direct WhatsApp Inquiry (+92301-6775690)
+              <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center">
+                <WhatsAppIcon className="w-3.5 h-3.5 text-white" />
+              </div>
+              <span>Direct WhatsApp Inquiry</span>
+              <span className="font-mono text-white/95 font-semibold">(+92301-6775690)</span>
             </a>
           </div>
 

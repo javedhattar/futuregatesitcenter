@@ -501,7 +501,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'stamps-seals',
-    title: 'Custom Stamps & Seals Maker (سلیپ / مہریں)',
+    title: 'Custom Stamps & Official Seals Maker',
     description: 'Design and manufacturing of custom official stamps, self-inking seals, signatures, and company stamps.',
     iconName: 'Award',
     imageUrl: 'https://images.unsplash.com/photo-1586281380349-632531db7ed4?auto=format&fit=crop&w=900&q=80',
@@ -517,12 +517,12 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'wedding-invitations',
-    title: 'Wedding & Invitation Cards (شادی کارڈ)',
+    title: 'Wedding & Event Invitation Cards',
     description: 'Stunning graphic design layouts and custom printing for wedding cards, family events, and formal invitations.',
     iconName: 'Heart',
     imageUrl: 'https://images.unsplash.com/photo-1519741497674-611481863552?auto=format&fit=crop&w=900&q=80',
     features: [
-      'Elegant traditional Urdu calligraphy & modern English scripts',
+      'Elegant traditional calligraphy & modern English scripts',
       'Custom design layouts paired with high-quality card stock',
       'Custom luxury envelopes, wax sealing, and fold patterns',
       'Complete color theme mockups and customer revisions',
@@ -533,7 +533,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'memos-billbooks',
-    title: 'Bill Books & Cash Memos (بل بکس / کیش میمو)',
+    title: 'Bill Books & Cash Memos',
     description: 'Bespoke corporate bookkeeping bills, receipts books, transaction logs, and cash memos layouts.',
     iconName: 'Receipt',
     imageUrl: 'https://images.unsplash.com/photo-1554224155-8d04cb21cd6c?auto=format&fit=crop&w=900&q=80',
@@ -549,7 +549,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'resume-cv-design',
-    title: 'Professional CV & Resume Design (CV ڈیزائن)',
+    title: 'Professional CV & Resume Design',
     description: 'Modern, high-impact resume and CV writing to highlight your skillsets and fast-track job hirings.',
     iconName: 'FileText',
     imageUrl: 'https://images.unsplash.com/photo-1586281380117-5a60ae2050cc?auto=format&fit=crop&w=900&q=80',
@@ -565,7 +565,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'visiting-cards',
-    title: 'Business & Visiting Cards (بزنس کارڈز)',
+    title: 'Business & Visiting Cards',
     description: 'Make a powerful first impression with high-grade, custom-designed commercial corporate business cards.',
     iconName: 'CreditCard',
     imageUrl: 'https://images.unsplash.com/photo-1589829545856-d10d557cf95f?auto=format&fit=crop&w=900&q=80',
@@ -581,7 +581,7 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'online-admissions-jobs',
-    title: 'Online Support, Admissions & Job Applications (سرکاری ملازمت فارم)',
+    title: 'Online Admissions & Job Applications Portal Support',
     description: 'Expert guidance for university online admissions, scholarship portal filings, and government job registrations.',
     iconName: 'FileSpreadsheet',
     imageUrl: 'https://images.unsplash.com/photo-1434030216411-0b793f4b4173?auto=format&fit=crop&w=900&q=80',
@@ -597,23 +597,23 @@ export const SERVICES: Service[] = [
   },
   {
     id: 'composing-exam-papers',
-    title: 'Urdu, English, Arabic Composing & Exam Papers (کمپوزنگ)',
+    title: 'Multilingual Composing & Exam Papers Publishing',
     description: 'Professional multilingual text typing, book composing, translation scripts, and school terminal examination sheets.',
     iconName: 'Type',
     imageUrl: 'https://images.unsplash.com/photo-1455390582262-044cdead277a?auto=format&fit=crop&w=900&q=80',
     features: [
-      'Flawless Nastaliq Urdu layout typography on InPage & MS Word',
+      'Flawless layout typography on specialized editors & MS Word',
       'School examination papers designing with custom marks tally matrices',
       'Mathematical formulas, scientific equation sets, and chart inserts',
-      'Arabic calligraphic font alignments for Islamic manuscripts',
+      'Calligraphic font alignments for formal manuscripts',
       'Proofreading services with 100% grammar and spelling corrections'
     ],
-    techStack: ['InPage Nastaliq Urdu', 'MathType Equation Editor', 'Microsoft Word Pro', 'Adobe Acrobat'],
+    techStack: ['Word Processing Pro', 'MathType Equation Editor', 'Microsoft Word Pro', 'Adobe Acrobat'],
     category: 'local-hub'
   },
   {
     id: 'stamp-papers-bform',
-    title: 'Stamp Paper Composing & B-Form Support (اشٹام پیپرز / بے فارم / بورڈ)',
+    title: 'Legal Drafting, Stamp Papers & Form Support',
     description: 'Official stamp papers legal drafting, computerized Nadra B-Form form completions, and BISE board files prep.',
     iconName: 'Scale',
     imageUrl: 'https://images.unsplash.com/photo-1450133064473-71024230f91b?auto=format&fit=crop&w=900&q=80',

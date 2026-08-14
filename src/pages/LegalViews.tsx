@@ -4,7 +4,8 @@
  */
 
 import React from 'react';
-import { Shield, FileText, AlertCircle, Cookie, Megaphone, CheckCircle2, Lock, Eye, Mail, Phone, MapPin } from 'lucide-react';
+import { Shield, FileText, AlertCircle, Cookie, Megaphone, CheckCircle2, Lock, Eye, Mail, MapPin } from 'lucide-react';
+import { WhatsAppIcon } from '../components/WhatsAppIcon';
 
 interface LegalViewProps {
   type: 'privacy' | 'terms' | 'disclaimer' | 'cookies';
@@ -107,8 +108,13 @@ export const LegalView: React.FC<LegalViewProps> = ({ type }) => {
             <p>For questions or privacy concerns regarding this policy, contact us:</p>
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-1.5 font-mono text-[11px]">
               <p className="flex items-center gap-2 text-slate-700"><Mail className="w-3.5 h-3.5 text-brand-blue" /> <strong>Email:</strong> futuregatesitcenter@gmail.com</p>
-              <p className="flex items-center gap-2 text-slate-700"><Phone className="w-3.5 h-3.5 text-emerald-600" /> <strong>WhatsApp / Cell:</strong> +92 301 6775690</p>
-              <p className="flex items-center gap-2 text-slate-700"><MapPin className="w-3.5 h-3.5 text-brand-orange" /> <strong>Address:</strong> Future Gates IT Center, Main Campus, Khushab & Rawalpindi, Punjab, Pakistan</p>
+              <p className="flex items-center gap-2 text-slate-700">
+                <WhatsAppIcon className="w-3.5 h-3.5 text-[#25D366]" /> <strong>Official WhatsApp / Cell:</strong>{' '}
+                <a href="https://wa.me/923016775690" target="_blank" rel="noopener noreferrer" className="text-[#128C7E] hover:underline font-bold">
+                  +92 301 6775690
+                </a>
+              </p>
+              <p className="flex items-center gap-2 text-slate-700"><MapPin className="w-3.5 h-3.5 text-brand-orange" /> <strong>Address:</strong> Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan</p>
             </div>
           </div>
         </div>
