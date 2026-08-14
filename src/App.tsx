@@ -65,12 +65,22 @@ export default function App() {
       }
     };
 
+    const handleKeyDown = (e: KeyboardEvent) => {
+      // Secret key combination: Ctrl + Shift + A (or Cmd + Shift + A on Mac)
+      if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key.toLowerCase() === 'a') {
+        e.preventDefault();
+        setIsAdminOpen((prev) => !prev);
+      }
+    };
+
     checkRoute();
     window.addEventListener('hashchange', checkRoute);
     window.addEventListener('popstate', checkRoute);
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       window.removeEventListener('hashchange', checkRoute);
       window.removeEventListener('popstate', checkRoute);
+      window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 

@@ -87,14 +87,18 @@ export const Header: React.FC<HeaderProps> = ({
               >
                 <Phone className="w-3 h-3 text-emerald-400" /> {headerPhone}
               </a>
-              <span className="text-slate-700">|</span>
-              <button
-                onClick={onOpenAdmin}
-                className="text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
-                title="Admin Portal Access"
-              >
-                <Lock className="w-3 h-3 text-orange-400" /> Admin
-              </button>
+              {settings?.showAdminHeaderButton === true && (
+                <>
+                  <span className="text-slate-700">|</span>
+                  <button
+                    onClick={onOpenAdmin}
+                    className="text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
+                    title="Admin Portal Access"
+                  >
+                    <Lock className="w-3 h-3 text-orange-400" /> Admin
+                  </button>
+                </>
+              )}
             </div>
           </div>
         </div>

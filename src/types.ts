@@ -142,6 +142,8 @@ export interface SiteSettings {
   announcementText: string;
   announcementLink: string;
   announcementBtnText: string;
+  showAdminHeaderButton?: boolean;
+  showAdminFooterLink?: boolean;
   navItemsVisibility: {
     home: boolean;
     about: boolean;
@@ -169,6 +171,12 @@ export interface SiteSettings {
   showFooterCourses: boolean;
   showFooterServices: boolean;
   showFooterLegal: boolean;
+
+  // 2.5 Verification Certificate & Transcript Branding (Stamp, Signature, Authority)
+  certificateStampLogoUrl?: string;
+  certificateSignatureUrl?: string;
+  certificateRegistrarTitle?: string;
+  certificateSignerName?: string;
 
   // 3. Branding & Colors
   colors: {

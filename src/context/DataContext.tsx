@@ -17,6 +17,8 @@ export const defaultSiteSettings: SiteSettings = {
   announcementText: 'System Fully Functional • Admissions Open 2026',
   announcementLink: 'admission',
   announcementBtnText: 'Apply Now',
+  showAdminHeaderButton: false,
+  showAdminFooterLink: false,
   navItemsVisibility: {
     home: true,
     about: true,
@@ -42,6 +44,11 @@ export const defaultSiteSettings: SiteSettings = {
   showFooterCourses: true,
   showFooterServices: true,
   showFooterLegal: true,
+
+  certificateStampLogoUrl: '',
+  certificateSignatureUrl: '',
+  certificateRegistrarTitle: 'Authorized Registrar',
+  certificateSignerName: 'Controller Exams',
 
   colors: {
     primary: '#1d4ed8',

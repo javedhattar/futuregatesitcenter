@@ -23,6 +23,44 @@
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="Future Gates IT Center" />
     <meta name="twitter:description" content="Master practical technical skills, verify student certificates, and access IT services." />
+
+    <!-- Google Analytics (gtag.js) Boilerplate with GDPR Consent Mode v2 -->
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+
+      // 1. GDPR Compliance: Default all consent parameters to 'denied' prior to user approval
+      gtag('consent', 'default', {
+        'analytics_storage': 'denied',
+        'ad_storage': 'denied',
+        'ad_user_data': 'denied',
+        'ad_personalization': 'denied',
+        'wait_for_update': 500
+      });
+
+      // 2. Restore consent if user previously accepted cookies
+      try {
+        if (localStorage.getItem('fg_cookie_consent') === 'accepted') {
+          gtag('consent', 'update', {
+            'analytics_storage': 'granted',
+            'ad_storage': 'granted',
+            'ad_user_data': 'granted',
+            'ad_personalization': 'granted'
+          });
+        }
+      } catch (e) {
+        // Fallback for private browsing storage restrictions
+      }
+
+      gtag('js', new Date());
+
+      // 3. GA4 Configuration (Replace G-XXXXXXXXXX with your actual GA4 Measurement ID)
+      gtag('config', 'G-XXXXXXXXXX', {
+        'anonymize_ip': true,
+        'send_page_view': true
+      });
+    </script>
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
   </head>
   <body>
     <div id="root"></div>

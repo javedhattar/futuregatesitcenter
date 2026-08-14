@@ -193,11 +193,13 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
                     Disclaimer Notice
                   </button>
                 </li>
-                <li className="pt-2">
-                  <button onClick={onOpenAdmin} className="text-xs text-orange-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
-                    <Shield className="w-3.5 h-3.5" /> Staff Admin Dashboard
-                  </button>
-                </li>
+                {settings?.showAdminFooterLink === true && (
+                  <li className="pt-2">
+                    <button onClick={onOpenAdmin} className="text-xs text-orange-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
+                      <Shield className="w-3.5 h-3.5" /> Staff Admin Dashboard
+                    </button>
+                  </li>
+                )}
               </ul>
             </div>
           )}

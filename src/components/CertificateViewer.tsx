@@ -6,6 +6,8 @@
 import React from 'react';
 import { Award, CheckCircle2, Printer, ShieldCheck, Download, Share2 } from 'lucide-react';
 import { StudentResult } from '../types';
+import { useData } from '../context/DataContext';
+import { BrandLogo } from './BrandLogo';
 
 interface CertificateViewerProps {
   result: StudentResult;
@@ -13,9 +15,23 @@ interface CertificateViewerProps {
 }
 
 export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, onClose }) => {
+  const { data } = useData();
+  const settings = data.settings;
+
   const handlePrint = () => {
     window.print();
   };
+
+  const instituteName = settings?.instituteName || 'Future Gates I.T Center';
+  const tagline = settings?.tagline || 'Accredited Professional IT Training & Skill Certification Authority';
+  const address = settings?.contactInfo?.address || settings?.footerAddress || 'Punjab, Pakistan';
+  const email = settings?.contactInfo?.email || settings?.footerEmail || 'futuregatesitcenter@gmail.com';
+  const phone = settings?.contactInfo?.phone || settings?.headerPhone || '+92301-6775690';
+  
+  const customStamp = settings?.certificateStampLogoUrl;
+  const customSignature = settings?.certificateSignatureUrl;
+  const signerName = settings?.certificateSignerName || 'Controller Exams';
+  const registrarTitle = settings?.certificateRegistrarTitle || 'Authorized Registrar';
 
   return (
     <div className="space-y-6">
@@ -54,21 +70,24 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, on
         <div className="absolute bottom-0 left-0 w-16 h-16 border-b-8 border-l-8 border-brand-orange" />
         <div className="absolute bottom-0 right-0 w-16 h-16 border-b-8 border-r-8 border-brand-orange" />
 
-        {/* Certificate Header */}
+        {/* Certificate Header with Official Logo */}
         <div className="text-center space-y-3 border-b-2 border-slate-200 pb-6">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-full text-emerald-700 text-xs font-bold uppercase tracking-wider mb-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 border border-emerald-200 rounded-full text-emerald-700 text-xs font-bold uppercase tracking-wider mb-1">
             <ShieldCheck className="w-4 h-4 text-emerald-600" /> Officially Verified Record
           </div>
 
-          <h2 className="text-2xl sm:text-3xl font-black font-display text-slate-900 tracking-tight uppercase">
-            Future Gates I.T Center
-          </h2>
-          <p className="text-xs font-bold text-brand-orange uppercase tracking-widest font-mono">
-            Accredited Professional IT Training & Skill Certification Authority
-          </p>
-          <p className="text-[10px] text-slate-500">
-            Head Office: Punjab, Pakistan | Email: futuregatesitcenter@gmail.com | Helpline: +92301-6775690
-          </p>
+          <div className="flex flex-col items-center justify-center gap-2">
+            <BrandLogo size="lg" className="mx-auto my-1" />
+            <h2 className="text-2xl sm:text-3xl font-black font-display text-slate-900 tracking-tight uppercase">
+              {instituteName}
+            </h2>
+            <p className="text-xs font-bold text-brand-orange uppercase tracking-widest font-mono">
+              {tagline}
+            </p>
+            <p className="text-[10px] text-slate-500">
+              Campus: {address} | Email: {email} | Helpline: {phone}
+            </p>
+          </div>
         </div>
 
         {/* Title */}
@@ -174,21 +193,42 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, on
             <p className="font-mono font-semibold text-slate-700">{result.issueDate}</p>
           </div>
 
-          {/* Verification Badge/Seal */}
-          <div className="text-center flex flex-col items-center">
-            <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue-dark text-brand-orange flex flex-col items-center justify-center p-1 shadow-md border-2 border-brand-orange">
-              <Award className="w-6 h-6 text-brand-orange" />
-              <span className="text-[7px] text-white font-extrabold uppercase tracking-tighter">Verified</span>
-            </div>
-            <span className="text-[9px] font-bold text-slate-500 mt-1 uppercase">Official Stamp</span>
+          {/* Verification Badge/Official Stamp */}
+          <div className="text-center flex flex-col items-center justify-center">
+            {customStamp ? (
+              <div className="h-16 w-16 sm:h-20 sm:w-20 rounded-full p-1 border-2 border-brand-orange shadow-md bg-white flex items-center justify-center overflow-hidden">
+                <img
+                  src={customStamp}
+                  alt="Official Stamp"
+                  className="max-h-full max-w-full object-contain"
+                />
+              </div>
+            ) : (
+              <div className="w-16 h-16 rounded-full bg-gradient-to-br from-brand-blue to-brand-blue-dark text-brand-orange flex flex-col items-center justify-center p-1 shadow-md border-2 border-brand-orange">
+                <Award className="w-6 h-6 text-brand-orange" />
+                <span className="text-[7px] text-white font-extrabold uppercase tracking-tighter">Verified</span>
+              </div>
+            )}
+            <span className="text-[9px] font-bold text-slate-500 mt-1 uppercase tracking-wider">Official Seal / Stamp</span>
           </div>
 
+          {/* Controller / Registrar Electronic Signature */}
           <div className="text-right sm:text-right col-span-2 sm:col-span-1">
-            <div className="h-10 border-b border-slate-400 w-36 ml-auto mb-1 flex items-end justify-center">
-              <span className="text-slate-400 italic text-[11px] font-serif">Controller Exams</span>
+            <div className="min-h-12 border-b-2 border-slate-400 w-40 ml-auto mb-1 flex items-end justify-center pb-1 relative">
+              {customSignature ? (
+                <img
+                  src={customSignature}
+                  alt="Authorized Signature"
+                  className="max-h-12 max-w-full object-contain"
+                />
+              ) : (
+                <span className="text-blue-900 font-serif italic text-sm font-bold tracking-wider opacity-85 select-none">
+                  {signerName}
+                </span>
+              )}
             </div>
-            <p className="font-bold text-slate-800 text-[11px]">Authorized Registrar</p>
-            <p className="text-[9px] text-slate-500">Future Gates IT Center</p>
+            <p className="font-extrabold text-slate-900 text-[11px]">{registrarTitle}</p>
+            <p className="text-[9px] text-slate-500">{instituteName}</p>
           </div>
         </div>
       </div>

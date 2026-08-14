@@ -24,6 +24,14 @@ export const CookieBanner: React.FC<CookieBannerProps> = ({ onNavigateToCookies 
 
   const handleAccept = () => {
     localStorage.setItem('fg_cookie_consent', 'accepted');
+    if (typeof (window as unknown as { gtag?: (...args: unknown[]) => void }).gtag === 'function') {
+      (window as unknown as { gtag: (...args: unknown[]) => void }).gtag('consent', 'update', {
+        analytics_storage: 'granted',
+        ad_storage: 'granted',
+        ad_user_data: 'granted',
+        ad_personalization: 'granted',
+      });
+    }
     setIsVisible(false);
   };
 
