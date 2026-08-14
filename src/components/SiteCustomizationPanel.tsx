@@ -1537,6 +1537,96 @@ export const SiteCustomizationPanel: React.FC = () => {
               />
             </div>
 
+            {/* Google Maps Configuration */}
+            <div className="md:col-span-2 space-y-3 pt-2 border-t border-slate-100">
+              <div className="flex flex-col sm:flex-row justify-between sm:items-center gap-2">
+                <div>
+                  <label className="text-xs font-bold text-slate-800 flex items-center gap-1.5">
+                    <Globe className="w-4 h-4 text-blue-600" />
+                    Google Maps Embed iFrame / Link
+                  </label>
+                  <p className="text-[11px] text-slate-500">
+                    Paste either the complete <code className="bg-slate-100 px-1 py-0.5 rounded font-mono text-[10px]">&lt;iframe src="..."&gt;</code> code from Google Maps or direct embed URL. It will automatically extract and configure the map.
+                  </p>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    const officialEmbed = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6745.16018738322!2d72.34236961699489!3d32.29626569078067!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3921172b8c953429%3A0x4bc4326c6b7ff459!2sFuture%20Gates%20iT%20Center!5e0!3m2!1sen!2s!4v1786733912521!5m2!1sen!2s';
+                    setSettingsForm(prev => ({
+                      ...prev,
+                      contactInfo: {
+                        ...prev.contactInfo,
+                        googleMapsEmbedUrl: officialEmbed,
+                        googleMapsUrl: 'https://maps.google.com/?q=Future+Gates+iT+Center+Khushab'
+                      }
+                    }));
+                    showNotification('Set official Future Gates iT Center map embed link!');
+                  }}
+                  className="px-2.5 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-[11px] font-bold rounded-lg transition-all self-start sm:self-auto cursor-pointer"
+                >
+                  Reset to Official Campus Map
+                </button>
+              </div>
+
+              <textarea
+                rows={2}
+                placeholder='Paste <iframe src="https://www.google.com/maps/embed?..."></iframe> or embed URL'
+                value={settingsForm.contactInfo.googleMapsEmbedUrl || ''}
+                onChange={(e) => {
+                  let val = e.target.value.trim();
+                  // Check if full iframe code was pasted and extract src
+                  if (val.includes('<iframe') && val.includes('src=')) {
+                    const match = val.match(/src=["']([^"']+)["']/);
+                    if (match && match[1]) {
+                      val = match[1];
+                    }
+                  }
+                  setSettingsForm(prev => ({
+                    ...prev,
+                    contactInfo: { ...prev.contactInfo, googleMapsEmbedUrl: val }
+                  }));
+                }}
+                className="w-full text-xs font-mono p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+              />
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div>
+                  <label className="text-xs font-bold text-slate-800 block mb-1">Direct Google Maps Link (for "Get Directions" button)</label>
+                  <input
+                    type="text"
+                    placeholder="https://maps.google.com/?q=Future+Gates+iT+Center"
+                    value={settingsForm.contactInfo.googleMapsUrl || ''}
+                    onChange={(e) => setSettingsForm(prev => ({
+                      ...prev,
+                      contactInfo: { ...prev.contactInfo, googleMapsUrl: e.target.value }
+                    }))}
+                    className="w-full text-xs p-2.5 rounded-xl border border-slate-200 focus:ring-2 focus:ring-blue-500 focus:outline-none"
+                  />
+                </div>
+              </div>
+
+              {/* Map Live Preview */}
+              {settingsForm.contactInfo.googleMapsEmbedUrl && (
+                <div className="space-y-1.5 pt-2">
+                  <span className="text-[11px] font-bold text-slate-600 block">Map Preview:</span>
+                  <div className="h-44 rounded-xl overflow-hidden border border-slate-200 bg-slate-100">
+                    <iframe
+                      title="Map Preview"
+                      src={settingsForm.contactInfo.googleMapsEmbedUrl}
+                      width="100%"
+                      height="100%"
+                      style={{ border: 0 }}
+                      allowFullScreen={false}
+                      loading="lazy"
+                      referrerPolicy="strict-origin-when-cross-origin"
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+
             <div className="md:col-span-2">
               <label className="text-xs font-bold text-slate-800 block mb-1">Emergency Message / Verification Notice</label>
               <input

@@ -225,9 +225,17 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
             <ul className="space-y-3 text-xs">
               <li className="flex items-start gap-2.5">
                 <MapPin className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
-                <span className="text-slate-400 leading-relaxed">
-                  {footerAddress}
-                </span>
+                <div>
+                  <span className="text-slate-400 leading-relaxed block">
+                    {footerAddress}
+                  </span>
+                  <button
+                    onClick={() => handleLinkClick('contact')}
+                    className="text-[11px] text-orange-400 hover:text-orange-300 font-semibold underline mt-0.5 inline-flex items-center gap-1 cursor-pointer"
+                  >
+                    View Official Campus Map →
+                  </button>
+                </div>
               </li>
               <li className="flex items-center gap-2.5">
                 <div className="w-5 h-5 rounded-full bg-[#25D366]/20 flex items-center justify-center shrink-0">

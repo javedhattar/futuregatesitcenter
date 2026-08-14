@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, MessageSquare } from 'lucide-react';
+import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, MessageSquare, ExternalLink, Navigation } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
@@ -27,6 +27,11 @@ export const ContactView: React.FC = () => {
   const whatsappNumber = settings.headerWhatsapp || contact.whatsapp || '923016775690';
   const addressDisplay = settings.footerAddress || contact.address || 'Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan';
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=Hello%20Future%20Gates%20IT%20Center%2C%20I%20have%20an%20inquiry.`;
+  
+  // Official Future Gates IT Center Google Map Embed Link
+  const defaultEmbedUrl = 'https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d6745.16018738322!2d72.34236961699489!3d32.29626569078067!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3921172b8c953429%3A0x4bc4326c6b7ff459!2sFuture%20Gates%20iT%20Center!5e0!3m2!1sen!2s!4v1786733912521!5m2!1sen!2s';
+  const mapEmbedUrl = settings.contactInfo?.googleMapsEmbedUrl || contact.mapEmbedUrl || defaultEmbedUrl;
+  const directMapsUrl = settings.contactInfo?.googleMapsUrl || 'https://maps.google.com/?q=Future+Gates+iT+Center+Khushab';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -311,19 +316,49 @@ export const ContactView: React.FC = () => {
         </div>
       </section>
 
-      {/* Map Section */}
+      {/* Official Google Map Section */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="bg-slate-200 rounded-3xl overflow-hidden shadow-inner border border-slate-300 h-72 relative">
-          <iframe
-            title="Future Gates IT Center Location"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d216500.0!2d72.35!3d32.30!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x392176378b277b09%3A0x6b447477!2sKhushab%2C%20Punjab%2C%20Pakistan!5e0!3m2!1sen!2s!4v1680000000000!5m2!1sen!2s"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen={false}
-            loading="lazy"
-            referrerPolicy="no-referrer-when-downgrade"
-          />
+        <div className="bg-white rounded-3xl overflow-hidden shadow-xl border border-slate-200">
+          <div className="p-5 sm:p-6 bg-slate-900 text-white flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div className="space-y-1">
+              <div className="flex items-center gap-2">
+                <span className="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Live Campus Map</span>
+              </div>
+              <h3 className="text-lg sm:text-xl font-bold font-display text-white flex items-center gap-2">
+                <MapPin className="w-5 h-5 text-brand-orange" />
+                Future Gates iT Center — Main Campus
+              </h3>
+              <p className="text-xs text-slate-300">
+                {addressDisplay}
+              </p>
+            </div>
+
+            <a
+              href={directMapsUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="px-4 py-2.5 bg-brand-orange hover:bg-brand-orange-dark text-white text-xs font-bold uppercase tracking-wider rounded-xl flex items-center gap-2 transition-all shadow-md shrink-0 cursor-pointer"
+            >
+              <Navigation className="w-4 h-4" />
+              <span>Get Live Directions</span>
+              <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+            </a>
+          </div>
+
+          <div className="w-full h-80 sm:h-96 md:h-[450px] relative bg-slate-100">
+            <iframe
+              title="Future Gates iT Center Official Location"
+              src={mapEmbedUrl}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen={true}
+              loading="lazy"
+              referrerPolicy="strict-origin-when-cross-origin"
+              className="w-full h-full"
+            />
+          </div>
         </div>
       </section>
     </div>

@@ -226,6 +226,7 @@ export interface SiteSettings {
     email: string;
     address: string;
     googleMapsUrl: string;
+    googleMapsEmbedUrl?: string;
     businessHours: string;
     emergencyMessage: string;
   };
