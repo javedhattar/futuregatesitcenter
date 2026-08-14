@@ -7,8 +7,8 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { BookOpen, Award, ShieldCheck, ArrowRight, Star, Flame, Globe, CheckCircle2, Phone, GraduationCap, ChevronRight } from 'lucide-react';
 import { useData } from '../context/DataContext';
-import { TESTIMONIALS } from '../data';
 import { MentorSection } from '../components/MentorSection';
+import { TestimonialCarousel } from '../components/TestimonialCarousel';
 
 interface HomeViewProps {
   setTab: (tab: string) => void;
@@ -292,34 +292,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
       {/* Meet Our Mentor Section */}
       <MentorSection onOpenEnrollment={() => onOpenEnrollment()} />
 
-      {/* Testimonials */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-xl mx-auto space-y-2 mb-8">
-          <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">Graduates Feedback</span>
-          <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-display">
-            Student Success Stories
-          </h2>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {TESTIMONIALS.map((t) => (
-            <div key={t.id} className="bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm space-y-4 flex flex-col justify-between">
-              <p className="text-xs text-slate-600 leading-relaxed italic">
-                "{t.feedback}"
-              </p>
-              <div className="pt-3 border-t border-slate-100 flex items-center justify-between">
-                <div>
-                  <h4 className="font-bold text-xs text-slate-900">{t.name}</h4>
-                  <p className="text-[10px] text-slate-500">{t.role}</p>
-                </div>
-                <span className="text-[10px] font-bold text-blue-600 bg-blue-50 px-2.5 py-1 rounded">
-                  {t.courseOrService}
-                </span>
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {/* Student Success Stories & Testimonials Carousel */}
+      <TestimonialCarousel
+        onOpenEnrollment={(courseId) => onOpenEnrollment(courseId)}
+        onNavigateVerification={() => setTab('verification')}
+      />
     </div>
   );
 };

@@ -724,32 +724,64 @@ export const TESTIMONIALS: Testimonial[] = [
     id: 't1',
     name: 'Muhammad Farhan',
     role: 'Full Stack Engineer at TechSoft',
-    courseOrService: 'Web & App Development Student',
-    feedback: 'Trained from Future Gates I.T Center and verifiable on their official online system. My career transformed completely! The instructors are real-world engineers, and the certification check helped me clear technical job interviews immediately. It is truly the premier technical training institute.',
+    courseOrService: 'Web & App Development',
+    feedback: 'Trained from Future Gates IT Center and verifiable on their official online system. My career transformed completely! The instructors are real-world engineers, and the certification check helped me clear technical job interviews immediately.',
     rating: 5
   },
   {
     id: 't2',
     name: 'Zainab Rehman',
-    role: 'Lead UI Designer at DevStudio',
-    courseOrService: 'UI/UX Design Program',
-    feedback: 'The curriculum is super practical! We designed actual client wireframes and interactive prototypes. The institute verified my certificate online, and employers trusted it right away.',
+    role: 'Lead UI/UX Designer at DevStudio',
+    courseOrService: 'Graphic Design & UI/UX',
+    feedback: 'The curriculum is super practical! We designed actual client wireframes, brand vectors, and interactive Figma prototypes. The institute verified my certificate online, and employers trusted it right away.',
     rating: 5
   },
   {
     id: 't3',
-    name: 'Tariq Mahmood',
-    role: 'CTO, RetailHub Pakistan',
-    courseOrService: 'E-commerce Web Development Client',
-    feedback: 'We outsourced our e-commerce platform to Future Gates IT Center services unit. They engineered a blazing-fast React web portal with secure administrative dashboards. Exceptional coding quality and prompt support!',
+    name: 'Hamza Bilal',
+    role: 'AI Automation Consultant & Top-Rated Freelancer',
+    courseOrService: 'Artificial Intelligence & Tools',
+    feedback: 'The AI & Tools masterclass under Sir Javed Hattar opened huge opportunities for me. I learned prompt engineering, workflow automations, and landed international clients on Upwork earning in USD within weeks!',
     rating: 5
   },
   {
     id: 't4',
     name: 'Asma Bibi',
-    role: 'Operations Lead at Global Logistics',
+    role: 'Operations Coordinator at Global Logistics',
     courseOrService: 'Computer Information Technology (CIT)',
-    feedback: 'The CIT diploma gave me immense confidence. Excel modeling, document design, and office automation are practical. I landed a high-paying administrative coordinator role right after completion!',
+    feedback: 'The CIT diploma gave me immense confidence. Advanced Excel modeling, document design, and office automation are practical. I landed a high-paying administrative coordinator role right after completion!',
+    rating: 5
+  },
+  {
+    id: 't5',
+    name: 'Usman Ghani',
+    role: 'WordPress Developer & Agency Owner',
+    courseOrService: 'WordPress Development',
+    feedback: 'From knowing zero coding to building custom e-commerce websites and WooCommerce portals. Future Gates IT Center gave me hands-on project labs and step-by-step freelancing mentorship.',
+    rating: 5
+  },
+  {
+    id: 't6',
+    name: 'Fatima Noor',
+    role: 'Content Creator & Commercial Video Editor',
+    courseOrService: 'Video Editing & YouTube Automation',
+    feedback: 'The video editing lab equipped me with Premiere Pro and CapCut desktop mastery. I now manage 3 YouTube channels and edit viral reels for international digital marketing agencies.',
+    rating: 5
+  },
+  {
+    id: 't7',
+    name: 'Tariq Mahmood',
+    role: 'CTO, RetailHub Pakistan',
+    courseOrService: 'E-Commerce Software Solutions',
+    feedback: 'We outsourced our e-commerce platform to Future Gates IT Center agency unit. They engineered a blazing-fast web portal with secure administrative dashboards. Exceptional coding quality and prompt support!',
+    rating: 5
+  },
+  {
+    id: 't8',
+    name: 'Bilal Ahmed',
+    role: 'Digital Marketing Specialist',
+    courseOrService: 'Digital Marketing & SEO',
+    feedback: 'Real ad budget execution and live SEO ranking audits! I learned Meta Ads, TikTok ads, and Google Ads management from scratch. Best technical institute in Khushab and Punjab.',
     rating: 5
   }
 ];

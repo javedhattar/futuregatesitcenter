@@ -35,6 +35,7 @@ export const SiteCustomizationPanel: React.FC = () => {
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
   const [newMediaCat, setNewMediaCat] = useState<MediaCategory>('General');
   const [uploadingMedia, setUploadingMedia] = useState(false);
+  const [uploadingLogoField, setUploadingLogoField] = useState<string | null>(null);
 
   useEffect(() => {
     if (data.settings) {
@@ -99,37 +100,46 @@ export const SiteCustomizationPanel: React.FC = () => {
       return;
     }
 
+    setUploadingLogoField(targetField);
+
     const reader = new FileReader();
     reader.onloadend = async () => {
-      const base64 = reader.result as string;
-      const uploadedUrl = await uploadImage(base64);
-      const finalUrl = uploadedUrl || base64;
-      
-      if (finalUrl) {
-        const updated = {
-          ...(data.settings || defaultSiteSettings),
-          ...settingsForm,
-          [targetField]: finalUrl
-        };
-        setSettingsForm(updated);
-        const ok = await saveSettings(updated);
-        if (ok) {
-          showNotification(`Logo photo uploaded and updated instantly!`);
+      try {
+        const base64 = reader.result as string;
+        const uploadedUrl = await uploadImage(base64);
+        const finalUrl = uploadedUrl || base64;
+        
+        if (finalUrl) {
+          const updated = {
+            ...(data.settings || defaultSiteSettings),
+            ...settingsForm,
+            [targetField]: finalUrl
+          };
+          setSettingsForm(updated);
+          const ok = await saveSettings(updated);
+          if (ok) {
+            showNotification(`Logo photo uploaded and updated instantly!`);
+          } else {
+            showNotification(`Logo saved in local browser storage.`, 'success');
+          }
+          // Also register in media library
+          saveMediaItem({
+            filename: file.name,
+            url: finalUrl,
+            category: 'Logos',
+            size: `${Math.round(file.size / 1024)} KB`,
+            dimensions: 'Auto'
+          }, base64);
         } else {
-          showNotification(`Logo saved in local browser storage.`, 'success');
+          showNotification('Failed to process image.', 'error');
         }
-        // Also register in media library
-        saveMediaItem({
-          filename: file.name,
-          url: finalUrl,
-          category: 'Logos',
-          size: `${Math.round(file.size / 1024)} KB`,
-          dimensions: 'Auto'
-        }, base64);
-      } else {
-        showNotification('Failed to process image.', 'error');
+      } catch (err) {
+        console.error('Logo upload error:', err);
+        showNotification('Failed to process image upload.', 'error');
+      } finally {
+        setUploadingLogoField(null);
+        e.target.value = '';
       }
-      e.target.value = '';
     };
     reader.readAsDataURL(file);
   };
@@ -310,9 +320,11 @@ export const SiteCustomizationPanel: React.FC = () => {
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-800">Desktop Header Logo</label>
-                  {settingsForm.headerLogoUrl && (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  <label htmlFor="file-headerLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Desktop Header Logo</label>
+                  {settingsForm.headerLogoUrl ? (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
                   )}
                 </div>
                 <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
@@ -321,18 +333,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                   ) : (
                     <span className="text-[11px] text-slate-400 font-medium">Using Default Seal</span>
                   )}
+                  {uploadingLogoField === 'headerLogoUrl' && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                      <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      Uploading...
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
-                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                  <label
+                    htmlFor="file-headerLogoUrl"
+                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                  >
                     <Upload className="w-3.5 h-3.5" />
-                    Upload
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')} />
+                    {uploadingLogoField === 'headerLogoUrl' ? 'Uploading...' : 'Upload Logo'}
+                    <input
+                      id="file-headerLogoUrl"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')}
+                    />
                   </label>
                   {settingsForm.headerLogoUrl && (
                     <button
                       type="button"
                       onClick={() => handleQuickSaveLogoField('headerLogoUrl', '')}
-                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                      className="px-2.5 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer border border-red-200"
+                      title="Reset to default seal"
                     >
                       Reset
                     </button>
@@ -362,9 +391,11 @@ export const SiteCustomizationPanel: React.FC = () => {
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-800">Mobile Header Logo</label>
-                  {settingsForm.mobileLogoUrl && (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  <label htmlFor="file-mobileLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Mobile Header Logo</label>
+                  {settingsForm.mobileLogoUrl ? (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Auto</span>
                   )}
                 </div>
                 <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
@@ -373,18 +404,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                   ) : (
                     <span className="text-[11px] text-slate-400 font-medium">Same as Desktop</span>
                   )}
+                  {uploadingLogoField === 'mobileLogoUrl' && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                      <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      Uploading...
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
-                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                  <label
+                    htmlFor="file-mobileLogoUrl"
+                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                  >
                     <Upload className="w-3.5 h-3.5" />
-                    Upload
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')} />
+                    {uploadingLogoField === 'mobileLogoUrl' ? 'Uploading...' : 'Upload'}
+                    <input
+                      id="file-mobileLogoUrl"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')}
+                    />
                   </label>
                   {settingsForm.mobileLogoUrl && (
                     <button
                       type="button"
                       onClick={() => handleQuickSaveLogoField('mobileLogoUrl', '')}
-                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                      className="px-2.5 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer border border-red-200"
+                      title="Reset to desktop logo"
                     >
                       Reset
                     </button>
@@ -414,9 +462,11 @@ export const SiteCustomizationPanel: React.FC = () => {
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-800">Footer Logo (Light)</label>
-                  {settingsForm.footerLogoUrl && (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  <label htmlFor="file-footerLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Footer Logo (Light)</label>
+                  {settingsForm.footerLogoUrl ? (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Auto</span>
                   )}
                 </div>
                 <div className="h-20 bg-slate-900 rounded-lg border border-slate-800 p-2 flex items-center justify-center relative overflow-hidden">
@@ -425,18 +475,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                   ) : (
                     <span className="text-[11px] text-slate-400 font-medium">Same as Header</span>
                   )}
+                  {uploadingLogoField === 'footerLogoUrl' && (
+                    <div className="absolute inset-0 bg-slate-900/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-400">
+                      <div className="w-3.5 h-3.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
+                      Uploading...
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
-                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                  <label
+                    htmlFor="file-footerLogoUrl"
+                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                  >
                     <Upload className="w-3.5 h-3.5" />
-                    Upload
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')} />
+                    {uploadingLogoField === 'footerLogoUrl' ? 'Uploading...' : 'Upload'}
+                    <input
+                      id="file-footerLogoUrl"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')}
+                    />
                   </label>
                   {settingsForm.footerLogoUrl && (
                     <button
                       type="button"
                       onClick={() => handleQuickSaveLogoField('footerLogoUrl', '')}
-                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                      className="px-2.5 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer border border-red-200"
+                      title="Reset to header logo"
                     >
                       Reset
                     </button>
@@ -466,9 +533,11 @@ export const SiteCustomizationPanel: React.FC = () => {
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label className="text-xs font-bold text-slate-800">Favicon Mark</label>
-                  {settingsForm.faviconUrl && (
-                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded">Custom</span>
+                  <label htmlFor="file-faviconUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Favicon Mark</label>
+                  {settingsForm.faviconUrl ? (
+                    <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
                   )}
                 </div>
                 <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
@@ -477,18 +546,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                   ) : (
                     <span className="text-[11px] text-slate-400 font-medium">Default Seal</span>
                   )}
+                  {uploadingLogoField === 'faviconUrl' && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                      <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      Uploading...
+                    </div>
+                  )}
                 </div>
                 <div className="flex gap-2">
-                  <label className="flex-1 px-3 py-1.5 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1">
+                  <label
+                    htmlFor="file-faviconUrl"
+                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                  >
                     <Upload className="w-3.5 h-3.5" />
-                    Upload
-                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'faviconUrl')} />
+                    {uploadingLogoField === 'faviconUrl' ? 'Uploading...' : 'Upload'}
+                    <input
+                      id="file-faviconUrl"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'faviconUrl')}
+                    />
                   </label>
                   {settingsForm.faviconUrl && (
                     <button
                       type="button"
                       onClick={() => handleQuickSaveLogoField('faviconUrl', '')}
-                      className="px-2.5 py-1.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer"
+                      className="px-2.5 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-lg cursor-pointer border border-red-200"
+                      title="Reset to default favicon"
                     >
                       Reset
                     </button>
@@ -880,11 +966,13 @@ export const SiteCustomizationPanel: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="text-xs font-bold text-slate-900 block">Official Seal / Stamp</label>
+                    <label htmlFor="file-cert-stamp" className="text-xs font-bold text-slate-900 block cursor-pointer">Official Seal / Stamp</label>
                     <span className="text-[11px] text-slate-500">Appears in the center of student transcripts and certificates</span>
                   </div>
-                  {settingsForm.certificateStampLogoUrl && (
+                  {settingsForm.certificateStampLogoUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
                   )}
                 </div>
 
@@ -903,24 +991,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                       <span className="text-[11px] text-slate-400 font-semibold">Using Default Future Gates Verified Badge</span>
                     </div>
                   )}
+                  {uploadingLogoField === 'certificateStampLogoUrl' && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-orange-600">
+                      <div className="w-4 h-4 border-2 border-orange-600 border-t-transparent rounded-full animate-spin" />
+                      Uploading Stamp...
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-2">
-                  <label className="flex-1 px-4 py-2 bg-orange-50 hover:bg-orange-100 text-orange-600 text-center rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-orange-200">
+                  <label
+                    htmlFor="file-cert-stamp"
+                    className="flex-1 px-4 py-2.5 bg-orange-50 hover:bg-orange-100 text-orange-600 text-center rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-orange-200"
+                  >
                     <Upload className="w-4 h-4" />
-                    Upload Stamp Image (PNG/JPG)
+                    {uploadingLogoField === 'certificateStampLogoUrl' ? 'Uploading Stamp...' : 'Upload Stamp Image'}
                     <input
+                      id="file-cert-stamp"
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => handleLogoUpload(e, 'certificateStampLogoUrl' as any)}
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'certificateStampLogoUrl')}
                     />
                   </label>
                   {settingsForm.certificateStampLogoUrl && (
                     <button
                       type="button"
-                      onClick={() => handleQuickSaveLogoField('certificateStampLogoUrl' as any, '')}
-                      className="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-xl cursor-pointer border border-red-200"
+                      onClick={() => handleQuickSaveLogoField('certificateStampLogoUrl', '')}
+                      className="px-3 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-xl cursor-pointer border border-red-200"
                     >
                       Reset
                     </button>
@@ -938,7 +1037,7 @@ export const SiteCustomizationPanel: React.FC = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => handleQuickSaveLogoField('certificateStampLogoUrl' as any, settingsForm.certificateStampLogoUrl || '')}
+                  onClick={() => handleQuickSaveLogoField('certificateStampLogoUrl', settingsForm.certificateStampLogoUrl || '')}
                   className="px-3 py-2 bg-slate-900 hover:bg-orange-600 text-white text-xs font-bold rounded-xl cursor-pointer shrink-0 transition-colors"
                 >
                   Apply
@@ -951,11 +1050,13 @@ export const SiteCustomizationPanel: React.FC = () => {
               <div className="space-y-3">
                 <div className="flex justify-between items-center">
                   <div>
-                    <label className="text-xs font-bold text-slate-900 block">Authorized E-Signature</label>
+                    <label htmlFor="file-cert-signature" className="text-xs font-bold text-slate-900 block cursor-pointer">Authorized E-Signature</label>
                     <span className="text-[11px] text-slate-500">Appears above the Registrar authority title (transparent PNG recommended)</span>
                   </div>
-                  {settingsForm.certificateSignatureUrl && (
+                  {settingsForm.certificateSignatureUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-200">Custom Active</span>
+                  ) : (
+                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
                   )}
                 </div>
 
@@ -974,24 +1075,35 @@ export const SiteCustomizationPanel: React.FC = () => {
                       <span className="text-[11px] text-slate-400 font-semibold">Using Default Calligraphic Signature Text</span>
                     </div>
                   )}
+                  {uploadingLogoField === 'certificateSignatureUrl' && (
+                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                      <div className="w-4 h-4 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
+                      Uploading Signature...
+                    </div>
+                  )}
                 </div>
 
                 <div className="flex gap-2">
-                  <label className="flex-1 px-4 py-2 bg-blue-50 hover:bg-blue-100 text-blue-600 text-center rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200">
+                  <label
+                    htmlFor="file-cert-signature"
+                    className="flex-1 px-4 py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-center rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                  >
                     <Upload className="w-4 h-4" />
-                    Upload Signature Image (PNG)
+                    {uploadingLogoField === 'certificateSignatureUrl' ? 'Uploading Signature...' : 'Upload Signature Image'}
                     <input
+                      id="file-cert-signature"
                       type="file"
                       accept="image/*"
                       className="hidden"
-                      onChange={(e) => handleLogoUpload(e, 'certificateSignatureUrl' as any)}
+                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
+                      onChange={(e) => handleLogoUpload(e, 'certificateSignatureUrl')}
                     />
                   </label>
                   {settingsForm.certificateSignatureUrl && (
                     <button
                       type="button"
-                      onClick={() => handleQuickSaveLogoField('certificateSignatureUrl' as any, '')}
-                      className="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-xl cursor-pointer border border-red-200"
+                      onClick={() => handleQuickSaveLogoField('certificateSignatureUrl', '')}
+                      className="px-3 py-2.5 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-xl cursor-pointer border border-red-200"
                     >
                       Reset
                     </button>
@@ -1009,7 +1121,7 @@ export const SiteCustomizationPanel: React.FC = () => {
                 />
                 <button
                   type="button"
-                  onClick={() => handleQuickSaveLogoField('certificateSignatureUrl' as any, settingsForm.certificateSignatureUrl || '')}
+                  onClick={() => handleQuickSaveLogoField('certificateSignatureUrl', settingsForm.certificateSignatureUrl || '')}
                   className="px-3 py-2 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer shrink-0 transition-colors"
                 >
                   Apply

@@ -10,13 +10,35 @@ import { Course } from '../types';
 
 interface CoursesViewProps {
   onOpenEnrollment: (courseId?: string) => void;
+  initialSearchQuery?: string;
+  initialSelectedCourse?: Course | null;
+  onClearInitialSelection?: () => void;
 }
 
-export const CoursesView: React.FC<CoursesViewProps> = ({ onOpenEnrollment }) => {
+export const CoursesView: React.FC<CoursesViewProps> = ({ 
+  onOpenEnrollment,
+  initialSearchQuery = '',
+  initialSelectedCourse = null,
+  onClearInitialSelection
+}) => {
   const { data } = useData();
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState(initialSearchQuery);
   const [selectedCategory, setSelectedCategory] = useState<string>('All');
-  const [detailCourse, setDetailCourse] = useState<Course | null>(null);
+  const [detailCourse, setDetailCourse] = useState<Course | null>(initialSelectedCourse);
+
+  // Sync if props change
+  React.useEffect(() => {
+    if (initialSearchQuery) {
+      setSearch(initialSearchQuery);
+      setSelectedCategory('All');
+    }
+  }, [initialSearchQuery]);
+
+  React.useEffect(() => {
+    if (initialSelectedCourse) {
+      setDetailCourse(initialSelectedCourse);
+    }
+  }, [initialSelectedCourse]);
 
   const categories = ['All', 'Development', 'Design', 'Technical', 'Short Courses', 'Artificial Intelligence'];
 
@@ -169,7 +191,10 @@ export const CoursesView: React.FC<CoursesViewProps> = ({ onOpenEnrollment }) =>
           <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-8">
             <div className="bg-brand-blue text-white p-6 relative">
               <button
-                onClick={() => setDetailCourse(null)}
+                onClick={() => {
+                  setDetailCourse(null);
+                  onClearInitialSelection?.();
+                }}
                 className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
               >
                 <X className="w-5 h-5" />

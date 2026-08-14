@@ -11,6 +11,7 @@ import { EnrollmentModal } from './components/EnrollmentModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { CookieBanner } from './components/CookieBanner';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { Course, BlogPost } from './types';
 
 import { HomeView } from './pages/HomeView';
 import { AboutView } from './pages/AboutView';
@@ -52,6 +53,12 @@ export default function App() {
   const [isEnrollmentOpen, setIsEnrollmentOpen] = useState(false);
   const [enrollCourseId, setEnrollCourseId] = useState<string | undefined>(undefined);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
+
+  // Global search navigation states
+  const [courseSearchQuery, setCourseSearchQuery] = useState<string>('');
+  const [selectedCourseForDetail, setSelectedCourseForDetail] = useState<Course | null>(null);
+  const [blogSearchQuery, setBlogSearchQuery] = useState<string>('');
+  const [selectedBlogForDetail, setSelectedBlogForDetail] = useState<BlogPost | null>(null);
 
   // Sync state with URL Hash and Pathname for seamless SPA & Admin routing
   useEffect(() => {
@@ -108,6 +115,30 @@ export default function App() {
     setIsEnrollmentOpen(true);
   };
 
+  const handleSelectCourseFromSearch = (course: Course) => {
+    setSelectedCourseForDetail(course);
+    setCourseSearchQuery('');
+    handleSetTab('courses');
+  };
+
+  const handleSelectBlogFromSearch = (blog: BlogPost) => {
+    setSelectedBlogForDetail(blog);
+    setBlogSearchQuery('');
+    handleSetTab('blogs');
+  };
+
+  const handleSearchCoursesTab = (query: string) => {
+    setCourseSearchQuery(query);
+    setSelectedCourseForDetail(null);
+    handleSetTab('courses');
+  };
+
+  const handleSearchBlogsTab = (query: string) => {
+    setBlogSearchQuery(query);
+    setSelectedBlogForDetail(null);
+    handleSetTab('blogs');
+  };
+
   return (
     <DataProvider>
       <SiteHeadSync />
@@ -118,6 +149,10 @@ export default function App() {
           setTab={handleSetTab}
           onOpenEnrollment={() => handleOpenEnrollment()}
           onOpenAdmin={handleOpenAdmin}
+          onSelectCourse={handleSelectCourseFromSearch}
+          onSelectBlog={handleSelectBlogFromSearch}
+          onSearchCoursesTab={handleSearchCoursesTab}
+          onSearchBlogsTab={handleSearchBlogsTab}
         />
 
         {/* Main View Router */}
@@ -139,6 +174,9 @@ export default function App() {
           {currentTab === 'courses' && (
             <CoursesView
               onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+              initialSearchQuery={courseSearchQuery}
+              initialSelectedCourse={selectedCourseForDetail}
+              onClearInitialSelection={() => setSelectedCourseForDetail(null)}
             />
           )}
 
@@ -146,7 +184,13 @@ export default function App() {
 
           {currentTab === 'verification' && <VerificationView />}
 
-          {currentTab === 'blogs' && <BlogsView />}
+          {currentTab === 'blogs' && (
+            <BlogsView 
+              initialSearchQuery={blogSearchQuery}
+              initialSelectedBlog={selectedBlogForDetail}
+              onClearInitialSelection={() => setSelectedBlogForDetail(null)}
+            />
+          )}
 
           {currentTab === 'contact' && <ContactView />}
 

@@ -3,7 +3,7 @@ import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
 import { createServer as createViteServer } from 'vite';
-import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS } from './src/data';
+import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS, TESTIMONIALS } from './src/data';
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
@@ -251,7 +251,8 @@ if (!fs.existsSync(DB_FILE)) {
     mentor: defaultMentorConfig,
     admissions: [],
     settings: defaultSiteSettings,
-    media: defaultMedia
+    media: defaultMedia,
+    testimonials: TESTIMONIALS
   };
   fs.writeFileSync(DB_FILE, JSON.stringify(initialData, null, 2));
 }
@@ -263,6 +264,9 @@ function getDB() {
     const parsed = JSON.parse(data);
     if (!parsed.mentor) {
       parsed.mentor = defaultMentorConfig;
+    }
+    if (!parsed.testimonials || !Array.isArray(parsed.testimonials) || parsed.testimonials.length === 0) {
+      parsed.testimonials = TESTIMONIALS;
     }
     if (!parsed.settings) {
       parsed.settings = defaultSiteSettings;
@@ -298,7 +302,8 @@ function getDB() {
       admissions: [],
       inquiries: [],
       settings: defaultSiteSettings,
-      media: defaultMedia
+      media: defaultMedia,
+      testimonials: TESTIMONIALS
     };
   }
 }
@@ -480,29 +485,44 @@ app.post('/api/auth/change-password', (req, res) => {
   }
 });
 
-// Image Upload Endpoint (handles base64 image strings)
+// Image Upload Endpoint (handles base64 image strings with full format support)
 app.post('/api/upload', (req, res) => {
   if (!verifyAuth(req)) {
     return res.status(401).json({ success: false, error: 'Unauthorized' });
   }
 
-  const { image, filename: requestedName } = req.body;
-  if (!image) {
+  const { image } = req.body;
+  if (!image || typeof image !== 'string') {
     return res.status(400).json({ success: false, error: 'No image data provided' });
+  }
+
+  // In serverless / read-only environment, return base64 URL directly
+  if (process.env.VERCEL) {
+    return res.json({ success: true, url: image });
   }
 
   try {
     let base64Data = image;
     let ext = 'png';
 
-    if (image.startsWith('data:image')) {
-      const matches = image.match(/^data:image\/([a-zA-Z0-9]+);base64,(.+)$/);
-      if (matches && matches.length === 3) {
-        ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
-        base64Data = matches[2];
+    if (image.includes(';base64,')) {
+      const parts = image.split(';base64,');
+      const header = parts[0];
+      base64Data = parts[1];
+
+      const match = header.match(/data:image\/([a-zA-Z0-9\+\-\.]+)/);
+      if (match && match[1]) {
+        const rawExt = match[1].toLowerCase();
+        if (rawExt === 'jpeg') ext = 'jpg';
+        else if (rawExt === 'svg+xml') ext = 'svg';
+        else if (rawExt === 'x-icon' || rawExt === 'vnd.microsoft.icon') ext = 'ico';
+        else if (rawExt === 'webp') ext = 'webp';
+        else if (rawExt === 'gif') ext = 'gif';
+        else ext = rawExt;
       }
     }
 
+    base64Data = base64Data.replace(/[\r\n\s]/g, '');
     const filename = `img_${Date.now()}_${Math.floor(Math.random() * 1000)}.${ext}`;
     const filePath = path.join(UPLOADS_DIR, filename);
 
@@ -512,8 +532,8 @@ app.post('/api/upload', (req, res) => {
     const publicUrl = `/uploads/${filename}`;
     return res.json({ success: true, url: publicUrl, filename });
   } catch (err) {
-    console.error('Upload failed', err);
-    return res.status(500).json({ success: false, error: 'Failed to save image' });
+    console.error('Upload failed, falling back to base64 URL', err);
+    return res.json({ success: true, url: image });
   }
 });
 
@@ -785,40 +805,6 @@ app.post('/api/settings/reset', (req, res) => {
   res.json({ success: true, settings: db.settings });
 });
 
-/* --- Direct Image Upload API --- */
-app.post('/api/upload', (req, res) => {
-  if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
-  const { image } = req.body;
-  if (!image) {
-    return res.status(400).json({ success: false, error: 'No image provided' });
-  }
-
-  // If serverless environment (e.g. Vercel), return base64 image data URL directly
-  if (process.env.VERCEL) {
-    return res.json({ success: true, url: image });
-  }
-
-  try {
-    let base64Data = image;
-    let ext = 'png';
-    if (image.startsWith('data:image')) {
-      const matches = image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
-      if (matches && matches.length === 3) {
-        ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
-        base64Data = matches[2];
-      }
-    }
-    const filename = `upload_${Date.now()}.${ext}`;
-    const filePath = path.join(UPLOADS_DIR, filename);
-    const buffer = Buffer.from(base64Data, 'base64');
-    fs.writeFileSync(filePath, buffer);
-    res.json({ success: true, url: `/uploads/${filename}` });
-  } catch (err) {
-    console.error('Image upload save error:', err);
-    res.json({ success: true, url: image }); // Fallback to base64 data URL
-  }
-});
-
 /* --- Media Management API --- */
 app.get('/api/media', (req, res) => {
   const db = getDB();
@@ -838,13 +824,22 @@ app.post('/api/media', (req, res) => {
     try {
       let base64Data = base64Image;
       let ext = 'png';
-      if (base64Image.startsWith('data:image')) {
-        const matches = base64Image.match(/^data:image\/([a-zA-Z0-9+]+);base64,(.+)$/);
-        if (matches && matches.length === 3) {
-          ext = matches[1] === 'jpeg' ? 'jpg' : matches[1];
-          base64Data = matches[2];
+      if (base64Image.includes(';base64,')) {
+        const parts = base64Image.split(';base64,');
+        const header = parts[0];
+        base64Data = parts[1];
+        const match = header.match(/data:image\/([a-zA-Z0-9\+\-\.]+)/);
+        if (match && match[1]) {
+          const rawExt = match[1].toLowerCase();
+          if (rawExt === 'jpeg') ext = 'jpg';
+          else if (rawExt === 'svg+xml') ext = 'svg';
+          else if (rawExt === 'x-icon' || rawExt === 'vnd.microsoft.icon') ext = 'ico';
+          else if (rawExt === 'webp') ext = 'webp';
+          else if (rawExt === 'gif') ext = 'gif';
+          else ext = rawExt;
         }
       }
+      base64Data = base64Data.replace(/[\r\n\s]/g, '');
       const categoryPrefix = (item && item.category) ? item.category.toLowerCase() : 'img';
       filename = `${categoryPrefix}_${Date.now()}.${ext}`;
       const filePath = path.join(UPLOADS_DIR, filename);
@@ -853,6 +848,7 @@ app.post('/api/media', (req, res) => {
       imageUrl = `/uploads/${filename}`;
     } catch (err) {
       console.error('Media upload error', err);
+      imageUrl = base64Image;
     }
   }
 

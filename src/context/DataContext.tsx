@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SiteData, Service, Course, BlogPost, StudentResult, HomepageConfig, ContactConfig, MentorConfig, EnrollmentApplication, SiteSettings, MediaItem, ContactInquiry } from '../types';
-import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS } from '../data';
+import { SiteData, Service, Course, BlogPost, StudentResult, HomepageConfig, ContactConfig, MentorConfig, EnrollmentApplication, SiteSettings, MediaItem, ContactInquiry, Testimonial } from '../types';
+import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS, TESTIMONIALS } from '../data';
 
 export const defaultSiteSettings: SiteSettings = {
   headerLogoUrl: '/brandlogo.png',
@@ -220,7 +220,8 @@ const fallbackData: SiteData = {
   admissions: [],
   inquiries: [],
   settings: defaultSiteSettings,
-  media: []
+  media: [],
+  testimonials: TESTIMONIALS
 };
 
 const STORAGE_KEY = 'fg_site_data_v1';
@@ -233,6 +234,7 @@ const getStoredData = (): SiteData => {
       return {
         ...fallbackData,
         ...parsed,
+        testimonials: (parsed.testimonials && parsed.testimonials.length > 0) ? parsed.testimonials : TESTIMONIALS,
         settings: {
           ...defaultSiteSettings,
           ...(parsed.settings || {})

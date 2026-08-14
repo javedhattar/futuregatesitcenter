@@ -4,16 +4,22 @@
  */
 
 import React, { useState } from 'react';
-import { Menu, X, ShieldCheck, GraduationCap, Lock } from 'lucide-react';
+import { Menu, X, ShieldCheck, GraduationCap, Lock, Search } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { WhatsAppIcon } from './WhatsAppIcon';
+import { GlobalSearchBar } from './GlobalSearchBar';
 import { useData } from '../context/DataContext';
+import { Course, BlogPost } from '../types';
 
 interface HeaderProps {
   currentTab: string;
   setTab: (tab: string) => void;
-  onOpenEnrollment: () => void;
+  onOpenEnrollment: (courseId?: string) => void;
   onOpenAdmin: () => void;
+  onSelectCourse?: (course: Course) => void;
+  onSelectBlog?: (blog: BlogPost) => void;
+  onSearchCoursesTab?: (query: string) => void;
+  onSearchBlogsTab?: (query: string) => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -21,11 +27,16 @@ export const Header: React.FC<HeaderProps> = ({
   setTab,
   onOpenEnrollment,
   onOpenAdmin,
+  onSelectCourse,
+  onSelectBlog,
+  onSearchCoursesTab,
+  onSearchBlogsTab,
 }) => {
   const { data } = useData();
   const settings = data?.settings;
   const contact = data?.contact || {};
   const [isOpen, setIsOpen] = useState(false);
+  const [isMobileSearchOpen, setIsMobileSearchOpen] = useState(false);
 
   const headerPhone = settings?.headerPhone || contact.phone || '+92301-6775690';
   const headerWhatsapp = settings?.headerWhatsapp || contact.whatsapp || '923016775690';
@@ -51,6 +62,7 @@ export const Header: React.FC<HeaderProps> = ({
   const handleNavClick = (tabId: string) => {
     setTab(tabId);
     setIsOpen(false);
+    setIsMobileSearchOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
@@ -108,14 +120,14 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Main Navigation Bar */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-18">
+        <div className="flex justify-between items-center h-18 gap-3">
           {/* Logo Brand Title */}
-          <div className="cursor-pointer flex items-center" onClick={() => handleNavClick('home')}>
+          <div className="cursor-pointer flex items-center shrink-0" onClick={() => handleNavClick('home')}>
             <BrandLogo variant="dark" customLogoUrl={settings?.headerLogoUrl} />
           </div>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden lg:flex items-center gap-6 xl:gap-8 text-xs font-bold uppercase tracking-wider text-slate-600">
+          <nav className="hidden xl:flex items-center gap-5 2xl:gap-7 text-xs font-bold uppercase tracking-wider text-slate-600">
             {navItems.map((item) => {
               const active = currentTab === item.id;
               return (
@@ -135,8 +147,23 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          {/* Right Action Call (WhatsApp Chat & Quick Verify) */}
-          <div className="hidden md:flex items-center gap-2.5">
+          {/* Desktop Global Search Bar */}
+          <div className="hidden lg:block w-48 xl:w-64 2xl:w-72 shrink-0">
+            <GlobalSearchBar
+              onSelectCourse={(course) => {
+                onSelectCourse?.(course);
+              }}
+              onSelectBlog={(blog) => {
+                onSelectBlog?.(blog);
+              }}
+              onSearchCoursesTab={onSearchCoursesTab}
+              onSearchBlogsTab={onSearchBlogsTab}
+              onOpenEnrollment={onOpenEnrollment}
+            />
+          </div>
+
+          {/* Right Action Call (Verify Card & CTA) */}
+          <div className="hidden md:flex items-center gap-2 shrink-0">
             <button
               onClick={() => handleNavClick('verification')}
               className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider rounded-lg flex items-center gap-1.5 transition-all cursor-pointer border border-slate-200 shrink-0"
@@ -147,36 +174,103 @@ export const Header: React.FC<HeaderProps> = ({
 
             <button
               onClick={handleCtaClick}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2.5 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
             >
               <GraduationCap className="w-4 h-4" /> {ctaText}
             </button>
           </div>
 
-          {/* Mobile menu toggle button */}
-          <div className="lg:hidden flex items-center gap-2">
+          {/* Mobile menu and search toggle buttons */}
+          <div className="lg:hidden flex items-center gap-1.5">
+            <button
+              onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
+              className={`p-2 rounded-lg transition-colors cursor-pointer ${
+                isMobileSearchOpen ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-100'
+              }`}
+              aria-label="Toggle search"
+              title="Search courses & blogs"
+            >
+              <Search className="w-5 h-5" />
+            </button>
+
             <button
               onClick={() => handleNavClick('verification')}
-              className="px-2.5 py-1.5 bg-blue-600 text-white text-xs font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider"
+              className="px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
-              Verify
+              <span>Verify</span>
             </button>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none"
+              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none cursor-pointer"
               aria-label="Toggle menu"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
           </div>
         </div>
+
+        {/* Mobile Expandable Search Bar Header Strip */}
+        {isMobileSearchOpen && (
+          <div className="lg:hidden py-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-1 duration-150">
+            <GlobalSearchBar
+              isMobile={true}
+              onSelectCourse={(course) => {
+                setIsMobileSearchOpen(false);
+                onSelectCourse?.(course);
+              }}
+              onSelectBlog={(blog) => {
+                setIsMobileSearchOpen(false);
+                onSelectBlog?.(blog);
+              }}
+              onSearchCoursesTab={(q) => {
+                setIsMobileSearchOpen(false);
+                onSearchCoursesTab?.(q);
+              }}
+              onSearchBlogsTab={(q) => {
+                setIsMobileSearchOpen(false);
+                onSearchBlogsTab?.(q);
+              }}
+              onOpenEnrollment={(cId) => {
+                setIsMobileSearchOpen(false);
+                onOpenEnrollment(cId);
+              }}
+            />
+          </div>
+        )}
       </div>
 
       {/* Mobile Menu Drawer */}
       {isOpen && (
-        <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-2 shadow-2xl">
+        <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl">
+          {/* Search bar inside drawer */}
+          <div className="pb-1">
+            <GlobalSearchBar
+              isMobile={true}
+              onSelectCourse={(course) => {
+                setIsOpen(false);
+                onSelectCourse?.(course);
+              }}
+              onSelectBlog={(blog) => {
+                setIsOpen(false);
+                onSelectBlog?.(blog);
+              }}
+              onSearchCoursesTab={(q) => {
+                setIsOpen(false);
+                onSearchCoursesTab?.(q);
+              }}
+              onSearchBlogsTab={(q) => {
+                setIsOpen(false);
+                onSearchBlogsTab?.(q);
+              }}
+              onOpenEnrollment={(cId) => {
+                setIsOpen(false);
+                onOpenEnrollment(cId);
+              }}
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-1.5">
             {navItems.map((item) => {
               const active = currentTab === item.id;

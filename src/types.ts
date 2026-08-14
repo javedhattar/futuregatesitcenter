@@ -259,6 +259,7 @@ export interface SiteData {
   inquiries?: ContactInquiry[];
   settings: SiteSettings;
   media: MediaItem[];
+  testimonials?: Testimonial[];
 }
 
 export interface VerificationRecord {

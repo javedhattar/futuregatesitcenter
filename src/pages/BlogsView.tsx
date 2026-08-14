@@ -9,10 +9,32 @@ import { useData } from '../context/DataContext';
 import { BlogPost } from '../types';
 import { AdSlot } from '../components/AdSlot';
 
-export const BlogsView: React.FC = () => {
+interface BlogsViewProps {
+  initialSearchQuery?: string;
+  initialSelectedBlog?: BlogPost | null;
+  onClearInitialSelection?: () => void;
+}
+
+export const BlogsView: React.FC<BlogsViewProps> = ({
+  initialSearchQuery = '',
+  initialSelectedBlog = null,
+  onClearInitialSelection
+}) => {
   const { data } = useData();
-  const [search, setSearch] = useState('');
-  const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(null);
+  const [search, setSearch] = useState(initialSearchQuery);
+  const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(initialSelectedBlog);
+
+  React.useEffect(() => {
+    if (initialSearchQuery) {
+      setSearch(initialSearchQuery);
+    }
+  }, [initialSearchQuery]);
+
+  React.useEffect(() => {
+    if (initialSelectedBlog) {
+      setSelectedArticle(initialSelectedBlog);
+    }
+  }, [initialSelectedBlog]);
 
   const publishedBlogs = (data.blogs || []).filter((b) => b.isPublished !== false);
 
@@ -104,7 +126,10 @@ export const BlogsView: React.FC = () => {
           <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full my-8 overflow-hidden border border-slate-200">
             <div className="bg-brand-blue text-white p-6 sm:p-8 relative">
               <button
-                onClick={() => setSelectedArticle(null)}
+                onClick={() => {
+                  setSelectedArticle(null);
+                  onClearInitialSelection?.();
+                }}
                 className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
               >
                 <X className="w-5 h-5" />
