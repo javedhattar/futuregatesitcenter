@@ -4,7 +4,7 @@
  */
 
 import React, { useState } from 'react';
-import { X, CheckCircle2, GraduationCap, PhoneCall } from 'lucide-react';
+import { X, CheckCircle2, GraduationCap, PhoneCall, Mail } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
 
@@ -21,6 +21,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
 }) => {
   const { data, submitAdmission } = useData();
   const courses = data.courses || [];
+  const officialEmail = data.settings?.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
 
   const [fullName, setFullName] = useState('');
   const [fatherName, setFatherName] = useState('');
@@ -72,6 +73,26 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
     window.open(`https://wa.me/923016775690?text=${text}`, '_blank');
   };
 
+  const handleEmailSend = () => {
+    const courseTitle = selectedCourseObj ? selectedCourseObj.title : 'Course';
+    const recipient = officialEmail.split(',')[0].trim() || 'jakhter464@gmail.com';
+    const subject = encodeURIComponent(`Admission Application - ${fullName} (${courseTitle})`);
+    const body = encodeURIComponent(
+      `Hello Future Gates IT Center Admissions Department,\n\n` +
+      `Here are my admission application details:\n` +
+      `• Student Name: ${fullName}\n` +
+      `• Father / Guardian Name: ${fatherName}\n` +
+      `• Course: ${courseTitle}\n` +
+      `• Contact Phone: ${phone}\n` +
+      `• WhatsApp: ${whatsapp}\n` +
+      `• Email: ${email || 'N/A'}\n` +
+      `• Address: ${address || 'N/A'}\n` +
+      `• Remarks / Notes: ${message || 'N/A'}\n\n` +
+      `Please confirm my admission slot and fee structure.\n\nThank you!`
+    );
+    window.open(`mailto:${recipient}?subject=${subject}&body=${body}`, '_blank');
+  };
+
   const handleReset = () => {
     setIsSubmitted(false);
     setFullName('');
@@ -121,7 +142,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               </h4>
               <p className="text-slate-600 text-xs leading-relaxed max-w-md mx-auto">
                 Thank you <strong>{fullName}</strong>. Your enrollment request for{' '}
-                <strong>{selectedCourseObj?.title}</strong> has been logged successfully.
+                <strong>{selectedCourseObj?.title}</strong> has been received and notified to the official administration inbox (<strong>{officialEmail}</strong>).
               </p>
 
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200 text-left text-xs space-y-1.5 font-mono text-slate-700">
@@ -129,24 +150,33 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                 <p><strong>Course:</strong> {selectedCourseObj?.title}</p>
                 <p><strong>Contact Phone:</strong> {phone}</p>
                 <p><strong>WhatsApp:</strong> {whatsapp}</p>
+                <p className="text-[11px] text-emerald-700 font-bold pt-1">
+                  ✓ Official Email Notified: {officialEmail}
+                </p>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-3 pt-2">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
                 <button
                   onClick={handleWhatsAppSend}
-                  className="flex-1 py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer hover:scale-[1.01]"
+                  className="py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer hover:scale-[1.01]"
                 >
                   <WhatsAppIcon className="w-4 h-4 text-white" />
-                  <span>Send to WhatsApp</span>
-                  <span className="font-mono text-white/95 text-[11px] font-semibold">(+92301-6775690)</span>
+                  <span>Send via WhatsApp</span>
                 </button>
                 <button
-                  onClick={handleReset}
-                  className="py-3 px-4 bg-slate-200 hover:bg-slate-300 text-slate-800 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                  onClick={handleEmailSend}
+                  className="py-3 px-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer hover:scale-[1.01]"
                 >
-                  Done & Close
+                  <Mail className="w-4 h-4 text-white" />
+                  <span>Email to Official Office</span>
                 </button>
               </div>
+              <button
+                onClick={handleReset}
+                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+              >
+                Done & Close
+              </button>
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">

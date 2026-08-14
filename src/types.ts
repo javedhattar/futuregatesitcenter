@@ -229,6 +229,10 @@ export interface SiteSettings {
     businessHours: string;
     emergencyMessage: string;
   };
+
+  // 8. Official Email Notifications & Alerts
+  notificationEmails?: string;
+  enableEmailNotifications?: boolean;
 }
 
 export type MediaCategory = 'Logos' | 'Mentor' | 'Courses' | 'Services' | 'Blogs' | 'Homepage' | 'General';
@@ -252,6 +256,7 @@ export interface SiteData {
   contact: ContactConfig;
   mentor?: MentorConfig;
   admissions: EnrollmentApplication[];
+  inquiries?: ContactInquiry[];
   settings: SiteSettings;
   media: MediaItem[];
 }

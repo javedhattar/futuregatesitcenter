@@ -212,6 +212,10 @@ const defaultSiteSettings = {
     businessHours: 'Monday – Saturday: 09:00 AM – 07:00 PM',
     emergencyMessage: 'For immediate certificate verification or fee inquiries, contact our director via WhatsApp.',
   },
+
+  // 8. Official Email Notifications & Alerts
+  notificationEmails: 'jakhter464@gmail.com, futuregatesitcenter@gmail.com',
+  enableEmailNotifications: true,
 };
 
 const defaultMedia = [
@@ -262,6 +266,20 @@ function getDB() {
     }
     if (!parsed.settings) {
       parsed.settings = defaultSiteSettings;
+    } else {
+      // Ensure notification settings exist
+      if (!parsed.settings.notificationEmails) {
+        parsed.settings.notificationEmails = 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
+      }
+      if (parsed.settings.enableEmailNotifications === undefined) {
+        parsed.settings.enableEmailNotifications = true;
+      }
+    }
+    if (!parsed.admissions) {
+      parsed.admissions = [];
+    }
+    if (!parsed.inquiries) {
+      parsed.inquiries = [];
     }
     if (!parsed.media) {
       parsed.media = defaultMedia;
@@ -278,9 +296,93 @@ function getDB() {
       contact: defaultContactConfig,
       mentor: defaultMentorConfig,
       admissions: [],
+      inquiries: [],
       settings: defaultSiteSettings,
       media: defaultMedia
     };
+  }
+}
+
+// Helper: Notify Official Emails
+function dispatchOfficialEmailNotification(type: 'admission' | 'inquiry', record: any) {
+  try {
+    const db = getDB();
+    const settings = db.settings || defaultSiteSettings;
+    const isEnabled = settings.enableEmailNotifications !== false;
+    const recipientEmails = (settings.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com')
+      .split(',')
+      .map((e: string) => e.trim())
+      .filter((e: string) => Boolean(e) && e.includes('@'));
+
+    if (!isEnabled || recipientEmails.length === 0) {
+      console.log(`[Email Notification Skipped] Notifications disabled or no recipient emails.`);
+      return { success: false, reason: 'disabled' };
+    }
+
+    let subject = '';
+    let body = '';
+
+    if (type === 'admission') {
+      subject = `🎓 [NEW ADMISSION] ${record.fullName} - ${record.courseTitle}`;
+      body = `
+======================================================
+NEW ONLINE COURSE ADMISSION APPLICATION RECEIVED
+======================================================
+Institute: Future Gates IT Center
+Submission Time: ${new Date().toLocaleString()}
+
+STUDENT DETAILS:
+- Full Name: ${record.fullName}
+- Father / Guardian Name: ${record.fatherName}
+- Course Applied: ${record.courseTitle}
+- Mobile Phone: ${record.phone}
+- WhatsApp Number: ${record.whatsapp}
+- Student Email: ${record.email || 'N/A'}
+- Residential Address: ${record.address || 'N/A'}
+- Notes / Message: ${record.message || 'N/A'}
+
+OFFICIAL INBOX RECIPIENTS:
+${recipientEmails.join(', ')}
+======================================================
+      `.trim();
+    } else {
+      subject = `✉️ [NEW INQUIRY] ${record.name} - ${record.subject || 'Website Inquiry'}`;
+      body = `
+======================================================
+NEW WEBSITE CONTACT INQUIRY RECEIVED
+======================================================
+Institute: Future Gates IT Center
+Submission Time: ${new Date().toLocaleString()}
+
+INQUIRER DETAILS:
+- Name: ${record.name}
+- Email: ${record.email || 'N/A'}
+- Phone / Contact: ${record.phone}
+- Subject: ${record.subject || 'General Inquiry'}
+- Message:
+${record.message}
+
+OFFICIAL INBOX RECIPIENTS:
+${recipientEmails.join(', ')}
+======================================================
+      `.trim();
+    }
+
+    console.log(`\n================== [OFFICIAL EMAIL DISPATCH] ==================`);
+    console.log(`To: ${recipientEmails.join(', ')}`);
+    console.log(`Subject: ${subject}`);
+    console.log(`Body:\n${body}`);
+    console.log(`===============================================================\n`);
+
+    return {
+      success: true,
+      notifiedEmails: recipientEmails,
+      subject,
+      dispatchedAt: new Date().toISOString()
+    };
+  } catch (err) {
+    console.error('Error dispatching official email notification:', err);
+    return { success: false, error: String(err) };
   }
 }
 
@@ -568,7 +670,55 @@ app.put('/api/homepage', (req, res) => {
   res.json({ success: true, homepage: db.homepage });
 });
 
-/* --- Contact Config API --- */
+/* --- Contact Inquiries & Config API --- */
+app.get('/api/inquiries', (req, res) => {
+  if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+  const db = getDB();
+  res.json({ success: true, inquiries: db.inquiries || [] });
+});
+
+app.post('/api/contact', (req, res) => {
+  const db = getDB();
+  const { name, email, phone, subject, message } = req.body;
+
+  if (!name || !phone || !message) {
+    return res.status(400).json({ success: false, error: 'Name, phone, and message are required' });
+  }
+
+  const newInquiry = {
+    id: `inq-${Date.now()}`,
+    name,
+    email: email || '',
+    phone,
+    subject: subject || 'General Inquiry',
+    message,
+    submittedAt: new Date().toISOString()
+  };
+
+  if (!db.inquiries) db.inquiries = [];
+  db.inquiries.unshift(newInquiry);
+  saveDB(db);
+
+  // Dispatch official email notification
+  const emailResult = dispatchOfficialEmailNotification('inquiry', newInquiry);
+
+  res.json({
+    success: true,
+    inquiry: newInquiry,
+    notification: emailResult
+  });
+});
+
+app.delete('/api/inquiries/:id', (req, res) => {
+  if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
+  const db = getDB();
+  if (db.inquiries) {
+    db.inquiries = db.inquiries.filter((inq: any) => inq.id !== req.params.id);
+    saveDB(db);
+  }
+  res.json({ success: true });
+});
+
 app.put('/api/contact', (req, res) => {
   if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
   const db = getDB();
@@ -586,7 +736,7 @@ app.put('/api/mentor', (req, res) => {
   res.json({ success: true, mentor: db.mentor });
 });
 
-/* --- Admissions API --- */
+/* --- Admissions API (with Email Notification) --- */
 app.post('/api/admissions', (req, res) => {
   const db = getDB();
   const newAdmission = {
@@ -597,7 +747,15 @@ app.post('/api/admissions', (req, res) => {
   if (!db.admissions) db.admissions = [];
   db.admissions.unshift(newAdmission);
   saveDB(db);
-  res.json({ success: true, admission: newAdmission });
+
+  // Dispatch official email notification
+  const emailResult = dispatchOfficialEmailNotification('admission', newAdmission);
+
+  res.json({
+    success: true,
+    admission: newAdmission,
+    notification: emailResult
+  });
 });
 
 app.delete('/api/admissions/:id', (req, res) => {

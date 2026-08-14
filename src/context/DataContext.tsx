@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
-import { SiteData, Service, Course, BlogPost, StudentResult, HomepageConfig, ContactConfig, MentorConfig, EnrollmentApplication, SiteSettings, MediaItem } from '../types';
+import { SiteData, Service, Course, BlogPost, StudentResult, HomepageConfig, ContactConfig, MentorConfig, EnrollmentApplication, SiteSettings, MediaItem, ContactInquiry } from '../types';
 import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS } from '../data';
 
 export const defaultSiteSettings: SiteSettings = {
@@ -96,6 +96,10 @@ export const defaultSiteSettings: SiteSettings = {
     businessHours: 'Monday – Saturday: 09:00 AM – 07:00 PM',
     emergencyMessage: 'For immediate certificate verification or fee inquiries, contact our director via WhatsApp.',
   },
+
+  // 8. Official Email Notifications & Alerts
+  notificationEmails: 'jakhter464@gmail.com, futuregatesitcenter@gmail.com',
+  enableEmailNotifications: true,
 };
 
 interface DataContextType {
@@ -120,6 +124,8 @@ interface DataContextType {
   uploadImage: (base64Image: string) => Promise<string | null>;
   submitAdmission: (app: Partial<EnrollmentApplication>) => Promise<boolean>;
   deleteAdmission: (id: string) => Promise<boolean>;
+  submitInquiry: (inquiry: Partial<ContactInquiry>) => Promise<boolean>;
+  deleteInquiry: (id: string) => Promise<boolean>;
   saveSettings: (settings: Partial<SiteSettings>) => Promise<boolean>;
   resetSettings: () => Promise<boolean>;
   saveMediaItem: (item: Partial<MediaItem>, base64Image?: string) => Promise<boolean>;
@@ -212,6 +218,7 @@ const fallbackData: SiteData = {
   contact: defaultContact,
   mentor: defaultMentor,
   admissions: [],
+  inquiries: [],
   settings: defaultSiteSettings,
   media: []
 };
@@ -705,6 +712,51 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  // Inquiries / Contact Messages
+  const submitInquiry = async (inquiry: Partial<ContactInquiry>): Promise<boolean> => {
+    const newInquiry: ContactInquiry = {
+      id: inquiry.id || `inq-${Date.now()}`,
+      name: inquiry.name || 'Visitor',
+      email: inquiry.email || '',
+      phone: inquiry.phone || '',
+      subject: inquiry.subject || 'General Inquiry',
+      message: inquiry.message || '',
+      submittedAt: new Date().toISOString()
+    };
+
+    try {
+      const res = await fetch('/api/contact', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(inquiry)
+      });
+      if (res.ok) {
+        await refreshData();
+      }
+    } catch (err) {
+      console.warn('Submit inquiry API failed, saving locally', err);
+    }
+
+    saveLocalData({ ...data, inquiries: [newInquiry, ...(data.inquiries || [])] });
+    return true;
+  };
+
+  const deleteInquiry = async (id: string): Promise<boolean> => {
+    try {
+      const res = await fetch(`/api/inquiries/${id}`, {
+        method: 'DELETE',
+        headers: getHeaders()
+      });
+      if (res.ok) {
+        await refreshData();
+      }
+    } catch (err) {
+      console.warn('Delete inquiry API failed, deleting locally', err);
+    }
+    saveLocalData({ ...data, inquiries: (data.inquiries || []).filter(inq => inq.id !== id) });
+    return true;
+  };
+
   const saveSettings = async (settings: Partial<SiteSettings>): Promise<boolean> => {
     const updatedSettings = {
       ...data.settings,
@@ -811,6 +863,8 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         uploadImage,
         submitAdmission,
         deleteAdmission,
+        submitInquiry,
+        deleteInquiry,
         saveSettings,
         resetSettings,
         saveMediaItem,

@@ -73,8 +73,9 @@ export const SiteCustomizationPanel: React.FC = () => {
   };
 
   // Quick save for individual logo fields
-  const handleQuickSaveLogoField = async (targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl', url: string) => {
+  const handleQuickSaveLogoField = async (targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl' | 'certificateStampLogoUrl' | 'certificateSignatureUrl', url: string) => {
     const updated = {
+      ...(data.settings || defaultSiteSettings),
       ...settingsForm,
       [targetField]: url
     };
@@ -88,12 +89,13 @@ export const SiteCustomizationPanel: React.FC = () => {
   };
 
   // Helper for logo file uploads
-  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl') => {
+  const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl' | 'certificateStampLogoUrl' | 'certificateSignatureUrl') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 5 * 1024 * 1024) {
-      alert('File size exceeds 5MB limit.');
+    if (file.size > 10 * 1024 * 1024) {
+      alert('File size exceeds 10MB limit. Please upload a smaller image.');
+      e.target.value = '';
       return;
     }
 
@@ -101,29 +103,33 @@ export const SiteCustomizationPanel: React.FC = () => {
     reader.onloadend = async () => {
       const base64 = reader.result as string;
       const uploadedUrl = await uploadImage(base64);
-      if (uploadedUrl) {
+      const finalUrl = uploadedUrl || base64;
+      
+      if (finalUrl) {
         const updated = {
+          ...(data.settings || defaultSiteSettings),
           ...settingsForm,
-          [targetField]: uploadedUrl
+          [targetField]: finalUrl
         };
         setSettingsForm(updated);
         const ok = await saveSettings(updated);
         if (ok) {
-          showNotification(`Logo uploaded and saved permanently!`);
+          showNotification(`Logo photo uploaded and updated instantly!`);
         } else {
-          showNotification(`Logo uploaded but failed to save settings.`, 'error');
+          showNotification(`Logo saved in local browser storage.`, 'success');
         }
         // Also register in media library
         saveMediaItem({
           filename: file.name,
-          url: uploadedUrl,
+          url: finalUrl,
           category: 'Logos',
           size: `${Math.round(file.size / 1024)} KB`,
           dimensions: 'Auto'
-        });
+        }, base64);
       } else {
-        showNotification('Failed to upload image.', 'error');
+        showNotification('Failed to process image.', 'error');
       }
+      e.target.value = '';
     };
     reader.readAsDataURL(file);
   };
@@ -714,6 +720,65 @@ export const SiteCustomizationPanel: React.FC = () => {
               Footer Content & Legal Links
             </h3>
             <p className="text-xs text-slate-500 mt-1">Configure footer logo, description, quick links, contacts, and copyright statement.</p>
+          </div>
+
+          {/* Footer Logo Dedicated Control */}
+          <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3">
+            <div className="flex justify-between items-center">
+              <div>
+                <label className="text-xs font-bold text-slate-800 block">Footer Official Logo (Light on Dark)</label>
+                <span className="text-[11px] text-slate-500">Upload a light/transparent logo photo specifically for the dark footer banner.</span>
+              </div>
+              {settingsForm.footerLogoUrl && (
+                <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-2 py-0.5 rounded border border-emerald-200">Custom Active</span>
+              )}
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 items-center">
+              <div className="h-20 bg-slate-900 rounded-xl border border-slate-800 p-2 flex items-center justify-center relative overflow-hidden">
+                {settingsForm.footerLogoUrl ? (
+                  <img src={settingsForm.footerLogoUrl} alt="Footer Logo Preview" className="max-h-full max-w-full object-contain" />
+                ) : (
+                  <span className="text-[11px] text-slate-400 font-medium">Using Default Institute Logo</span>
+                )}
+              </div>
+
+              <div className="sm:col-span-2 flex flex-col gap-2">
+                <div className="flex gap-2">
+                  <label className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-center rounded-xl text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 shadow-sm">
+                    <Upload className="w-4 h-4" />
+                    Upload Footer Photo / Logo
+                    <input type="file" accept="image/*" className="hidden" onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')} />
+                  </label>
+                  {settingsForm.footerLogoUrl && (
+                    <button
+                      type="button"
+                      onClick={() => handleQuickSaveLogoField('footerLogoUrl', '')}
+                      className="px-3 py-2 bg-red-50 text-red-600 hover:bg-red-100 text-xs font-bold rounded-xl cursor-pointer border border-red-200 transition-colors"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+
+                <div className="flex gap-1.5">
+                  <input
+                    type="text"
+                    placeholder="Or paste direct image URL (https://...)"
+                    value={settingsForm.footerLogoUrl || ''}
+                    onChange={(e) => setSettingsForm(prev => ({ ...prev, footerLogoUrl: e.target.value }))}
+                    className="w-full text-xs px-3 py-2 rounded-xl border border-slate-200 focus:outline-none focus:border-blue-500 font-mono bg-white"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => handleQuickSaveLogoField('footerLogoUrl', settingsForm.footerLogoUrl || '')}
+                    className="px-3 py-2 bg-slate-900 hover:bg-blue-600 text-white text-xs font-bold rounded-xl cursor-pointer shrink-0 transition-colors"
+                  >
+                    Apply
+                  </button>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
