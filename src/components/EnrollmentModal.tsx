@@ -21,7 +21,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
 }) => {
   const { data, submitAdmission } = useData();
   const courses = data.courses || [];
-  const officialEmail = data.settings?.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
+  const officialEmail = data.settings?.notificationEmails || 'futuregatesitcenter@gmail.com';
 
   const [fullName, setFullName] = useState('');
   const [fatherName, setFatherName] = useState('');
@@ -75,7 +75,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
 
   const handleEmailSend = () => {
     const courseTitle = selectedCourseObj ? selectedCourseObj.title : 'Course';
-    const recipient = officialEmail.split(',')[0].trim() || 'jakhter464@gmail.com';
+    const recipient = officialEmail.split(',')[0].trim() || 'futuregatesitcenter@gmail.com';
     const subject = encodeURIComponent(`Admission Application - ${fullName} (${courseTitle})`);
     const body = encodeURIComponent(
       `Hello Future Gates IT Center Admissions Department,\n\n` +

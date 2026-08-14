@@ -12,8 +12,8 @@ export const ContactView: React.FC = () => {
   const { data, submitInquiry } = useData();
   const contact = data.contact || {};
   const settings = data.settings || {};
-  const officialEmails = settings.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
-  const primaryEmail = officialEmails.split(',')[0].trim() || 'jakhter464@gmail.com';
+  const officialEmails = settings.notificationEmails || 'futuregatesitcenter@gmail.com';
+  const primaryEmail = officialEmails.split(',')[0].trim() || 'futuregatesitcenter@gmail.com';
 
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');

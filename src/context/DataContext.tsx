@@ -99,7 +99,7 @@ export const defaultSiteSettings: SiteSettings = {
   },
 
   // 8. Official Email Notifications & Alerts
-  notificationEmails: 'jakhter464@gmail.com, futuregatesitcenter@gmail.com',
+  notificationEmails: 'futuregatesitcenter@gmail.com',
   enableEmailNotifications: true,
 };
 
@@ -122,7 +122,7 @@ interface DataContextType {
   saveHomepage: (homepage: Partial<HomepageConfig>) => Promise<boolean>;
   saveContact: (contact: Partial<ContactConfig>) => Promise<boolean>;
   saveMentor: (mentor: Partial<MentorConfig>) => Promise<boolean>;
-  uploadImage: (base64Image: string) => Promise<string | null>;
+  uploadImage: (base64Image: string, isLogo?: boolean) => Promise<string | null>;
   submitAdmission: (app: Partial<EnrollmentApplication>) => Promise<boolean>;
   deleteAdmission: (id: string) => Promise<boolean>;
   submitInquiry: (inquiry: Partial<ContactInquiry>) => Promise<boolean>;
@@ -646,12 +646,12 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   // Upload Image
-  const uploadImage = async (base64Image: string): Promise<string | null> => {
+  const uploadImage = async (base64Image: string, isLogo?: boolean): Promise<string | null> => {
     try {
       const res = await fetch('/api/upload', {
         method: 'POST',
         headers: getHeaders(),
-        body: JSON.stringify({ image: base64Image })
+        body: JSON.stringify({ image: base64Image, isLogo: Boolean(isLogo) })
       });
       if (res.ok) {
         const json = await res.json();

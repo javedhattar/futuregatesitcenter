@@ -12,8 +12,8 @@ export const AdmissionView: React.FC = () => {
   const { data, submitAdmission } = useData();
   const courses = data.courses || [];
   const settings = data.settings || {};
-  const officialEmails = settings.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
-  const primaryEmail = officialEmails.split(',')[0].trim() || 'jakhter464@gmail.com';
+  const officialEmails = settings.notificationEmails || 'futuregatesitcenter@gmail.com';
+  const primaryEmail = officialEmails.split(',')[0].trim() || 'futuregatesitcenter@gmail.com';
 
   const [fullName, setFullName] = useState('');
   const [fatherName, setFatherName] = useState('');

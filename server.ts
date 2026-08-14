@@ -215,7 +215,7 @@ const defaultSiteSettings = {
   },
 
   // 8. Official Email Notifications & Alerts
-  notificationEmails: 'jakhter464@gmail.com, futuregatesitcenter@gmail.com',
+  notificationEmails: 'futuregatesitcenter@gmail.com',
   enableEmailNotifications: true,
 };
 
@@ -274,7 +274,7 @@ function getDB() {
     } else {
       // Ensure notification settings exist
       if (!parsed.settings.notificationEmails) {
-        parsed.settings.notificationEmails = 'jakhter464@gmail.com, futuregatesitcenter@gmail.com';
+        parsed.settings.notificationEmails = 'futuregatesitcenter@gmail.com';
       }
       if (parsed.settings.enableEmailNotifications === undefined) {
         parsed.settings.enableEmailNotifications = true;
@@ -315,7 +315,7 @@ function dispatchOfficialEmailNotification(type: 'admission' | 'inquiry', record
     const db = getDB();
     const settings = db.settings || defaultSiteSettings;
     const isEnabled = settings.enableEmailNotifications !== false;
-    const recipientEmails = (settings.notificationEmails || 'jakhter464@gmail.com, futuregatesitcenter@gmail.com')
+    const recipientEmails = (settings.notificationEmails || 'futuregatesitcenter@gmail.com')
       .split(',')
       .map((e: string) => e.trim())
       .filter((e: string) => Boolean(e) && e.includes('@'));
@@ -486,13 +486,13 @@ app.post('/api/auth/change-password', (req, res) => {
   }
 });
 
-// Image Upload Endpoint (handles base64 image strings with full format support)
+// Image Upload Endpoint (handles base64 image strings with full format support & permanent disk caching)
 app.post('/api/upload', (req, res) => {
   if (!verifyAuth(req)) {
     return res.status(401).json({ success: false, error: 'Unauthorized' });
   }
 
-  const { image } = req.body;
+  const { image, isLogo } = req.body;
   if (!image || typeof image !== 'string') {
     return res.status(400).json({ success: false, error: 'No image data provided' });
   }
@@ -530,8 +530,20 @@ app.post('/api/upload', (req, res) => {
     const buffer = Buffer.from(base64Data, 'base64');
     fs.writeFileSync(filePath, buffer);
 
+    // If marked as official logo or standard upload, also mirror to public/brandlogo.png or public/uploads
+    if (isLogo) {
+      try {
+        const publicBrandLogo = path.join(process.cwd(), 'public', 'brandlogo.png');
+        const srcBrandLogo = path.join(process.cwd(), 'src', 'assets', 'brandlogo.png');
+        fs.writeFileSync(publicBrandLogo, buffer);
+        fs.writeFileSync(srcBrandLogo, buffer);
+      } catch (e) {
+        console.warn('Could not mirror logo to brand assets', e);
+      }
+    }
+
     const publicUrl = `/uploads/${filename}`;
-    return res.json({ success: true, url: publicUrl, filename });
+    return res.json({ success: true, url: publicUrl, filename, base64Fallback: image });
   } catch (err) {
     console.error('Upload failed, falling back to base64 URL', err);
     return res.json({ success: true, url: image });

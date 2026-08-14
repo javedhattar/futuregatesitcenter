@@ -89,13 +89,106 @@ export const SiteCustomizationPanel: React.FC = () => {
     }
   };
 
+  // Sync a single logo across all slots (Header, Mobile, Footer, Favicon)
+  const handleSyncLogoToAllSlots = async (logoUrl: string) => {
+    if (!logoUrl) {
+      showNotification('No logo URL available to sync.', 'error');
+      return;
+    }
+    const updated = {
+      ...(data.settings || defaultSiteSettings),
+      ...settingsForm,
+      headerLogoUrl: logoUrl,
+      mobileLogoUrl: logoUrl,
+      footerLogoUrl: logoUrl,
+      faviconUrl: logoUrl,
+      ogImageUrl: logoUrl
+    };
+    setSettingsForm(updated);
+    const ok = await saveSettings(updated);
+    if (ok) {
+      showNotification('Logo synchronized across Header, Mobile, Footer, Favicon & SEO tags!');
+    } else {
+      showNotification('Failed to sync logos.', 'error');
+    }
+  };
+
+  // Reset all logos to default bundled seal
+  const handleResetAllLogos = async () => {
+    const updated = {
+      ...(data.settings || defaultSiteSettings),
+      ...settingsForm,
+      headerLogoUrl: '/brandlogo.png',
+      mobileLogoUrl: '/brandlogo.png',
+      footerLogoUrl: '/brandlogo.png',
+      faviconUrl: '/brandlogo.png',
+      ogImageUrl: '/brandlogo.png'
+    };
+    setSettingsForm(updated);
+    const ok = await saveSettings(updated);
+    if (ok) {
+      showNotification('All logos reset to official Future Gates IT Center seal!');
+    }
+  };
+
+  // Helper for Master Logo Upload (Applies to all slots in 1 click)
+  const handleMasterLogoUpload = async (file: File) => {
+    if (!file) return;
+
+    if (file.size > 15 * 1024 * 1024) {
+      alert('File size exceeds 15MB limit. Please upload a smaller image.');
+      return;
+    }
+
+    setUploadingLogoField('headerLogoUrl');
+
+    const reader = new FileReader();
+    reader.onloadend = async () => {
+      try {
+        const base64 = reader.result as string;
+        const uploadedUrl = await uploadImage(base64, true);
+        const finalUrl = uploadedUrl || base64;
+
+        if (finalUrl) {
+          const updated = {
+            ...(data.settings || defaultSiteSettings),
+            ...settingsForm,
+            headerLogoUrl: finalUrl,
+            mobileLogoUrl: finalUrl,
+            footerLogoUrl: finalUrl,
+            faviconUrl: finalUrl,
+            ogImageUrl: finalUrl
+          };
+          setSettingsForm(updated);
+          await saveSettings(updated);
+          showNotification('Master logo uploaded and applied to Header, Mobile, Footer & Favicon!');
+
+          // Also register in media library
+          saveMediaItem({
+            filename: file.name,
+            url: finalUrl,
+            category: 'Logos',
+            size: `${Math.round(file.size / 1024)} KB`,
+            dimensions: 'Master Logo'
+          }, base64);
+        }
+      } catch (err) {
+        console.error('Master logo upload error:', err);
+        showNotification('Failed to process image upload.', 'error');
+      } finally {
+        setUploadingLogoField(null);
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   // Helper for logo file uploads
   const handleLogoUpload = async (e: React.ChangeEvent<HTMLInputElement>, targetField: 'headerLogoUrl' | 'mobileLogoUrl' | 'footerLogoUrl' | 'faviconUrl' | 'ogImageUrl' | 'certificateStampLogoUrl' | 'certificateSignatureUrl') => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    if (file.size > 10 * 1024 * 1024) {
-      alert('File size exceeds 10MB limit. Please upload a smaller image.');
+    if (file.size > 15 * 1024 * 1024) {
+      alert('File size exceeds 15MB limit. Please upload a smaller image.');
       e.target.value = '';
       return;
     }
@@ -106,7 +199,7 @@ export const SiteCustomizationPanel: React.FC = () => {
     reader.onloadend = async () => {
       try {
         const base64 = reader.result as string;
-        const uploadedUrl = await uploadImage(base64);
+        const uploadedUrl = await uploadImage(base64, true);
         const finalUrl = uploadedUrl || base64;
         
         if (finalUrl) {
@@ -307,54 +400,138 @@ export const SiteCustomizationPanel: React.FC = () => {
       {/* SECTION 1: HEADER & NAVIGATION SETTINGS */}
       {activeSubTab === 'header' && (
         <div className="bg-white rounded-2xl p-6 border border-slate-200 shadow-sm space-y-6">
-          <div className="border-b border-slate-100 pb-4">
-            <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
-              <Layout className="w-5 h-5 text-blue-600" />
-              Header Logos & Top Announcement Bar
-            </h3>
-            <p className="text-xs text-slate-500 mt-1">Manage header logos, tagline, contact strip, and navigation tab visibility.</p>
+          <div className="border-b border-slate-100 pb-4 flex flex-col md:flex-row justify-between md:items-center gap-3">
+            <div>
+              <h3 className="text-base font-bold text-slate-900 flex items-center gap-2">
+                <Layout className="w-5 h-5 text-blue-600" />
+                Header Logos & Website Branding
+              </h3>
+              <p className="text-xs text-slate-500 mt-0.5">Manage header logos, mobile marks, footer branding, and browser favicon across all pages.</p>
+            </div>
+
+            <div className="flex items-center gap-2 flex-wrap">
+              <button
+                type="button"
+                onClick={() => {
+                  const activeLogo = settingsForm.headerLogoUrl || settingsForm.faviconUrl || '/brandlogo.png';
+                  handleSyncLogoToAllSlots(activeLogo);
+                }}
+                className="px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 border border-blue-200 cursor-pointer"
+                title="Synchronize the current desktop logo across Header, Mobile, Footer and Favicon"
+              >
+                <Check className="w-3.5 h-3.5" />
+                Sync Active Logo To All Slots
+              </button>
+
+              <button
+                type="button"
+                onClick={handleResetAllLogos}
+                className="px-3 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 border border-slate-200 cursor-pointer"
+                title="Reset all logos to official Future Gates bundled seal"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                Reset All To Official Seal
+              </button>
+            </div>
+          </div>
+
+          {/* Master 1-Click Logo Uploader Hero Box */}
+          <div className="bg-gradient-to-r from-blue-900 via-slate-900 to-indigo-950 text-white rounded-2xl p-5 shadow-md border border-blue-900/40 relative overflow-hidden">
+            <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <div className="w-16 h-16 rounded-xl bg-white/10 p-2 flex items-center justify-center border border-white/20 shrink-0 backdrop-blur-sm">
+                  <img
+                    src={settingsForm.headerLogoUrl || settingsForm.faviconUrl || '/brandlogo.png'}
+                    alt="Current Brand Logo"
+                    className="max-h-full max-w-full object-contain filter drop-shadow"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/brandlogo.png';
+                    }}
+                  />
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-extrabold text-white">Master Brand Logo</span>
+                    <span className="text-[10px] font-bold bg-orange-500/20 text-orange-300 border border-orange-500/30 px-2 py-0.5 rounded-full">
+                      1-Click Deploy Everywhere
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-300 mt-1 max-w-xl">
+                    Upload your official Future Gates IT Center logo once. It will instantly update across Desktop Header, Mobile Header, Footer, Favicon, and Certificate seals with full persistence.
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2.5 w-full md:w-auto shrink-0">
+                <input
+                  id="master-logo-file-input"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => {
+                    const f = e.target.files?.[0];
+                    if (f) handleMasterLogoUpload(f);
+                    e.target.value = '';
+                  }}
+                />
+                <label
+                  htmlFor="master-logo-file-input"
+                  className="w-full md:w-auto px-4 py-2.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-600 text-white font-bold text-xs rounded-xl shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer"
+                >
+                  <Upload className="w-4 h-4" />
+                  {uploadingLogoField === 'headerLogoUrl' ? 'Uploading & Syncing...' : 'Upload & Apply Logo Everywhere'}
+                </label>
+              </div>
+            </div>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-            {/* Header Logo */}
+            {/* Desktop Header Logo */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="file-headerLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Desktop Header Logo</label>
+                  <span className="text-xs font-bold text-slate-800">Desktop Header Logo</span>
                   {settingsForm.headerLogoUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
+                    <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-1.5 py-0.5 rounded">Default Seal</span>
                   )}
                 </div>
-                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                  {settingsForm.headerLogoUrl ? (
-                    <img src={settingsForm.headerLogoUrl} alt="Header Logo" className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-medium">Using Default Seal</span>
-                  )}
+
+                <div
+                  className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden group cursor-pointer"
+                  onClick={() => document.getElementById('file-headerLogoUrl')?.click()}
+                  title="Click to upload or replace desktop header logo"
+                >
+                  <img
+                    src={settingsForm.headerLogoUrl || '/brandlogo.png'}
+                    alt="Header Logo"
+                    className="max-h-full max-w-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/brandlogo.png'; }}
+                  />
                   {uploadingLogoField === 'headerLogoUrl' && (
-                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                    <div className="absolute inset-0 bg-white/95 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
                       <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                       Uploading...
                     </div>
                   )}
                 </div>
+
+                <input
+                  id="file-headerLogoUrl"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-headerLogoUrl"
-                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                    className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     {uploadingLogoField === 'headerLogoUrl' ? 'Uploading...' : 'Upload Logo'}
-                    <input
-                      id="file-headerLogoUrl"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'headerLogoUrl')}
-                    />
                   </label>
                   {settingsForm.headerLogoUrl && (
                     <button
@@ -387,45 +564,52 @@ export const SiteCustomizationPanel: React.FC = () => {
               </div>
             </div>
 
-            {/* Mobile Logo */}
+            {/* Mobile Header Logo */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="file-mobileLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Mobile Header Logo</label>
+                  <span className="text-xs font-bold text-slate-800">Mobile Header Logo</span>
                   {settingsForm.mobileLogoUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium">Auto</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Auto (Same)</span>
                   )}
                 </div>
-                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                  {settingsForm.mobileLogoUrl ? (
-                    <img src={settingsForm.mobileLogoUrl} alt="Mobile Logo" className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-medium">Same as Desktop</span>
-                  )}
+
+                <div
+                  className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden group cursor-pointer"
+                  onClick={() => document.getElementById('file-mobileLogoUrl')?.click()}
+                  title="Click to upload mobile header logo"
+                >
+                  <img
+                    src={settingsForm.mobileLogoUrl || settingsForm.headerLogoUrl || '/brandlogo.png'}
+                    alt="Mobile Logo"
+                    className="max-h-full max-w-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/brandlogo.png'; }}
+                  />
                   {uploadingLogoField === 'mobileLogoUrl' && (
-                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                    <div className="absolute inset-0 bg-white/95 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
                       <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                       Uploading...
                     </div>
                   )}
                 </div>
+
+                <input
+                  id="file-mobileLogoUrl"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-mobileLogoUrl"
-                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                    className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     {uploadingLogoField === 'mobileLogoUrl' ? 'Uploading...' : 'Upload'}
-                    <input
-                      id="file-mobileLogoUrl"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'mobileLogoUrl')}
-                    />
                   </label>
                   {settingsForm.mobileLogoUrl && (
                     <button
@@ -462,41 +646,48 @@ export const SiteCustomizationPanel: React.FC = () => {
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="file-footerLogoUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Footer Logo (Light)</label>
+                  <span className="text-xs font-bold text-slate-800">Footer Logo (Light)</span>
                   {settingsForm.footerLogoUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium">Auto</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Auto (Header)</span>
                   )}
                 </div>
-                <div className="h-20 bg-slate-900 rounded-lg border border-slate-800 p-2 flex items-center justify-center relative overflow-hidden">
-                  {settingsForm.footerLogoUrl ? (
-                    <img src={settingsForm.footerLogoUrl} alt="Footer Logo" className="max-h-full max-w-full object-contain" />
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-medium">Same as Header</span>
-                  )}
+
+                <div
+                  className="h-20 bg-slate-900 rounded-lg border border-slate-800 p-2 flex items-center justify-center relative overflow-hidden group cursor-pointer"
+                  onClick={() => document.getElementById('file-footerLogoUrl')?.click()}
+                  title="Click to upload footer logo"
+                >
+                  <img
+                    src={settingsForm.footerLogoUrl || settingsForm.headerLogoUrl || '/brandlogo.png'}
+                    alt="Footer Logo"
+                    className="max-h-full max-w-full object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/brandlogo.png'; }}
+                  />
                   {uploadingLogoField === 'footerLogoUrl' && (
-                    <div className="absolute inset-0 bg-slate-900/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-400">
+                    <div className="absolute inset-0 bg-slate-900/95 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-400">
                       <div className="w-3.5 h-3.5 border-2 border-blue-400 border-t-transparent rounded-full animate-spin" />
                       Uploading...
                     </div>
                   )}
                 </div>
+
+                <input
+                  id="file-footerLogoUrl"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-footerLogoUrl"
-                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                    className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     {uploadingLogoField === 'footerLogoUrl' ? 'Uploading...' : 'Upload'}
-                    <input
-                      id="file-footerLogoUrl"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'footerLogoUrl')}
-                    />
                   </label>
                   {settingsForm.footerLogoUrl && (
                     <button
@@ -529,45 +720,52 @@ export const SiteCustomizationPanel: React.FC = () => {
               </div>
             </div>
 
-            {/* Favicon */}
+            {/* Favicon Mark */}
             <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 space-y-3 flex flex-col justify-between">
               <div className="space-y-2">
                 <div className="flex justify-between items-center">
-                  <label htmlFor="file-faviconUrl" className="text-xs font-bold text-slate-800 cursor-pointer">Favicon Mark</label>
+                  <span className="text-xs font-bold text-slate-800">Favicon Mark</span>
                   {settingsForm.faviconUrl ? (
                     <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1.5 py-0.5 rounded border border-emerald-200">Custom Active</span>
                   ) : (
-                    <span className="text-[10px] text-slate-400 font-medium">Default</span>
+                    <span className="text-[10px] text-slate-500 font-bold bg-slate-100 px-1.5 py-0.5 rounded">Default Seal</span>
                   )}
                 </div>
-                <div className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden">
-                  {settingsForm.faviconUrl ? (
-                    <img src={settingsForm.faviconUrl} alt="Favicon" className="w-8 h-8 object-contain" />
-                  ) : (
-                    <span className="text-[11px] text-slate-400 font-medium">Default Seal</span>
-                  )}
+
+                <div
+                  className="h-20 bg-white rounded-lg border border-slate-200 p-2 flex items-center justify-center relative overflow-hidden group cursor-pointer"
+                  onClick={() => document.getElementById('file-faviconUrl')?.click()}
+                  title="Click to upload browser favicon icon"
+                >
+                  <img
+                    src={settingsForm.faviconUrl || '/brandlogo.png'}
+                    alt="Favicon"
+                    className="w-10 h-10 object-contain"
+                    onError={(e) => { (e.target as HTMLImageElement).src = '/brandlogo.png'; }}
+                  />
                   {uploadingLogoField === 'faviconUrl' && (
-                    <div className="absolute inset-0 bg-white/90 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
+                    <div className="absolute inset-0 bg-white/95 flex items-center justify-center gap-1.5 text-xs font-bold text-blue-600">
                       <div className="w-3.5 h-3.5 border-2 border-blue-600 border-t-transparent rounded-full animate-spin" />
                       Uploading...
                     </div>
                   )}
                 </div>
+
+                <input
+                  id="file-faviconUrl"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'faviconUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-faviconUrl"
-                    className="flex-1 px-3 py-2 bg-blue-50 text-blue-600 hover:bg-blue-100 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
+                    className="flex-1 px-3 py-2 bg-blue-50 hover:bg-blue-100 text-blue-700 text-center rounded-lg text-xs font-bold cursor-pointer transition-colors flex items-center justify-center gap-1.5 border border-blue-200"
                   >
                     <Upload className="w-3.5 h-3.5" />
                     {uploadingLogoField === 'faviconUrl' ? 'Uploading...' : 'Upload'}
-                    <input
-                      id="file-faviconUrl"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'faviconUrl')}
-                    />
                   </label>
                   {settingsForm.faviconUrl && (
                     <button
@@ -999,6 +1197,14 @@ export const SiteCustomizationPanel: React.FC = () => {
                   )}
                 </div>
 
+                <input
+                  id="file-cert-stamp"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'certificateStampLogoUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-cert-stamp"
@@ -1006,14 +1212,6 @@ export const SiteCustomizationPanel: React.FC = () => {
                   >
                     <Upload className="w-4 h-4" />
                     {uploadingLogoField === 'certificateStampLogoUrl' ? 'Uploading Stamp...' : 'Upload Stamp Image'}
-                    <input
-                      id="file-cert-stamp"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'certificateStampLogoUrl')}
-                    />
                   </label>
                   {settingsForm.certificateStampLogoUrl && (
                     <button
@@ -1083,6 +1281,14 @@ export const SiteCustomizationPanel: React.FC = () => {
                   )}
                 </div>
 
+                <input
+                  id="file-cert-signature"
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={(e) => handleLogoUpload(e, 'certificateSignatureUrl')}
+                />
+
                 <div className="flex gap-2">
                   <label
                     htmlFor="file-cert-signature"
@@ -1090,14 +1296,6 @@ export const SiteCustomizationPanel: React.FC = () => {
                   >
                     <Upload className="w-4 h-4" />
                     {uploadingLogoField === 'certificateSignatureUrl' ? 'Uploading Signature...' : 'Upload Signature Image'}
-                    <input
-                      id="file-cert-signature"
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onClick={(e) => { (e.target as HTMLInputElement).value = ''; }}
-                      onChange={(e) => handleLogoUpload(e, 'certificateSignatureUrl')}
-                    />
                   </label>
                   {settingsForm.certificateSignatureUrl && (
                     <button
