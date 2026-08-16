@@ -102,7 +102,7 @@ const FAQ_DATA: FAQItem[] = [
     id: 'verification-system',
     category: 'verification',
     question: 'How does the online certificate and transcript verification system work?',
-    answer: 'Every student who successfully passes their practical evaluations and final project receives a tamper-proof certificate equipped with a unique Roll Number and Certificate ID. Anyone (including employers and embassies) can navigate to our official Verification Portal and instantly verify the student credential, grade, session, and transcript authenticity.',
+    answer: 'Every student who successfully passes their practical evaluations and final project receives a certificate equipped with a unique Roll Number and Certificate ID. Anyone (including employers and organizations) can navigate to our official Verification Portal and instantly verify the student credential, grade, session, and transcript authenticity.',
     highlights: [
       'Real-time public database lookup by Roll No or Name',
       'Official digitized academic transcript with seal and signature',
@@ -381,7 +381,7 @@ export const AboutFAQ: React.FC<AboutFAQProps> = ({ onOpenEnrollment, onNavigate
             Still have questions about a specific course or batch?
           </h3>
           <p className="text-xs sm:text-sm text-slate-300 max-w-xl">
-            Our admissions counselors and mentor Engr. Javed Akhtar are here to guide you through career selection, course registration, or credential validation.
+            Our admissions counselors and mentor Javed Hattar are here to guide you through career selection, course registration, or credential validation.
           </p>
         </div>
 

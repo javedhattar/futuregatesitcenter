@@ -8,6 +8,7 @@ import { Search, ShieldCheck, Award, AlertCircle, CheckCircle2, User, FileText, 
 import { useData } from '../context/DataContext';
 import { StudentResult } from '../types';
 import { CertificateViewer } from '../components/CertificateViewer';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export const VerificationView: React.FC = () => {
   const { data } = useData();
@@ -43,6 +44,13 @@ export const VerificationView: React.FC = () => {
 
   return (
     <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Certificate Verification', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-4xl mx-auto text-center space-y-3">

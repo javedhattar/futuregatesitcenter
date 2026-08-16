@@ -30,7 +30,7 @@ export const defaultSiteSettings: SiteSettings = {
     admission: true,
   },
 
-  footerDescription: 'Future Gates IT Center is an accredited IT training institute and digital software agency in Khushab, Punjab, Pakistan.',
+  footerDescription: 'Future Gates IT Center is a professional IT training institute and digital software agency in Khushab, Punjab, Pakistan.',
   footerPhone: '+92301-6775690',
   footerWhatsapp: '923016775690',
   footerEmail: 'futuregatesitcenter@gmail.com',
@@ -71,20 +71,20 @@ export const defaultSiteSettings: SiteSettings = {
 
   siteTitle: 'Future Gates IT Center — Where Skills Become Your Income',
   siteShortName: 'Future Gates IT',
-  metaDescription: 'Accredited IT training institute and digital agency in Khushab, Punjab, Pakistan. Verified student certificates, professional web development, graphic design, and AI automation courses.',
+  metaDescription: 'Professional IT training institute and digital agency in Khushab, Punjab, Pakistan. Verified student certificates, professional web development, graphic design, and AI automation courses.',
   metaKeywords: 'Future Gates IT Center, Javed Hattar, IT Institute Pakistan, Freelancing, Web Development, Graphic Design, Verification Khushab',
   authorName: 'Future Gates IT Center',
   ogImageUrl: '/brandlogo.png',
 
   socialMedia: {
-    facebook: 'https://facebook.com',
-    instagram: 'https://instagram.com',
-    youtube: 'https://youtube.com',
-    tiktok: 'https://tiktok.com',
-    linkedin: 'https://linkedin.com',
+    facebook: '',
+    instagram: '',
+    youtube: '',
+    tiktok: '',
+    linkedin: '',
     whatsapp: 'https://wa.me/923016775690',
-    github: 'https://github.com',
-    twitter: 'https://twitter.com',
+    github: '',
+    twitter: '',
   },
 
   contactInfo: {
@@ -127,6 +127,7 @@ interface DataContextType {
   deleteAdmission: (id: string) => Promise<boolean>;
   submitInquiry: (inquiry: Partial<ContactInquiry>) => Promise<boolean>;
   deleteInquiry: (id: string) => Promise<boolean>;
+  resendNotification: (type: 'admission' | 'inquiry', id: string) => Promise<{ success: boolean; error?: string }>;
   saveSettings: (settings: Partial<SiteSettings>) => Promise<boolean>;
   resetSettings: () => Promise<boolean>;
   saveMediaItem: (item: Partial<MediaItem>, base64Image?: string) => Promise<boolean>;
@@ -134,10 +135,10 @@ interface DataContextType {
 }
 
 const defaultHomepage: HomepageConfig = {
-  heroBadge: 'Accredited IT Center • Admissions Open 2026',
+  heroBadge: 'Professional IT Training • Admissions Open 2026',
   heroTitle: 'Advance Your Tech',
   heroSubtitle: 'Skills & Income.',
-  heroDescription: 'Expert-led training in Full-Stack Web Development, Graphic Design, Digital Marketing, AI Tools, and Office Automation. Verifiable certificates & direct job placement support.',
+  heroDescription: 'Expert-led training in Full-Stack Web Development, Graphic Design, Digital Marketing, AI Tools, and Office Automation. Verifiable certificates & direct freelancing guidance.',
   ctaPrimaryText: 'View All Courses',
   ctaSecondaryText: 'Verify Student Card',
   stats: {
@@ -148,7 +149,7 @@ const defaultHomepage: HomepageConfig = {
   },
   philosophyBadge: 'Our Core Pillars',
   philosophyTitle: 'Why Students Trust Future Gates I.T Center',
-  philosophyDescription: 'A modern practical curriculum, certified faculty, and direct freelancing guidance.'
+  philosophyDescription: 'A modern practical curriculum, experienced instructors, and direct freelancing guidance.'
 };
 
 const defaultContact: ContactConfig = {
@@ -156,11 +157,11 @@ const defaultContact: ContactConfig = {
   whatsapp: '923016775690',
   email: 'futuregatesitcenter@gmail.com',
   address: 'Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan',
-  facebook: 'https://facebook.com',
-  twitter: 'https://twitter.com',
-  linkedin: 'https://linkedin.com',
-  github: 'https://github.com',
-  youtube: 'https://youtube.com'
+  facebook: '',
+  twitter: '',
+  linkedin: '',
+  github: '',
+  youtube: ''
 };
 
 const defaultMentor: MentorConfig = {
@@ -281,9 +282,38 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
       if (res.ok) {
         const json = await res.json();
         if (json.success && json.data) {
-          setData(json.data);
+          let mergedData = { ...json.data };
+          const activeToken = token || localStorage.getItem('fg_admin_token');
+          if (activeToken) {
+            try {
+              const [admRes, inqRes] = await Promise.all([
+                fetch('/api/admissions', { headers: { Authorization: `Bearer ${activeToken}` } }),
+                fetch('/api/inquiries', { headers: { Authorization: `Bearer ${activeToken}` } })
+              ]);
+
+              if (admRes.ok) {
+                const admJson = await admRes.json();
+                if (admJson.success && Array.isArray(admJson.admissions)) {
+                  mergedData.admissions = admJson.admissions;
+                }
+              } else if (admRes.status === 401) {
+                setToken(null);
+              }
+
+              if (inqRes.ok) {
+                const inqJson = await inqRes.json();
+                if (inqJson.success && Array.isArray(inqJson.inquiries)) {
+                  mergedData.inquiries = inqJson.inquiries;
+                }
+              }
+            } catch (authErr) {
+              console.warn('Could not fetch protected admin records', authErr);
+            }
+          }
+
+          setData(mergedData);
           try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(json.data));
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(mergedData));
           } catch (e) {}
           setLoading(false);
           return;
@@ -298,7 +328,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   useEffect(() => {
     refreshData();
-  }, []);
+  }, [token]);
 
   const getHeaders = () => {
     const headers: Record<string, string> = {
@@ -760,6 +790,25 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return true;
   };
 
+  const resendNotification = async (type: 'admission' | 'inquiry', id: string): Promise<{ success: boolean; error?: string }> => {
+    try {
+      const res = await fetch('/api/notifications/resend', {
+        method: 'POST',
+        headers: getHeaders(),
+        body: JSON.stringify({ type, id })
+      });
+      const json = await res.json();
+      if (res.ok && json.success) {
+        await refreshData();
+        return { success: true };
+      }
+      return { success: false, error: json.error || 'Failed to resend notification' };
+    } catch (err: any) {
+      console.warn('Resend notification failed', err);
+      return { success: false, error: err.message || 'Network error' };
+    }
+  };
+
   const saveSettings = async (settings: Partial<SiteSettings>): Promise<boolean> => {
     const updatedSettings = {
       ...data.settings,
@@ -868,6 +917,7 @@ export const DataProvider: React.FC<{ children: React.ReactNode }> = ({ children
         deleteAdmission,
         submitInquiry,
         deleteInquiry,
+        resendNotification,
         saveSettings,
         resetSettings,
         saveMediaItem,

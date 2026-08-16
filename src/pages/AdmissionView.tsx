@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { GraduationCap, CheckCircle2, PhoneCall, Mail } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { useData } from '../context/DataContext';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export const AdmissionView: React.FC = () => {
   const { data, submitAdmission } = useData();
@@ -23,6 +24,7 @@ export const AdmissionView: React.FC = () => {
   const [courseId, setCourseId] = useState(courses[0]?.id || '');
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -33,16 +35,17 @@ export const AdmissionView: React.FC = () => {
     if (!fullName.trim() || !phone.trim() || !whatsapp.trim()) return;
 
     setLoading(true);
-    const newRecord = {
-      fullName,
-      fatherName,
-      phone,
-      whatsapp,
-      email,
+    const newRecord: any = {
+      fullName: fullName.trim(),
+      fatherName: fatherName.trim(),
+      phone: phone.trim(),
+      whatsapp: whatsapp.trim(),
+      email: email.trim(),
       courseId: courseId || courses[0]?.id,
       courseTitle: selectedCourseObj ? selectedCourseObj.title : 'Course',
-      address,
-      message,
+      address: address.trim(),
+      message: message.trim(),
+      website_hp: honeypot,
     };
 
     await submitAdmission(newRecord);
@@ -78,6 +81,13 @@ export const AdmissionView: React.FC = () => {
 
   return (
     <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Online Admission 2026', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-4xl mx-auto text-center space-y-3">
@@ -152,6 +162,18 @@ export const AdmissionView: React.FC = () => {
             </div>
           ) : (
             <form onSubmit={handleSubmit} className="space-y-4">
+              {/* Honeypot field for anti-spam */}
+              <input
+                type="text"
+                name="website_hp"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ display: 'none', position: 'absolute', left: '-9999px' }}
+                aria-hidden="true"
+              />
+
               <div className="border-b border-slate-100 pb-3">
                 <h3 className="text-lg font-bold font-display text-slate-900">Student Personal Information</h3>
                 <p className="text-xs text-slate-500">
@@ -218,7 +240,7 @@ export const AdmissionView: React.FC = () => {
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@example.com"
+                    placeholder="yourname@email.com"
                     className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-brand-blue focus:outline-none"
                   />
                 </div>

@@ -6,6 +6,7 @@
 import React from 'react';
 import { Shield, FileText, AlertCircle, Cookie, Megaphone, CheckCircle2, Lock, Eye, Mail, MapPin } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 interface LegalViewProps {
   type: 'privacy' | 'terms' | 'disclaimer' | 'cookies';
@@ -14,7 +15,8 @@ interface LegalViewProps {
 export const LegalView: React.FC<LegalViewProps> = ({ type }) => {
   if (type === 'privacy') {
     return (
-      <div className="pb-16 max-w-4xl mx-auto px-4 py-10 space-y-6">
+      <div className="pb-16 max-w-4xl mx-auto px-4 py-6 space-y-6">
+        <Breadcrumbs items={[{ name: 'Privacy Policy', isCurrent: true }]} />
         <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
           <div className="w-12 h-12 rounded-xl bg-blue-50 text-brand-blue flex items-center justify-center border border-blue-200 shadow-sm">
             <Shield className="w-6 h-6" />
@@ -124,7 +126,8 @@ export const LegalView: React.FC<LegalViewProps> = ({ type }) => {
 
   if (type === 'cookies') {
     return (
-      <div className="pb-16 max-w-4xl mx-auto px-4 py-10 space-y-6">
+      <div className="pb-16 max-w-4xl mx-auto px-4 py-6 space-y-6">
+        <Breadcrumbs items={[{ name: 'Cookie Policy', isCurrent: true }]} />
         <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
           <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shadow-sm">
             <Cookie className="w-6 h-6" />
@@ -196,7 +199,8 @@ export const LegalView: React.FC<LegalViewProps> = ({ type }) => {
 
   if (type === 'terms') {
     return (
-      <div className="pb-16 max-w-4xl mx-auto px-4 py-10 space-y-6">
+      <div className="pb-16 max-w-4xl mx-auto px-4 py-6 space-y-6">
+        <Breadcrumbs items={[{ name: 'Terms & Conditions', isCurrent: true }]} />
         <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
           <div className="w-12 h-12 rounded-xl bg-orange-50 text-brand-orange flex items-center justify-center border border-orange-200 shadow-sm">
             <FileText className="w-6 h-6" />
@@ -255,7 +259,8 @@ export const LegalView: React.FC<LegalViewProps> = ({ type }) => {
   }
 
   return (
-    <div className="pb-16 max-w-4xl mx-auto px-4 py-10 space-y-6">
+    <div className="pb-16 max-w-4xl mx-auto px-4 py-6 space-y-6">
+      <Breadcrumbs items={[{ name: 'Disclaimer Notice', isCurrent: true }]} />
       <div className="flex items-center gap-3 border-b border-slate-200 pb-4">
         <div className="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center border border-amber-200 shadow-sm">
           <AlertCircle className="w-6 h-6" />

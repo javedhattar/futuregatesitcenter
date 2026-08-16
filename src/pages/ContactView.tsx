@@ -7,6 +7,7 @@ import React, { useState } from 'react';
 import { Mail, Phone, MapPin, Send, Clock, CheckCircle2, MessageSquare, ExternalLink, Navigation } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
 import { useData } from '../context/DataContext';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export const ContactView: React.FC = () => {
   const { data, submitInquiry } = useData();
@@ -20,6 +21,7 @@ export const ContactView: React.FC = () => {
   const [phone, setPhone] = useState('');
   const [subject, setSubject] = useState('');
   const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -38,12 +40,13 @@ export const ContactView: React.FC = () => {
     if (!name.trim() || !phone.trim() || !message.trim()) return;
 
     setLoading(true);
-    const inquiry = {
-      name,
-      email,
-      phone,
-      subject: subject || 'General Inquiry',
-      message,
+    const inquiry: any = {
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim(),
+      subject: subject.trim() || 'General Inquiry',
+      message: message.trim(),
+      website_hp: honeypot,
     };
 
     await submitInquiry(inquiry);
@@ -73,7 +76,14 @@ export const ContactView: React.FC = () => {
   };
 
   return (
-    <div className="pb-16 space-y-12">
+    <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Contact Us', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-4xl mx-auto text-center space-y-3">
@@ -241,6 +251,18 @@ export const ContactView: React.FC = () => {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-4">
+                {/* Honeypot field for anti-spam */}
+                <input
+                  type="text"
+                  name="website_hp"
+                  value={honeypot}
+                  onChange={(e) => setHoneypot(e.target.value)}
+                  tabIndex={-1}
+                  autoComplete="off"
+                  style={{ display: 'none', position: 'absolute', left: '-9999px' }}
+                  aria-hidden="true"
+                />
+
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
                     <label className="block text-xs font-bold text-slate-700 mb-1">Your Name *</label>
@@ -274,7 +296,7 @@ export const ContactView: React.FC = () => {
                       type="email"
                       value={email}
                       onChange={(e) => setEmail(e.target.value)}
-                      placeholder="student@example.com"
+                      placeholder="yourname@email.com"
                       className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:ring-2 focus:ring-brand-blue focus:outline-none"
                     />
                   </div>

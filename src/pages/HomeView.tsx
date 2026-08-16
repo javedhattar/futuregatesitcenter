@@ -9,6 +9,7 @@ import { BookOpen, Award, ShieldCheck, ArrowRight, Star, Flame, Globe, CheckCirc
 import { useData } from '../context/DataContext';
 import { MentorSection } from '../components/MentorSection';
 import { TestimonialCarousel } from '../components/TestimonialCarousel';
+import { navigateTo } from '../utils/routes';
 
 interface HomeViewProps {
   setTab: (tab: string) => void;
@@ -36,7 +37,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
               transition={{ duration: 0.5 }}
               className="inline-block px-3 py-1 bg-blue-600/20 text-blue-400 border border-blue-400/30 rounded text-xs font-bold uppercase tracking-widest"
             >
-              {hp.heroBadge || 'Accredited IT Center • Admissions Open 2026'}
+              {hp.heroBadge || 'Professional IT Training • Admissions Open 2026'}
             </motion.div>
 
             <motion.h1
@@ -63,21 +64,29 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5, delay: 0.3 }}
-              className="flex flex-wrap gap-4 pt-2"
+              className="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-2"
             >
-              <button
-                onClick={() => setTab('courses')}
-                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-bold text-sm tracking-wide transition-all shadow-md flex items-center gap-2 cursor-pointer uppercase"
+              <a
+                href="/courses"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/courses');
+                }}
+                className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3.5 rounded-lg font-bold text-sm tracking-wide transition-all shadow-md flex items-center justify-center gap-2 cursor-pointer uppercase min-h-[44px]"
               >
                 <BookOpen className="w-4 h-4" /> {hp.ctaPrimaryText || 'View All Courses'}
-              </button>
+              </a>
 
-              <button
-                onClick={() => setTab('verification')}
-                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-7 py-3.5 rounded-lg font-bold text-sm tracking-wide transition-all flex items-center gap-2 cursor-pointer uppercase"
+              <a
+                href="/verification"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/verification');
+                }}
+                className="bg-white/10 hover:bg-white/20 border border-white/20 text-white px-7 py-3.5 rounded-lg font-bold text-sm tracking-wide transition-all flex items-center justify-center gap-2 cursor-pointer uppercase min-h-[44px]"
               >
                 <ShieldCheck className="w-4 h-4 text-emerald-400" /> Verify Student Card
-              </button>
+              </a>
             </motion.div>
           </div>
 
@@ -88,7 +97,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                 <div className="text-3xl font-extrabold text-orange-500 mb-1 font-display">
                   {hp.stats?.studentsCertified || '1,000+'}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Certified Graduates</div>
+                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Graduates Trained</div>
               </div>
 
               <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg">
@@ -130,12 +139,16 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                 <span className="text-xs font-bold text-blue-600 uppercase tracking-widest">Featured Programs</span>
                 <h2 className="text-2xl font-extrabold text-slate-900 font-display">Industry-Grade Bootcamps</h2>
               </div>
-              <button
-                onClick={() => setTab('courses')}
-                className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-wider"
+              <a
+                href="/courses"
+                onClick={(e) => {
+                  e.preventDefault();
+                  navigateTo('/courses');
+                }}
+                className="text-xs font-bold text-blue-600 hover:text-blue-800 flex items-center gap-1 uppercase tracking-wider cursor-pointer"
               >
                 All Courses <ChevronRight className="w-4 h-4" />
-              </button>
+              </a>
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
@@ -143,7 +156,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                 <div
                   key={course.id}
                   className="group bg-white p-6 rounded-2xl border-2 border-slate-200 shadow-sm hover:shadow-xl transition-all cursor-pointer flex flex-col justify-between"
-                  onClick={() => onOpenEnrollment(course.id)}
+                  onClick={() => navigateTo(`/courses/${course.id}`)}
                 >
                   <div className="space-y-4">
                     <div className="flex justify-between items-center">
@@ -156,7 +169,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                     </div>
 
                     <h3 className="text-lg font-bold text-slate-900 group-hover:text-blue-600 font-display transition-colors">
-                      {course.title}
+                      <a
+                        href={`/courses/${course.id}`}
+                        onClick={(e) => {
+                          e.preventDefault();
+                          navigateTo(`/courses/${course.id}`);
+                        }}
+                      >
+                        {course.title}
+                      </a>
                     </h3>
 
                     <p className="text-xs text-slate-500 leading-relaxed line-clamp-2">
@@ -175,9 +196,15 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
 
                   <div className="pt-4 mt-4 border-t border-slate-100 flex justify-between items-center text-xs font-bold text-blue-600">
                     <span className="text-slate-900 font-mono text-sm">{course.fee}</span>
-                    <span className="px-3 py-1 bg-orange-500 text-white rounded-full text-[10px] uppercase tracking-wider font-extrabold group-hover:bg-orange-600 transition-colors">
+                    <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onOpenEnrollment(course.id);
+                      }}
+                      className="px-3 py-1 bg-orange-500 text-white rounded-full text-[10px] uppercase tracking-wider font-extrabold hover:bg-orange-600 transition-colors"
+                    >
                       Enroll Now
-                    </span>
+                    </button>
                   </div>
                 </div>
               ))}
@@ -203,7 +230,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
             <form
               onSubmit={(e) => {
                 e.preventDefault();
-                setTab('verification');
+                navigateTo('/verification');
               }}
               className="space-y-4"
             >
@@ -250,7 +277,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                 Why Students Trust Future Gates I.T Center
               </h2>
               <p className="text-xs sm:text-sm text-slate-400">
-                A modern practical curriculum, certified faculty, and direct freelancing guidance.
+                A modern practical curriculum, experienced instructors, and direct freelancing guidance.
               </p>
             </div>
 
@@ -259,7 +286,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
                 <div className="w-10 h-10 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-sm">
                   01
                 </div>
-                <h3 className="font-bold text-sm text-white font-display">Certified & Verifiable</h3>
+                <h3 className="font-bold text-sm text-white font-display">Verifiable Certificates</h3>
                 <p className="text-xs text-slate-400 leading-relaxed">
                   Every graduate is awarded an official transcript indexed on our verification engine with Roll No search.
                 </p>
@@ -295,7 +322,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
       {/* Student Success Stories & Testimonials Carousel */}
       <TestimonialCarousel
         onOpenEnrollment={(courseId) => onOpenEnrollment(courseId)}
-        onNavigateVerification={() => setTab('verification')}
+        onNavigateVerification={() => navigateTo('/verification')}
       />
     </div>
   );

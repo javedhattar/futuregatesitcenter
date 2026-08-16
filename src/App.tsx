@@ -11,65 +11,50 @@ import { EnrollmentModal } from './components/EnrollmentModal';
 import { AdminDashboard } from './components/AdminDashboard';
 import { CookieBanner } from './components/CookieBanner';
 import { FloatingWhatsApp } from './components/FloatingWhatsApp';
+import { SEOHead } from './components/SEOHead';
 import { Course, BlogPost } from './types';
+import { parsePath, navigateTo } from './utils/routes';
 
 import { HomeView } from './pages/HomeView';
 import { AboutView } from './pages/AboutView';
 import { CoursesView } from './pages/CoursesView';
+import { CourseDetailView } from './pages/CourseDetailView';
 import { ServicesView } from './pages/ServicesView';
 import { VerificationView } from './pages/VerificationView';
 import { BlogsView } from './pages/BlogsView';
+import { BlogDetailView } from './pages/BlogDetailView';
 import { ContactView } from './pages/ContactView';
 import { AdmissionView } from './pages/AdmissionView';
 import { LegalView } from './pages/LegalViews';
+import { NotFoundView } from './pages/NotFoundView';
 
-function SiteHeadSync() {
+function AppContent() {
   const { data } = useData();
-  const settings = data?.settings;
+  const [currentPath, setCurrentPath] = useState<string>(() => {
+    return window.location.pathname || '/';
+  });
+  const [currentHash, setCurrentHash] = useState<string>(() => {
+    return window.location.hash || '';
+  });
 
-  useEffect(() => {
-    if (!settings) return;
-
-    if (settings.instituteName) {
-      document.title = `${settings.instituteName}${settings.tagline ? ` — ${settings.tagline}` : ''}`;
-    }
-
-    if (settings.faviconUrl) {
-      let iconLink = document.querySelector<HTMLLinkElement>("link[rel*='icon']");
-      if (!iconLink) {
-        iconLink = document.createElement('link');
-        iconLink.rel = 'shortcut icon';
-        document.getElementsByTagName('head')[0].appendChild(iconLink);
-      }
-      iconLink.href = settings.faviconUrl;
-    }
-  }, [settings?.instituteName, settings?.tagline, settings?.faviconUrl]);
-
-  return null;
-}
-
-export default function App() {
-  const [currentTab, setCurrentTab] = useState<string>('home');
   const [isEnrollmentOpen, setIsEnrollmentOpen] = useState(false);
   const [enrollCourseId, setEnrollCourseId] = useState<string | undefined>(undefined);
   const [isAdminOpen, setIsAdminOpen] = useState(false);
 
-  // Global search navigation states
+  // Global search navigation state
   const [courseSearchQuery, setCourseSearchQuery] = useState<string>('');
-  const [selectedCourseForDetail, setSelectedCourseForDetail] = useState<Course | null>(null);
   const [blogSearchQuery, setBlogSearchQuery] = useState<string>('');
-  const [selectedBlogForDetail, setSelectedBlogForDetail] = useState<BlogPost | null>(null);
 
-  // Sync state with URL Hash and Pathname for seamless SPA & Admin routing
+  // Synchronize route state with window.location
   useEffect(() => {
-    const checkRoute = () => {
+    const handleRouteChange = () => {
       const path = window.location.pathname;
-      const hash = window.location.hash.replace('#', '');
+      const hash = window.location.hash;
+      setCurrentPath(path);
+      setCurrentHash(hash);
 
       if (path === '/admin' || path.startsWith('/admin/')) {
         setIsAdminOpen(true);
-      } else if (hash) {
-        setCurrentTab(hash);
       }
     };
 
@@ -81,32 +66,40 @@ export default function App() {
       }
     };
 
-    checkRoute();
-    window.addEventListener('hashchange', checkRoute);
-    window.addEventListener('popstate', checkRoute);
+    handleRouteChange();
+    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener('hashchange', handleRouteChange);
+    window.addEventListener('app:navigate', handleRouteChange);
     window.addEventListener('keydown', handleKeyDown);
+
     return () => {
-      window.removeEventListener('hashchange', checkRoute);
-      window.removeEventListener('popstate', checkRoute);
+      window.removeEventListener('popstate', handleRouteChange);
+      window.removeEventListener('hashchange', handleRouteChange);
+      window.removeEventListener('app:navigate', handleRouteChange);
       window.removeEventListener('keydown', handleKeyDown);
     };
   }, []);
 
-  const handleSetTab = (tab: string) => {
-    setCurrentTab(tab);
-    window.location.hash = tab;
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
+  const routeInfo = parsePath(currentPath, currentHash);
+
+  // Look up course or blog if on a detail page
+  const matchedCourse: Course | undefined = routeInfo.tab === 'course-detail' && routeInfo.courseSlug
+    ? data.courses?.find((c) => c.id.toLowerCase() === routeInfo.courseSlug?.toLowerCase())
+    : undefined;
+
+  const matchedBlog: BlogPost | undefined = routeInfo.tab === 'blog-detail' && routeInfo.blogSlug
+    ? data.blogs?.find((b) => b.slug.toLowerCase() === routeInfo.blogSlug?.toLowerCase() || b.id.toLowerCase() === routeInfo.blogSlug?.toLowerCase())
+    : undefined;
 
   const handleOpenAdmin = () => {
     setIsAdminOpen(true);
-    window.history.pushState(null, '', '/admin');
+    navigateTo('/admin');
   };
 
   const handleCloseAdmin = () => {
     setIsAdminOpen(false);
     if (window.location.pathname.startsWith('/admin')) {
-      window.history.pushState(null, '', window.location.hash || '#home');
+      navigateTo('/');
     }
   };
 
@@ -116,37 +109,122 @@ export default function App() {
   };
 
   const handleSelectCourseFromSearch = (course: Course) => {
-    setSelectedCourseForDetail(course);
-    setCourseSearchQuery('');
-    handleSetTab('courses');
+    navigateTo(`/courses/${course.id}`);
   };
 
   const handleSelectBlogFromSearch = (blog: BlogPost) => {
-    setSelectedBlogForDetail(blog);
-    setBlogSearchQuery('');
-    handleSetTab('blogs');
+    navigateTo(`/blogs/${blog.slug}`);
   };
 
   const handleSearchCoursesTab = (query: string) => {
     setCourseSearchQuery(query);
-    setSelectedCourseForDetail(null);
-    handleSetTab('courses');
+    navigateTo('/courses');
   };
 
   const handleSearchBlogsTab = (query: string) => {
     setBlogSearchQuery(query);
-    setSelectedBlogForDetail(null);
-    handleSetTab('blogs');
+    navigateTo('/blogs');
+  };
+
+  const renderCurrentView = () => {
+    switch (routeInfo.tab) {
+      case 'home':
+        return (
+          <HomeView
+            setTab={(tab) => navigateTo(`/${tab === 'home' ? '' : tab}`)}
+            onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+          />
+        );
+
+      case 'about':
+        return (
+          <AboutView
+            setTab={(tab) => navigateTo(`/${tab === 'home' ? '' : tab}`)}
+            onOpenEnrollment={() => handleOpenEnrollment()}
+          />
+        );
+
+      case 'courses':
+        return (
+          <CoursesView
+            onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+            initialSearchQuery={courseSearchQuery}
+          />
+        );
+
+      case 'course-detail':
+        return (
+          <CourseDetailView
+            courseId={routeInfo.courseSlug || ''}
+            onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+          />
+        );
+
+      case 'services':
+        return <ServicesView />;
+
+      case 'verification':
+        return <VerificationView />;
+
+      case 'blogs':
+        return (
+          <BlogsView
+            initialSearchQuery={blogSearchQuery}
+          />
+        );
+
+      case 'blog-detail':
+        return (
+          <BlogDetailView
+            slug={routeInfo.blogSlug || ''}
+            onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+          />
+        );
+
+      case 'contact':
+        return <ContactView />;
+
+      case 'admission':
+        return <AdmissionView />;
+
+      case 'privacy':
+        return <LegalView type="privacy" />;
+
+      case 'terms':
+        return <LegalView type="terms" />;
+
+      case 'disclaimer':
+        return <LegalView type="disclaimer" />;
+
+      case 'cookies':
+        return <LegalView type="cookies" />;
+
+      case 'admin':
+        return (
+          <HomeView
+            setTab={(tab) => navigateTo(`/${tab === 'home' ? '' : tab}`)}
+            onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
+          />
+        );
+
+      case '404':
+      default:
+        return <NotFoundView />;
+    }
   };
 
   return (
-    <DataProvider>
-      <SiteHeadSync />
+    <>
+      <SEOHead
+        pathname={routeInfo.pathname}
+        course={matchedCourse}
+        blog={matchedBlog}
+      />
       <div className="flex flex-col min-h-screen bg-brand-bg text-slate-800 font-sans selection:bg-brand-orange selection:text-white">
         {/* Header Bar */}
         <Header
-          currentTab={currentTab}
-          setTab={handleSetTab}
+          currentTab={routeInfo.tab}
+          setTab={(tab) => navigateTo(`/${tab === 'home' ? '' : tab}`)}
           onOpenEnrollment={() => handleOpenEnrollment()}
           onOpenAdmin={handleOpenAdmin}
           onSelectCourse={handleSelectCourseFromSearch}
@@ -156,58 +234,13 @@ export default function App() {
         />
 
         {/* Main View Router */}
-        <main className="grow w-full">
-          {currentTab === 'home' && (
-            <HomeView
-              setTab={handleSetTab}
-              onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
-            />
-          )}
-
-          {currentTab === 'about' && (
-            <AboutView
-              setTab={handleSetTab}
-              onOpenEnrollment={() => handleOpenEnrollment()}
-            />
-          )}
-
-          {currentTab === 'courses' && (
-            <CoursesView
-              onOpenEnrollment={(cId) => handleOpenEnrollment(cId)}
-              initialSearchQuery={courseSearchQuery}
-              initialSelectedCourse={selectedCourseForDetail}
-              onClearInitialSelection={() => setSelectedCourseForDetail(null)}
-            />
-          )}
-
-          {currentTab === 'services' && <ServicesView />}
-
-          {currentTab === 'verification' && <VerificationView />}
-
-          {currentTab === 'blogs' && (
-            <BlogsView 
-              initialSearchQuery={blogSearchQuery}
-              initialSelectedBlog={selectedBlogForDetail}
-              onClearInitialSelection={() => setSelectedBlogForDetail(null)}
-            />
-          )}
-
-          {currentTab === 'contact' && <ContactView />}
-
-          {currentTab === 'admission' && <AdmissionView />}
-
-          {currentTab === 'privacy' && <LegalView type="privacy" />}
-
-          {currentTab === 'terms' && <LegalView type="terms" />}
-
-          {currentTab === 'disclaimer' && <LegalView type="disclaimer" />}
-
-          {currentTab === 'cookies' && <LegalView type="cookies" />}
+        <main id="main-content" className="grow w-full">
+          {renderCurrentView()}
         </main>
 
         {/* Footer */}
         <Footer
-          setTab={handleSetTab}
+          setTab={(tab) => navigateTo(`/${tab === 'home' ? '' : tab}`)}
           onOpenAdmin={handleOpenAdmin}
         />
 
@@ -225,11 +258,19 @@ export default function App() {
         />
 
         {/* AdSense / GDPR Cookie Consent Banner */}
-        <CookieBanner onNavigateToCookies={() => handleSetTab('cookies')} />
+        <CookieBanner onNavigateToCookies={() => navigateTo('/cookies')} />
 
         {/* Global Floating Official WhatsApp CTA */}
         <FloatingWhatsApp />
       </div>
+    </>
+  );
+}
+
+export default function App() {
+  return (
+    <DataProvider>
+      <AppContent />
     </DataProvider>
   );
 }

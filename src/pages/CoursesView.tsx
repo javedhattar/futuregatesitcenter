@@ -3,10 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { Search, BookOpen, Clock, CheckCircle2, ChevronRight, GraduationCap, X, Sparkles } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Search, BookOpen, Clock, CheckCircle2, ChevronRight, GraduationCap, X, Sparkles, ArrowRight } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { Course } from '../types';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { navigateTo } from '../utils/routes';
 
 interface CoursesViewProps {
   onOpenEnrollment: (courseId?: string) => void;
@@ -27,20 +29,51 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
   const [detailCourse, setDetailCourse] = useState<Course | null>(initialSelectedCourse);
 
   // Sync if props change
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialSearchQuery) {
       setSearch(initialSearchQuery);
       setSelectedCategory('All');
     }
   }, [initialSearchQuery]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialSelectedCourse) {
       setDetailCourse(initialSelectedCourse);
     }
   }, [initialSelectedCourse]);
 
-  const categories = ['All', 'Development', 'Design', 'Technical', 'Short Courses', 'Artificial Intelligence'];
+  // Modal accessibility
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && detailCourse) {
+        setDetailCourse(null);
+        onClearInitialSelection?.();
+      }
+    };
+
+    if (detailCourse) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [detailCourse, onClearInitialSelection]);
+
+  const categories = [
+    'All',
+    'Computer & Office',
+    'Design & Media',
+    'Web & Freelancing',
+    'Artificial Intelligence',
+    'Programming & Data',
+    'Digital Business',
+    'Advanced IT'
+  ];
 
   const allCourses = (data.courses || []).filter((c) => c.status !== 'Inactive');
 
@@ -57,6 +90,13 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
 
   return (
     <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Courses', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-5xl mx-auto text-center space-y-4">
@@ -64,7 +104,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
             <Sparkles className="w-3.5 h-3.5" /> Technical Programs & Diplomas
           </span>
           <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight">
-            Accredited IT Courses & Skills Bootcamps
+            Professional IT Courses & Skills Bootcamps
           </h1>
           <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto">
             Practical classroom and online training programs engineered to transform absolute beginners into high-earning software developers, designers, and marketers.
@@ -83,7 +123,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               placeholder="Search courses, e.g. Web, Office, AI..."
-              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+              className="w-full pl-10 pr-4 py-2 bg-slate-50 border border-slate-300 rounded-xl text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
             />
           </div>
 
@@ -93,7 +133,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               <button
                 key={cat}
                 onClick={() => setSelectedCategory(cat)}
-                className={`px-3.5 py-1.5 text-xs font-bold rounded-xl whitespace-nowrap transition-all cursor-pointer ${
+                className={`px-3.5 py-2 text-xs font-bold rounded-xl whitespace-nowrap transition-all cursor-pointer min-h-[40px] ${
                   selectedCategory === cat
                     ? 'bg-brand-blue text-white shadow-sm'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
@@ -114,16 +154,35 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
             >
               <div className="p-6 space-y-4">
                 <div className="flex justify-between items-center bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-                  <span className="px-2.5 py-1 bg-brand-blue/10 text-brand-blue text-[10px] font-extrabold rounded-lg uppercase">
-                    {course.category}
-                  </span>
+                  <div className="flex items-center gap-1.5 flex-wrap">
+                    <span className="px-2.5 py-1 bg-brand-blue/10 text-brand-blue text-[10px] font-extrabold rounded-lg uppercase">
+                      {course.category}
+                    </span>
+                    {course.status && (
+                      <span className={`px-2 py-0.5 text-[9px] font-bold rounded-md uppercase tracking-wider ${
+                        course.status === 'Coming Soon'
+                          ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                          : 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                      }`}>
+                        {course.status}
+                      </span>
+                    )}
+                  </div>
                   <span className="text-xs font-bold text-slate-600 font-mono flex items-center gap-1">
                     <Clock className="w-3.5 h-3.5 text-brand-orange" /> {course.duration}
                   </span>
                 </div>
 
                 <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-blue font-display transition-colors">
-                  {course.title}
+                  <a
+                    href={`/courses/${course.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo(`/courses/${course.id}`);
+                    }}
+                  >
+                    {course.title}
+                  </a>
                 </h3>
 
                 <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
@@ -149,15 +208,19 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                 </div>
 
                 <div className="flex gap-2">
-                  <button
-                    onClick={() => setDetailCourse(course)}
-                    className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                  <a
+                    href={`/courses/${course.id}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo(`/courses/${course.id}`);
+                    }}
+                    className="px-3 py-2 bg-slate-200 hover:bg-slate-300 text-slate-800 text-xs font-bold rounded-lg transition-colors cursor-pointer min-h-[38px] flex items-center"
                   >
                     Syllabus
-                  </button>
+                  </a>
                   <button
                     onClick={() => onOpenEnrollment(course.id)}
-                    className="px-3.5 py-2 bg-brand-blue hover:bg-brand-blue-light text-white text-xs font-bold rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-sm"
+                    className="px-3.5 py-2 bg-brand-blue hover:bg-brand-blue-light text-white text-xs font-bold rounded-lg flex items-center gap-1 transition-all cursor-pointer shadow-sm min-h-[38px]"
                   >
                     <GraduationCap className="w-4 h-4" /> Enroll
                   </button>
@@ -177,7 +240,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                 setSearch('');
                 setSelectedCategory('All');
               }}
-              className="px-4 py-2 bg-brand-blue text-white font-bold text-xs rounded-lg cursor-pointer"
+              className="px-4 py-2 bg-brand-blue text-white font-bold text-xs rounded-lg cursor-pointer min-h-[44px]"
             >
               Reset Filters
             </button>
@@ -187,26 +250,32 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
 
       {/* Course Detail / Syllabus Modal */}
       {detailCourse && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-8">
-            <div className="bg-brand-blue text-white p-6 relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="course-syllabus-title"
+        >
+          <div className="bg-white rounded-2xl shadow-2xl max-w-2xl w-full overflow-hidden border border-slate-200 my-4 sm:my-8 max-h-[92vh] flex flex-col">
+            <div className="bg-brand-blue text-white p-4 sm:p-6 relative shrink-0">
               <button
                 onClick={() => {
                   setDetailCourse(null);
                   onClearInitialSelection?.();
                 }}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer"
+                aria-label="Close syllabus details"
               >
                 <X className="w-5 h-5" />
               </button>
               <span className="px-2.5 py-1 bg-brand-orange text-white text-[10px] font-bold rounded uppercase">
                 {detailCourse.category}
               </span>
-              <h3 className="text-2xl font-bold font-display mt-2">{detailCourse.title}</h3>
+              <h3 id="course-syllabus-title" className="text-xl sm:text-2xl font-bold font-display mt-2 pr-8">{detailCourse.title}</h3>
               <p className="text-xs text-slate-200 mt-1">Duration: {detailCourse.duration} | Fee: {detailCourse.fee}</p>
             </div>
 
-            <div className="p-6 space-y-6 max-h-[70vh] overflow-y-auto">
+            <div className="p-4 sm:p-6 space-y-6 overflow-y-auto">
               <div>
                 <h4 className="font-bold text-xs text-slate-900 uppercase tracking-wide mb-2">Program Overview</h4>
                 <p className="text-xs text-slate-600 leading-relaxed">{detailCourse.longDescription}</p>
@@ -239,12 +308,15 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
               </div>
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-between items-center">
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-center gap-3 shrink-0">
               <span className="text-xs font-mono font-bold text-brand-orange">{detailCourse.fee}</span>
-              <div className="flex gap-2">
+              <div className="flex gap-2 w-full sm:w-auto">
                 <button
-                  onClick={() => setDetailCourse(null)}
-                  className="px-4 py-2 bg-slate-200 text-slate-700 font-bold text-xs rounded-lg"
+                  onClick={() => {
+                    setDetailCourse(null);
+                    onClearInitialSelection?.();
+                  }}
+                  className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-200 text-slate-700 font-bold text-xs rounded-lg cursor-pointer min-h-[44px]"
                 >
                   Close
                 </button>
@@ -252,9 +324,10 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
                   onClick={() => {
                     const cId = detailCourse.id;
                     setDetailCourse(null);
+                    onClearInitialSelection?.();
                     onOpenEnrollment(cId);
                   }}
-                  className="px-5 py-2 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs rounded-lg shadow"
+                  className="flex-1 sm:flex-none px-5 py-2.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs rounded-lg shadow cursor-pointer min-h-[44px]"
                 >
                   Apply For Admission
                 </button>

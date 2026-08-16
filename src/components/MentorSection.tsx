@@ -143,13 +143,11 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ onOpenEnrollment }
 
                 {/* Mentor Card Footer Info */}
                 <div className="mt-4 text-center space-y-1 z-10 w-full">
-                  <div className="flex items-center justify-center gap-1 text-amber-400">
-                    {[...Array(5)].map((_, i) => (
-                      <Star key={i} className="w-3.5 h-3.5 fill-amber-400" />
-                    ))}
-                    <span className="text-xs font-bold text-slate-300 ml-1">5.0 Star Rated Instructor</span>
+                  <div className="inline-flex items-center justify-center gap-1.5 px-3 py-1 bg-brand-orange/20 border border-brand-orange/30 rounded-full text-brand-orange text-xs font-bold uppercase tracking-wider mx-auto">
+                    <Sparkles className="w-3.5 h-3.5" />
+                    <span>Lead IT Instructor & Mentor</span>
                   </div>
-                  <h3 className="text-2xl font-black font-display text-white">{mentor.name}</h3>
+                  <h3 className="text-2xl font-black font-display text-white mt-2">{mentor.name}</h3>
                   <p className="text-xs font-bold text-brand-orange uppercase tracking-wider">
                     {mentor.title}
                   </p>
@@ -218,11 +216,11 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ onOpenEnrollment }
             </div>
 
             {/* Direct Action Buttons */}
-            <div className="pt-2 flex flex-wrap gap-4">
+            <div className="pt-2 flex flex-col sm:flex-row gap-3 sm:gap-4">
               {onOpenEnrollment && (
                 <button
                   onClick={onOpenEnrollment}
-                  className="bg-brand-orange hover:bg-brand-orange-dark text-white px-7 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center gap-2 cursor-pointer"
+                  className="bg-brand-orange hover:bg-brand-orange-dark text-white px-7 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg flex items-center justify-center gap-2 cursor-pointer min-h-[44px]"
                 >
                   <GraduationCap className="w-4 h-4" /> Enroll Under Mentor
                 </button>
@@ -232,13 +230,12 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ onOpenEnrollment }
                 href={whatsappUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/25 flex items-center gap-2 cursor-pointer hover:scale-[1.02]"
+                className="bg-[#25D366] hover:bg-[#20bd5a] text-white px-6 py-3 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-lg shadow-emerald-500/25 flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.02] min-h-[44px]"
               >
                 <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center">
                   <WhatsAppIcon className="w-3 h-3 text-white" />
                 </div>
                 <span>Mentor WhatsApp Consultation</span>
-                <span className="font-mono text-white/90 text-[11px] font-semibold">(+92301-6775690)</span>
               </a>
             </div>
           </div>

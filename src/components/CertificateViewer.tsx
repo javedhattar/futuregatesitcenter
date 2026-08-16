@@ -23,7 +23,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, on
   };
 
   const instituteName = settings?.instituteName || 'Future Gates I.T Center';
-  const tagline = settings?.tagline || 'Accredited Professional IT Training & Skill Certification Authority';
+  const tagline = settings?.tagline || 'Where Skills Become Your Income';
   const address = settings?.contactInfo?.address || settings?.footerAddress || 'Punjab, Pakistan';
   const email = settings?.contactInfo?.email || settings?.footerEmail || 'futuregatesitcenter@gmail.com';
   const phone = settings?.contactInfo?.phone || settings?.headerPhone || '+92301-6775690';
@@ -63,12 +63,12 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, on
       </div>
 
       {/* Official Certificate Document Card */}
-      <div className="print-card bg-white rounded-2xl shadow-xl border-4 border-brand-blue/30 p-6 sm:p-10 relative overflow-hidden">
+      <div className="print-card bg-white rounded-2xl shadow-xl border-4 border-brand-blue/30 p-4 sm:p-6 md:p-10 relative overflow-hidden">
         {/* Decorative corner borders */}
-        <div className="absolute top-0 left-0 w-16 h-16 border-t-8 border-l-8 border-brand-orange" />
-        <div className="absolute top-0 right-0 w-16 h-16 border-t-8 border-r-8 border-brand-orange" />
-        <div className="absolute bottom-0 left-0 w-16 h-16 border-b-8 border-l-8 border-brand-orange" />
-        <div className="absolute bottom-0 right-0 w-16 h-16 border-b-8 border-r-8 border-brand-orange" />
+        <div className="absolute top-0 left-0 w-10 sm:w-16 h-10 sm:h-16 border-t-4 sm:border-t-8 border-l-4 sm:border-l-8 border-brand-orange" />
+        <div className="absolute top-0 right-0 w-10 sm:w-16 h-10 sm:h-16 border-t-4 sm:border-t-8 border-r-4 sm:border-r-8 border-brand-orange" />
+        <div className="absolute bottom-0 left-0 w-10 sm:w-16 h-10 sm:h-16 border-b-4 sm:border-b-8 border-l-4 sm:border-l-8 border-brand-orange" />
+        <div className="absolute bottom-0 right-0 w-10 sm:w-16 h-10 sm:h-16 border-b-4 sm:border-b-8 border-r-4 sm:border-r-8 border-brand-orange" />
 
         {/* Certificate Header with Official Logo */}
         <div className="text-center space-y-3 border-b-2 border-slate-200 pb-6">

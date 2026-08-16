@@ -3,11 +3,13 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Search, BookOpen, Clock, User, ArrowRight, X, Calendar, Tag } from 'lucide-react';
 import { useData } from '../context/DataContext';
 import { BlogPost } from '../types';
 import { AdSlot } from '../components/AdSlot';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { navigateTo } from '../utils/routes';
 
 interface BlogsViewProps {
   initialSearchQuery?: string;
@@ -24,17 +26,39 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
   const [search, setSearch] = useState(initialSearchQuery);
   const [selectedArticle, setSelectedArticle] = useState<BlogPost | null>(initialSelectedBlog);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialSearchQuery) {
       setSearch(initialSearchQuery);
     }
   }, [initialSearchQuery]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (initialSelectedBlog) {
       setSelectedArticle(initialSelectedBlog);
     }
   }, [initialSelectedBlog]);
+
+  // Modal accessibility
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && selectedArticle) {
+        setSelectedArticle(null);
+        onClearInitialSelection?.();
+      }
+    };
+
+    if (selectedArticle) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [selectedArticle, onClearInitialSelection]);
 
   const publishedBlogs = (data.blogs || []).filter((b) => b.isPublished !== false);
 
@@ -46,6 +70,13 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
 
   return (
     <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Blogs', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-4xl mx-auto text-center space-y-3">
@@ -70,7 +101,7 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search articles by title, topic..."
-            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-blue"
+            className="w-full pl-10 pr-4 py-2.5 bg-white border border-slate-300 rounded-xl text-xs text-slate-900 shadow-sm focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
           />
         </div>
 
@@ -92,7 +123,15 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
                 </div>
 
                 <h3 className="text-lg font-bold text-slate-900 group-hover:text-brand-blue font-display transition-colors">
-                  {blog.title}
+                  <a
+                    href={`/blogs/${blog.slug}`}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      navigateTo(`/blogs/${blog.slug}`);
+                    }}
+                  >
+                    {blog.title}
+                  </a>
                 </h3>
 
                 <p className="text-xs text-slate-600 leading-relaxed line-clamp-3">
@@ -108,12 +147,16 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
               </div>
 
               <div className="p-5 bg-slate-50 border-t border-slate-100 flex justify-end">
-                <button
-                  onClick={() => setSelectedArticle(blog)}
-                  className="px-4 py-2 bg-brand-blue hover:bg-brand-blue-light text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-sm"
+                <a
+                  href={`/blogs/${blog.slug}`}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    navigateTo(`/blogs/${blog.slug}`);
+                  }}
+                  className="px-4 py-2.5 bg-brand-blue hover:bg-brand-blue-light text-white text-xs font-bold rounded-lg flex items-center gap-1.5 transition-all cursor-pointer shadow-sm min-h-[40px]"
                 >
                   Read Article <ArrowRight className="w-3.5 h-3.5" />
-                </button>
+                </a>
               </div>
             </article>
           ))}
@@ -122,15 +165,21 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
 
       {/* Full Article Reader Modal */}
       {selectedArticle && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-4 overflow-y-auto">
-          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full my-8 overflow-hidden border border-slate-200">
-            <div className="bg-brand-blue text-white p-6 sm:p-8 relative">
+        <div 
+          className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/80 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="article-reader-title"
+        >
+          <div className="bg-white rounded-2xl shadow-2xl max-w-3xl w-full my-4 sm:my-8 overflow-hidden border border-slate-200 max-h-[92vh] flex flex-col">
+            <div className="bg-brand-blue text-white p-4 sm:p-8 relative shrink-0">
               <button
                 onClick={() => {
                   setSelectedArticle(null);
                   onClearInitialSelection?.();
                 }}
-                className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white"
+                className="absolute top-4 right-4 sm:top-5 sm:right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white cursor-pointer"
+                aria-label="Close article"
               >
                 <X className="w-5 h-5" />
               </button>
@@ -142,7 +191,7 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
                   <Clock className="w-3.5 h-3.5" /> {selectedArticle.readTime}
                 </span>
               </div>
-              <h2 className="text-2xl sm:text-3xl font-extrabold font-display leading-tight">
+              <h2 id="article-reader-title" className="text-xl sm:text-3xl font-extrabold font-display leading-tight pr-8">
                 {selectedArticle.title}
               </h2>
               <p className="text-xs text-slate-200 mt-2 flex items-center gap-2">
@@ -150,7 +199,7 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
               </p>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-4 max-h-[65vh] overflow-y-auto text-slate-700 text-xs sm:text-sm leading-relaxed">
+            <div className="p-4 sm:p-8 space-y-4 overflow-y-auto text-slate-700 text-xs sm:text-sm leading-relaxed">
               {selectedArticle.content.map((p, idx) => (
                 <React.Fragment key={idx}>
                   <p className="leading-relaxed">{p}</p>
@@ -170,10 +219,13 @@ export const BlogsView: React.FC<BlogsViewProps> = ({
               )}
             </div>
 
-            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end">
+            <div className="p-4 bg-slate-50 border-t border-slate-200 flex justify-end shrink-0">
               <button
-                onClick={() => setSelectedArticle(null)}
-                className="px-6 py-2.5 bg-slate-900 text-white font-bold text-xs rounded-xl cursor-pointer"
+                onClick={() => {
+                  setSelectedArticle(null);
+                  onClearInitialSelection?.();
+                }}
+                className="w-full sm:w-auto px-6 py-2.5 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs rounded-xl cursor-pointer min-h-[44px]"
               >
                 Close Article
               </button>

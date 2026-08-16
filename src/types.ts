@@ -6,8 +6,8 @@
 export interface Course {
   id: string;
   title: string;
-  duration: string; // e.g., "3 Months", "6 Months"
-  category: 'Development' | 'Design' | 'Technical' | 'Short Courses' | 'Artificial Intelligence' | string;
+  duration: string; // e.g., "3 Months", "6 Months", "Contact for Schedule"
+  category: 'Computer & Office' | 'Design & Media' | 'Web & Freelancing' | 'Artificial Intelligence' | 'Programming & Data' | 'Digital Business' | 'Advanced IT' | 'Development' | 'Design' | 'Technical' | 'Short Courses' | string;
   description: string;
   longDescription: string;
   fee: string;
@@ -15,7 +15,7 @@ export interface Course {
   skillsGained: string[];
   featured: boolean;
   imageUrl?: string;
-  status?: 'Active' | 'Inactive';
+  status?: 'Available Now' | 'Coming Soon' | 'Active' | 'Inactive' | string;
   order?: number;
 }
 
@@ -287,6 +287,10 @@ export interface ContactInquiry {
   subject: string;
   message: string;
   submittedAt: string;
+  emailStatus?: 'sent' | 'failed' | 'pending';
+  emailError?: string;
+  emailDispatchedAt?: string;
+  source?: string;
 }
 
 export interface EnrollmentApplication {
@@ -301,6 +305,10 @@ export interface EnrollmentApplication {
   address: string;
   message?: string;
   submittedAt: string;
+  emailStatus?: 'sent' | 'failed' | 'pending';
+  emailError?: string;
+  emailDispatchedAt?: string;
+  source?: string;
 }
 
 export interface StudentActivityAd {

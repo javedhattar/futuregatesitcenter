@@ -8,6 +8,7 @@ import { useData } from '../context/DataContext';
 import { Service } from '../types';
 import { CheckCircle2, Sparkles, Building2, Store } from 'lucide-react';
 import { WhatsAppIcon } from '../components/WhatsAppIcon';
+import { Breadcrumbs } from '../components/Breadcrumbs';
 
 export const ServicesView: React.FC = () => {
   const { data } = useData();
@@ -28,7 +29,14 @@ export const ServicesView: React.FC = () => {
   };
 
   return (
-    <div className="pb-16 space-y-12">
+    <div className="pb-16 space-y-10">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'Services', isCurrent: true }
+        ]}
+      />
+
       {/* Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-12 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-5xl mx-auto text-center space-y-4">
@@ -46,10 +54,10 @@ export const ServicesView: React.FC = () => {
 
       {/* Category Tabs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-center border-b border-slate-200">
+        <div className="flex items-center justify-start sm:justify-center border-b border-slate-200 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
           <button
             onClick={() => setActiveCategory('all')}
-            className={`px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 cursor-pointer ${
+            className={`px-4 sm:px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 whitespace-nowrap cursor-pointer min-h-[44px] ${
               activeCategory === 'all'
                 ? 'border-brand-orange text-brand-blue font-extrabold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -59,7 +67,7 @@ export const ServicesView: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveCategory('agency')}
-            className={`px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+            className={`px-4 sm:px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 min-h-[44px] ${
               activeCategory === 'agency'
                 ? 'border-brand-orange text-brand-blue font-extrabold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'
@@ -69,7 +77,7 @@ export const ServicesView: React.FC = () => {
           </button>
           <button
             onClick={() => setActiveCategory('local-hub')}
-            className={`px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 cursor-pointer flex items-center gap-2 ${
+            className={`px-4 sm:px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 whitespace-nowrap cursor-pointer flex items-center gap-2 min-h-[44px] ${
               activeCategory === 'local-hub'
                 ? 'border-brand-orange text-brand-blue font-extrabold'
                 : 'border-transparent text-slate-500 hover:text-slate-800'

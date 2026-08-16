@@ -310,7 +310,7 @@ export const TestimonialCarousel: React.FC<TestimonialCarouselProps> = ({
                     Want to achieve similar career growth?
                   </h3>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Join our practical training batches and receive 100% verifiable diplomas recognized by industry employers.
+                    Join our practical training batches and build job-ready technical skills with verifiable course completion certificates.
                   </p>
                 </div>
 

@@ -8,6 +8,8 @@ import { Award, ShieldCheck, Target, Eye, BookOpen, CheckCircle2, Users, Flame, 
 import { BrandLogo } from '../components/BrandLogo';
 import { MentorSection } from '../components/MentorSection';
 import { AboutFAQ } from '../components/AboutFAQ';
+import { Breadcrumbs } from '../components/Breadcrumbs';
+import { navigateTo } from '../utils/routes';
 
 interface AboutViewProps {
   setTab: (tab: string) => void;
@@ -16,7 +18,14 @@ interface AboutViewProps {
 
 export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }) => {
   return (
-    <div className="pb-16 space-y-16">
+    <div className="pb-16 space-y-12">
+      {/* Breadcrumbs */}
+      <Breadcrumbs
+        items={[
+          { name: 'About Us', isCurrent: true }
+        ]}
+      />
+
       {/* Page Header Banner */}
       <section className="bg-gradient-to-r from-slate-900 via-brand-blue-dark to-slate-900 text-white py-14 px-4 sm:px-6 lg:px-8 border-b-4 border-brand-orange">
         <div className="max-w-5xl mx-auto text-center space-y-4">
@@ -24,13 +33,13 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
             About Our Institute
           </div>
           <h1 className="text-3xl sm:text-5xl font-extrabold font-display tracking-tight">
-            Future Gates I.T Center
+            About Future Gates IT Center
           </h1>
           <p className="text-brand-orange font-bold font-sans text-sm sm:text-base uppercase tracking-wider">
             Where Skills Become Your Income
           </p>
           <p className="text-slate-300 text-xs sm:text-sm max-w-2xl mx-auto leading-relaxed">
-            Accredited IT Training, Professional Skills Development, and Software Agency Services based in Punjab, Pakistan.
+            Professional IT Training, Skills Development, and Software Agency Services based in Khushab, Punjab, Pakistan.
           </p>
         </div>
       </section>
@@ -44,7 +53,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
               Transforming Students Into Skilled IT Professionals
             </h2>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
-              <strong>Future Gates I.T Center</strong> is a premier, certified technology bootcamp and professional skills development institute situated in Khushab, Punjab, Pakistan.
+              <strong>Future Gates I.T Center</strong> is a practical technology training institute and professional skills development center situated in Khushab, Punjab, Pakistan.
             </p>
             <p className="text-slate-600 text-xs sm:text-sm leading-relaxed">
               We specialize in hands-on practical training across full-stack web engineering, mobile application development, graphic design, UI/UX, SEO, digital marketing, AI tools, and office automation. Additionally, our software agency unit provides corporate web applications, branding, and printing solutions for businesses across Pakistan and internationally.
@@ -53,11 +62,11 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
             <div className="grid grid-cols-2 gap-4 pt-2">
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <span className="text-2xl font-black font-display text-brand-blue block">1,000+</span>
-                <span className="text-xs font-bold text-slate-700">Certified Graduates</span>
+                <span className="text-xs font-bold text-slate-700">Course Graduates</span>
               </div>
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200">
                 <span className="text-2xl font-black font-display text-brand-orange block">100%</span>
-                <span className="text-xs font-bold text-slate-700">Verifiable Transcripts</span>
+                <span className="text-xs font-bold text-slate-700">Verifiable Certificates</span>
               </div>
             </div>
           </div>
@@ -77,16 +86,16 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
                 <Eye className="w-5 h-5" /> OUR VISION
               </div>
               <p className="text-slate-300 text-xs leading-relaxed">
-                To become Pakistan's most trusted technology education hub and software solutions provider, recognized for academic excellence, online transcript verifiability, and student career transformation.
+                To become Pakistan's trusted technology education hub and software solutions provider, known for practical excellence, online certificate verifiability, and student career transformation.
               </p>
             </div>
 
             <div className="border-t border-white/10 pt-4 space-y-2">
               <div className="flex items-center gap-2 text-emerald-400 font-bold text-sm">
-                <Award className="w-5 h-5" /> ACCREDITATION & VERIFICATION
+                <Award className="w-5 h-5" /> CERTIFICATE VERIFICATION & AUTHENTICITY
               </div>
               <p className="text-slate-300 text-xs leading-relaxed">
-                Every certificate issued by Future Gates I.T Center includes a unique Roll No and Certificate Serial Number indexed on our official verification portal for transparent employer verification.
+                Every certificate issued by Future Gates I.T Center includes a unique Roll No and Certificate Serial Number indexed on our official verification portal for transparent verification.
               </p>
             </div>
           </div>
@@ -149,16 +158,16 @@ export const AboutView: React.FC<AboutViewProps> = ({ setTab, onOpenEnrollment }
           <p className="text-slate-200 text-xs sm:text-sm max-w-lg mx-auto">
             Join hundreds of successful graduates. Apply online or visit our campus today!
           </p>
-          <div className="flex justify-center gap-4 pt-2">
+          <div className="flex flex-col sm:flex-row justify-center gap-3 sm:gap-4 pt-2">
             <button
               onClick={onOpenEnrollment}
-              className="px-6 py-3 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer"
+              className="px-6 py-3.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold text-xs rounded-xl shadow-lg transition-all cursor-pointer min-h-[44px]"
             >
               Apply For Admission Online
             </button>
             <button
               onClick={() => setTab('contact')}
-              className="px-6 py-3 bg-white text-slate-900 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all cursor-pointer"
+              className="px-6 py-3.5 bg-white text-slate-900 font-bold text-xs rounded-xl hover:bg-slate-100 transition-all cursor-pointer min-h-[44px]"
             >
               Contact Head Office
             </button>

@@ -3,13 +3,14 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, ShieldCheck, GraduationCap, Lock, Search } from 'lucide-react';
 import { BrandLogo } from './BrandLogo';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { GlobalSearchBar } from './GlobalSearchBar';
 import { useData } from '../context/DataContext';
 import { Course, BlogPost } from '../types';
+import { navigateTo } from '../utils/routes';
 
 interface HeaderProps {
   currentTab: string;
@@ -45,33 +46,54 @@ export const Header: React.FC<HeaderProps> = ({
   const headerAddress = settings?.contactInfo?.address || contact.address || 'Future Gates IT Center, Main Campus, Khushab, Punjab, Pakistan';
   const ctaText = settings?.headerCtaText || 'Enroll Now';
 
+  // Body scroll locking and Escape key handling for accessible mobile menu
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        if (isOpen) setIsOpen(false);
+        if (isMobileSearchOpen) setIsMobileSearchOpen(false);
+      }
+    };
+
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, isMobileSearchOpen]);
+
   const navItems = [
-    { id: 'home', label: 'Home' },
-    { id: 'about', label: 'About' },
-    { id: 'courses', label: 'Courses' },
-    { id: 'services', label: 'Services' },
-    { id: 'verification', label: 'Verification' },
-    { id: 'blogs', label: 'Blogs' },
-    { id: 'contact', label: 'Contact' },
-    { id: 'admission', label: 'Admission' },
+    { id: 'home', path: '/', label: 'Home' },
+    { id: 'about', path: '/about', label: 'About' },
+    { id: 'courses', path: '/courses', label: 'Courses' },
+    { id: 'services', path: '/services', label: 'Services' },
+    { id: 'verification', path: '/verification', label: 'Verification' },
+    { id: 'blogs', path: '/blogs', label: 'Blogs' },
+    { id: 'contact', path: '/contact', label: 'Contact' },
+    { id: 'admission', path: '/admission', label: 'Admission' },
   ].filter((item) => {
     if (!settings?.navItemsVisibility) return true;
     return settings.navItemsVisibility[item.id as keyof typeof settings.navItemsVisibility] !== false;
   });
 
-  const handleNavClick = (tabId: string) => {
-    setTab(tabId);
+  const handleNavClick = (path: string) => {
     setIsOpen(false);
     setIsMobileSearchOpen(false);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    navigateTo(path);
   };
 
   const handleCtaClick = () => {
     const link = settings?.headerCtaLink || 'admission';
     if (link === 'admission') {
-      onOpenEnrollment();
+      navigateTo('/admission');
     } else {
-      handleNavClick(link);
+      navigateTo(`/${link}`);
     }
   };
 
@@ -81,15 +103,15 @@ export const Header: React.FC<HeaderProps> = ({
     <header className="sticky top-0 z-50 w-full bg-white border-b border-slate-200 shadow-sm no-print">
       {/* Top Announcement Strip */}
       {showAnnouncement && (
-        <div className="bg-slate-900 border-b border-slate-800 py-1.5 px-4 text-xs text-slate-300">
+        <div className="bg-slate-900 border-b border-slate-800 py-1.5 px-3 sm:px-4 text-xs text-slate-300">
           <div className="max-w-7xl mx-auto flex justify-between items-center flex-wrap gap-2 text-[11px] font-semibold tracking-wide">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 sm:gap-4 flex-wrap">
               <span className="flex items-center gap-1.5 text-emerald-400">
                 <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
                 {announcementText}
               </span>
               <span className="hidden md:inline text-slate-600">|</span>
-              <span className="hidden md:inline text-slate-400">📍 {headerAddress}</span>
+              <span className="hidden md:inline text-slate-400 truncate max-w-xs xl:max-w-none">📍 {headerAddress}</span>
             </div>
             <div className="flex items-center gap-3">
               <a
@@ -104,13 +126,18 @@ export const Header: React.FC<HeaderProps> = ({
               {settings?.showAdminHeaderButton === true && (
                 <>
                   <span className="text-slate-700">|</span>
-                  <button
-                    onClick={onOpenAdmin}
+                  <a
+                    href="/admin"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      onOpenAdmin();
+                      navigateTo('/admin');
+                    }}
                     className="text-slate-400 hover:text-white flex items-center gap-1 cursor-pointer"
                     title="Admin Portal Access"
                   >
                     <Lock className="w-3 h-3 text-orange-400" /> Admin
-                  </button>
+                  </a>
                 </>
               )}
             </div>
@@ -119,36 +146,51 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex justify-between items-center h-18 gap-3">
+      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16 sm:h-18 gap-2 sm:gap-4">
           {/* Logo Brand Title */}
-          <div className="cursor-pointer flex items-center shrink-0" onClick={() => handleNavClick('home')}>
+          <a
+            href="/"
+            onClick={(e) => {
+              e.preventDefault();
+              handleNavClick('/');
+            }}
+            className="cursor-pointer flex items-center shrink-0"
+            title="Future Gates IT Center Homepage"
+          >
             <BrandLogo variant="dark" customLogoUrl={settings?.headerLogoUrl} />
-          </div>
+          </a>
 
           {/* Desktop Navigation Links */}
-          <nav className="hidden xl:flex items-center gap-5 2xl:gap-7 text-xs font-bold uppercase tracking-wider text-slate-600">
+          <nav 
+            aria-label="Main Navigation"
+            className="hidden lg:flex items-center gap-2.5 xl:gap-5 2xl:gap-7 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-600"
+          >
             {navItems.map((item) => {
-              const active = currentTab === item.id;
+              const active = currentTab === item.id || (item.id === 'courses' && currentTab === 'course-detail') || (item.id === 'blogs' && currentTab === 'blog-detail');
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
+                  href={item.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.path);
+                  }}
                   id={`nav-btn-${item.id}`}
-                  className={`py-1 transition-colors duration-200 cursor-pointer ${
+                  className={`py-1 whitespace-nowrap transition-colors duration-200 cursor-pointer ${
                     active
                       ? 'text-blue-600 border-b-2 border-blue-600 font-extrabold'
                       : 'hover:text-blue-600'
                   }`}
                 >
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </nav>
 
           {/* Desktop Global Search Bar */}
-          <div className="hidden lg:block w-48 xl:w-64 2xl:w-72 shrink-0">
+          <div className="hidden xl:block w-52 2xl:w-64 shrink-0">
             <GlobalSearchBar
               onSelectCourse={(course) => {
                 onSelectCourse?.(course);
@@ -163,28 +205,36 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
 
           {/* Right Action Call (Verify Card & CTA) */}
-          <div className="hidden md:flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => handleNavClick('verification')}
+          <div className="hidden sm:flex items-center gap-2 shrink-0">
+            <a
+              href="/verification"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('/verification');
+              }}
               className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-800 text-[11px] font-bold uppercase tracking-wider rounded-lg flex items-center gap-1.5 transition-all cursor-pointer border border-slate-200 shrink-0"
             >
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
               <span>Verify Card</span>
-            </button>
+            </a>
 
-            <button
-              onClick={handleCtaClick}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
+            <a
+              href="/admission"
+              onClick={(e) => {
+                e.preventDefault();
+                handleCtaClick();
+              }}
+              className="bg-orange-500 hover:bg-orange-600 text-white px-4 xl:px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
             >
-              <GraduationCap className="w-4 h-4" /> {ctaText}
-            </button>
+              <GraduationCap className="w-4 h-4" /> <span className="whitespace-nowrap">{ctaText}</span>
+            </a>
           </div>
 
           {/* Mobile menu and search toggle buttons */}
-          <div className="lg:hidden flex items-center gap-1.5">
+          <div className="lg:hidden flex items-center gap-1">
             <button
               onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
-              className={`p-2 rounded-lg transition-colors cursor-pointer ${
+              className={`p-2 rounded-lg transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
                 isMobileSearchOpen ? 'bg-blue-50 text-blue-600' : 'text-slate-700 hover:bg-slate-100'
               }`}
               aria-label="Toggle search"
@@ -193,18 +243,24 @@ export const Header: React.FC<HeaderProps> = ({
               <Search className="w-5 h-5" />
             </button>
 
-            <button
-              onClick={() => handleNavClick('verification')}
-              className="px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider"
+            <a
+              href="/verification"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('/verification');
+              }}
+              className="sm:hidden px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider min-h-[38px]"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Verify</span>
-            </button>
+            </a>
 
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none cursor-pointer"
-              aria-label="Toggle menu"
+              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+              aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-expanded={isOpen}
+              aria-controls="mobile-navigation"
             >
               {isOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
             </button>
@@ -243,7 +299,12 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Mobile Menu Drawer */}
       {isOpen && (
-        <div className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl">
+        <div 
+          id="mobile-navigation"
+          role="navigation"
+          aria-label="Mobile Navigation"
+          className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto"
+        >
           {/* Search bar inside drawer */}
           <div className="pb-1">
             <GlobalSearchBar
@@ -271,21 +332,25 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </div>
 
-          <div className="grid grid-cols-2 gap-1.5">
+          <div className="grid grid-cols-2 gap-2">
             {navItems.map((item) => {
-              const active = currentTab === item.id;
+              const active = currentTab === item.id || (item.id === 'courses' && currentTab === 'course-detail') || (item.id === 'blogs' && currentTab === 'blog-detail');
               return (
-                <button
+                <a
                   key={item.id}
-                  onClick={() => handleNavClick(item.id)}
-                  className={`w-full text-left px-3 py-2.5 rounded-lg text-xs font-bold tracking-wider uppercase transition-all ${
+                  href={item.path}
+                  onClick={(e) => {
+                    e.preventDefault();
+                    handleNavClick(item.path);
+                  }}
+                  className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold tracking-wider uppercase transition-all min-h-[44px] flex items-center cursor-pointer ${
                     active
-                      ? 'bg-blue-600 text-white font-extrabold'
-                      : 'text-slate-300 hover:bg-slate-800'
+                      ? 'bg-blue-600 text-white font-extrabold shadow-md'
+                      : 'text-slate-300 hover:bg-slate-800 hover:text-white bg-slate-800/40'
                   }`}
                 >
                   {item.label}
-                </button>
+                </a>
               );
             })}
           </div>
@@ -295,25 +360,28 @@ export const Header: React.FC<HeaderProps> = ({
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-lg font-bold text-xs transition-colors cursor-pointer uppercase tracking-wider shadow-md shadow-emerald-900/30"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl font-bold text-xs transition-colors cursor-pointer uppercase tracking-wider shadow-md shadow-emerald-900/30 min-h-[44px]"
             >
               <WhatsAppIcon className="w-4 h-4 text-white" />
               WhatsApp Support ({headerPhone})
             </a>
 
-            <button
-              onClick={() => {
+            <a
+              href="/admission"
+              onClick={(e) => {
+                e.preventDefault();
                 setIsOpen(false);
                 handleCtaClick();
               }}
-              className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-orange-500 text-white rounded-full font-bold text-xs hover:bg-orange-600 transition-colors cursor-pointer uppercase tracking-wider"
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-xl font-bold text-xs hover:bg-orange-600 transition-colors cursor-pointer uppercase tracking-wider shadow-md min-h-[44px]"
             >
               <GraduationCap className="w-4 h-4" />
               {ctaText}
-            </button>
+            </a>
           </div>
         </div>
       )}
     </header>
   );
 };
+

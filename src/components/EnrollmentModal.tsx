@@ -3,7 +3,7 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X, CheckCircle2, GraduationCap, PhoneCall, Mail } from 'lucide-react';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
@@ -31,8 +31,28 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
   const [courseId, setCourseId] = useState(selectedCourseId || (courses[0]?.id || ''));
   const [address, setAddress] = useState('');
   const [message, setMessage] = useState('');
+  const [honeypot, setHoneypot] = useState('');
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [error, setError] = useState('');
+
+  // Lock body scroll & listen for Escape key
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    document.body.style.overflow = 'hidden';
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      document.body.style.overflow = '';
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, [isOpen, onClose]);
 
   if (!isOpen) return null;
 
@@ -46,16 +66,17 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
     const courseObj = courses.find((c) => c.id === courseId);
     const courseTitle = courseObj ? courseObj.title : 'Course';
 
-    const newRecord = {
-      fullName,
-      fatherName,
-      phone,
-      whatsapp,
-      email,
+    const newRecord: any = {
+      fullName: fullName.trim(),
+      fatherName: fatherName.trim(),
+      phone: phone.trim(),
+      whatsapp: whatsapp.trim(),
+      email: email.trim(),
       courseId,
       courseTitle,
-      address,
-      message,
+      address: address.trim(),
+      message: message.trim(),
+      website_hp: honeypot,
     };
 
     await submitAdmission(newRecord);
@@ -106,24 +127,29 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-4 overflow-y-auto no-print">
-      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-8">
+    <div 
+      className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/70 backdrop-blur-sm p-3 sm:p-4 overflow-y-auto no-print"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="enrollment-modal-title"
+    >
+      <div className="bg-white rounded-2xl shadow-2xl max-w-xl w-full overflow-hidden border border-slate-200 my-4 sm:my-8 max-h-[92vh] flex flex-col">
         {/* Modal Header */}
-        <div className="bg-gradient-to-r from-brand-blue-dark to-brand-blue text-white p-6 relative">
+        <div className="bg-gradient-to-r from-brand-blue-dark to-brand-blue text-white p-4 sm:p-6 relative shrink-0">
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 w-8 h-8 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors"
-            aria-label="Close modal"
+            className="absolute top-4 right-4 sm:top-5 sm:right-5 w-9 h-9 rounded-full bg-white/10 hover:bg-white/20 flex items-center justify-center text-white transition-colors cursor-pointer"
+            aria-label="Close admission modal"
           >
             <X className="w-5 h-5" />
           </button>
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-brand-orange flex items-center justify-center text-white shadow-md">
+          <div className="flex items-center gap-3 pr-8">
+            <div className="w-10 h-10 rounded-xl bg-brand-orange flex items-center justify-center text-white shadow-md shrink-0">
               <GraduationCap className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-bold font-display">Course Admission Form</h3>
-              <p className="text-xs text-slate-200 mt-0.5">
+              <h3 id="enrollment-modal-title" className="text-lg sm:text-xl font-bold font-display text-white">Course Admission Form</h3>
+              <p className="text-[11px] sm:text-xs text-slate-200 mt-0.5">
                 Future Gates IT Center - Where Skills Become Your Income
               </p>
             </div>
@@ -131,9 +157,9 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
         </div>
 
         {/* Modal Content */}
-        <div className="p-6">
+        <div className="p-4 sm:p-6 overflow-y-auto">
           {isSubmitted ? (
-            <div className="text-center py-6 space-y-4">
+            <div className="text-center py-4 sm:py-6 space-y-4">
               <div className="w-16 h-16 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mx-auto shadow-inner">
                 <CheckCircle2 className="w-10 h-10" />
               </div>
@@ -158,14 +184,14 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-2">
                 <button
                   onClick={handleWhatsAppSend}
-                  className="py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer hover:scale-[1.01]"
+                  className="py-3 px-4 bg-[#25D366] hover:bg-[#20bd5a] text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-emerald-500/25 transition-all cursor-pointer min-h-[44px]"
                 >
                   <WhatsAppIcon className="w-4 h-4 text-white" />
                   <span>Send via WhatsApp</span>
                 </button>
                 <button
                   onClick={handleEmailSend}
-                  className="py-3 px-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer hover:scale-[1.01]"
+                  className="py-3 px-4 bg-brand-blue hover:bg-brand-blue-dark text-white font-bold rounded-xl text-xs flex items-center justify-center gap-2 shadow-md shadow-blue-500/20 transition-all cursor-pointer min-h-[44px]"
                 >
                   <Mail className="w-4 h-4 text-white" />
                   <span>Email to Official Office</span>
@@ -173,20 +199,32 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
               </div>
               <button
                 onClick={handleReset}
-                className="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer"
+                className="w-full py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition-colors cursor-pointer min-h-[44px]"
               >
                 Done & Close
               </button>
             </div>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <form onSubmit={handleSubmit} className="space-y-3.5 sm:space-y-4">
+              {/* Honeypot field for anti-spam */}
+              <input
+                type="text"
+                name="website_hp"
+                value={honeypot}
+                onChange={(e) => setHoneypot(e.target.value)}
+                tabIndex={-1}
+                autoComplete="off"
+                style={{ display: 'none', position: 'absolute', left: '-9999px' }}
+                aria-hidden="true"
+              />
+
               {error && (
-                <div className="bg-red-50 text-red-700 p-3 rounded-lg text-xs font-semibold border border-red-200">
+                <div className="bg-red-50 text-red-700 p-3 rounded-lg text-xs font-semibold border border-red-200" role="alert">
                   {error}
                 </div>
               )}
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Full Student Name *
@@ -197,7 +235,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     value={fullName}
                     onChange={(e) => setFullName(e.target.value)}
                     placeholder="e.g. Muhammad Usman"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
                   />
                 </div>
 
@@ -210,12 +248,12 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     value={fatherName}
                     onChange={(e) => setFatherName(e.target.value)}
                     placeholder="e.g. Abdul Rehman"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Mobile Phone *
@@ -226,7 +264,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="0300-1234567"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue font-mono min-h-[42px]"
                   />
                 </div>
 
@@ -240,12 +278,12 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     value={whatsapp}
                     onChange={(e) => setWhatsapp(e.target.value)}
                     placeholder="0301-6775690"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue font-mono"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue font-mono min-h-[42px]"
                   />
                 </div>
               </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                 <div>
                   <label className="block text-xs font-bold text-slate-700 mb-1">
                     Email Address (Optional)
@@ -254,8 +292,8 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                     type="email"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    placeholder="student@example.com"
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                    placeholder="yourname@email.com"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
                   />
                 </div>
 
@@ -266,7 +304,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   <select
                     value={courseId}
                     onChange={(e) => setCourseId(e.target.value)}
-                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                    className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
                   >
                     {courses.map((c) => (
                       <option key={c.id} value={c.id}>
@@ -286,7 +324,7 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   value={address}
                   onChange={(e) => setAddress(e.target.value)}
                   placeholder="e.g. Khushab / Joharabad / Sargodha"
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue"
+                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-brand-blue min-h-[42px]"
                 />
               </div>
 
@@ -303,12 +341,12 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                 />
               </div>
 
-              <div className="pt-3 flex items-center justify-between gap-3 border-t border-slate-100">
+              <div className="pt-3 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-t border-slate-100">
                 <a
                   href="https://wa.me/923016775690"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-xs text-emerald-600 font-bold hover:underline flex items-center gap-1"
+                  className="text-xs text-emerald-600 font-bold hover:underline flex items-center justify-center sm:justify-start gap-1 py-1"
                 >
                   <PhoneCall className="w-3.5 h-3.5" /> Direct Call/WhatsApp Help
                 </a>
@@ -317,13 +355,13 @@ export const EnrollmentModal: React.FC<EnrollmentModalProps> = ({
                   <button
                     type="button"
                     onClick={onClose}
-                    className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition-colors cursor-pointer"
+                    className="flex-1 sm:flex-none px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-xs transition-colors cursor-pointer min-h-[44px]"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer"
+                    className="flex-1 sm:flex-none px-6 py-2.5 bg-brand-orange hover:bg-brand-orange-dark text-white font-bold rounded-lg text-xs shadow-md transition-all cursor-pointer min-h-[44px]"
                   >
                     Submit Application
                   </button>

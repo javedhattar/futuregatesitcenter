@@ -8,6 +8,7 @@ import { Facebook, Twitter, Linkedin, Github, Youtube, Mail, Phone, MapPin, Shie
 import { BrandLogo } from './BrandLogo';
 import { WhatsAppIcon } from './WhatsAppIcon';
 import { useData } from '../context/DataContext';
+import { navigateTo } from '../utils/routes';
 
 interface FooterProps {
   setTab: (tab: string) => void;
@@ -20,7 +21,7 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
   const contact = data?.contact || {};
   const currentYear = new Date().getFullYear();
 
-  const footerDesc = settings?.footerDescription || 'Future Gates IT Center is an accredited IT training institute and digital agency situated in Khushab, Punjab, Pakistan. Built on the core ethos "Where Skills Become Your Income", we empower students with job-ready technical skills and verifiable certifications.';
+  const footerDesc = settings?.footerDescription || 'Future Gates IT Center is a professional IT training institute and digital agency situated in Khushab, Punjab, Pakistan. Built on the core ethos "Where Skills Become Your Income", we empower students with job-ready technical skills and verifiable certifications.';
   const footerPhone = settings?.footerPhone || contact.phone || '+92301-6775690';
   const footerWhatsapp = settings?.footerWhatsapp || contact.whatsapp || '923016775690';
   const footerEmail = settings?.footerEmail || contact.email || 'futuregatesitcenter@gmail.com';
@@ -28,19 +29,18 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
   const footerCopyright = settings?.footerCopyrightText || `© ${currentYear} Future Gates IT Center, Pakistan. All Rights Reserved.`;
 
   const social = settings?.socialMedia || {
-    facebook: contact.facebook || 'https://facebook.com',
-    twitter: contact.twitter || 'https://twitter.com',
-    linkedin: contact.linkedin || 'https://linkedin.com',
-    github: contact.github || 'https://github.com',
-    youtube: contact.youtube || 'https://youtube.com',
-    instagram: '',
-    tiktok: '',
-    whatsapp: `https://wa.me/${footerWhatsapp}`
+    facebook: contact.facebook || '',
+    twitter: contact.twitter || '',
+    linkedin: contact.linkedin || '',
+    github: contact.github || '',
+    youtube: contact.youtube || '',
+    instagram: contact.instagram || '',
+    tiktok: contact.tiktok || '',
+    whatsapp: footerWhatsapp ? `https://wa.me/${footerWhatsapp}` : ''
   };
 
-  const handleLinkClick = (tabId: string) => {
-    setTab(tabId);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+  const handleLinkClick = (path: string) => {
+    navigateTo(path);
   };
 
   return (
@@ -51,7 +51,16 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
           
           {/* Main Info Container */}
           <div className="space-y-5">
-            <BrandLogo variant="light" customLogoUrl={settings?.footerLogoUrl} />
+            <a
+              href="/"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/');
+              }}
+              title="Future Gates IT Center"
+            >
+              <BrandLogo variant="light" customLogoUrl={settings?.footerLogoUrl} />
+            </a>
             <p className="text-xs text-slate-400 leading-relaxed pt-1">
               {footerDesc}
             </p>
@@ -136,44 +145,100 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
               </h3>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <button onClick={() => handleLinkClick('home')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Home Portal
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('about')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/about"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/about');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     About Future Gates
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('courses')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/courses"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/courses');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Technical Courses
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('services')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/services"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/services');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Software Services & Printing
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('blogs')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/blogs"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/blogs');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Blog Resources
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('verification')} className="hover:text-orange-400 transition-all font-semibold cursor-pointer text-slate-400">
+                  <a
+                    href="/verification"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/verification');
+                    }}
+                    className="hover:text-orange-400 transition-all font-semibold cursor-pointer text-slate-400"
+                  >
                     Student Certificate Check
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('contact')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/contact');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Inquiries & Contact Us
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('admission')} className="hover:text-orange-400 transition-all cursor-pointer text-orange-400 font-bold uppercase tracking-wider">
+                  <a
+                    href="/admission"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/admission');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-orange-400 font-bold uppercase tracking-wider"
+                  >
                     Online Admission Form
-                  </button>
+                  </a>
                 </li>
               </ul>
             </div>
@@ -187,30 +252,66 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
               </h3>
               <ul className="space-y-2 text-xs">
                 <li>
-                  <button onClick={() => handleLinkClick('privacy')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/privacy"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/privacy');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Privacy Policy
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('cookies')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/cookies"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/cookies');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Cookie Policy
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('terms')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/terms"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/terms');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Terms & Conditions
-                  </button>
+                  </a>
                 </li>
                 <li>
-                  <button onClick={() => handleLinkClick('disclaimer')} className="hover:text-orange-400 transition-all cursor-pointer text-slate-400">
+                  <a
+                    href="/disclaimer"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/disclaimer');
+                    }}
+                    className="hover:text-orange-400 transition-all cursor-pointer text-slate-400"
+                  >
                     Disclaimer Notice
-                  </button>
+                  </a>
                 </li>
                 {settings?.showAdminFooterLink === true && (
                   <li className="pt-2">
-                    <button onClick={onOpenAdmin} className="text-xs text-orange-400 hover:underline flex items-center gap-1 cursor-pointer font-bold">
+                    <a
+                      href="/admin"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        onOpenAdmin();
+                        handleLinkClick('/admin');
+                      }}
+                      className="text-xs text-orange-400 hover:underline flex items-center gap-1 cursor-pointer font-bold"
+                    >
                       <Shield className="w-3.5 h-3.5" /> Staff Admin Dashboard
-                    </button>
+                    </a>
                   </li>
                 )}
               </ul>
@@ -229,12 +330,16 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
                   <span className="text-slate-400 leading-relaxed block">
                     {footerAddress}
                   </span>
-                  <button
-                    onClick={() => handleLinkClick('contact')}
+                  <a
+                    href="/contact"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      handleLinkClick('/contact');
+                    }}
                     className="text-[11px] text-orange-400 hover:text-orange-300 font-semibold underline mt-0.5 inline-flex items-center gap-1 cursor-pointer"
                   >
                     View Official Campus Map →
-                  </button>
+                  </a>
                 </div>
               </li>
               <li className="flex items-center gap-2.5">
@@ -263,7 +368,7 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
               <li className="flex items-center gap-2.5 pt-2 border-t border-slate-800">
                 <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
                 <span className="text-[11px] text-emerald-400 font-semibold">
-                  Accredited Professional IT Skills Board
+                  Professional IT Skills & Technical Training
                 </span>
               </li>
             </ul>
@@ -282,13 +387,49 @@ export const Footer: React.FC<FooterProps> = ({ setTab, onOpenAdmin }) => {
             </p>
           </div>
           <div className="flex flex-wrap justify-center md:justify-end gap-x-3 gap-y-1 text-[11px] text-slate-400">
-            <button onClick={() => handleLinkClick('terms')} className="hover:text-orange-400 cursor-pointer">Terms</button>
+            <a
+              href="/terms"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/terms');
+              }}
+              className="hover:text-orange-400 cursor-pointer"
+            >
+              Terms
+            </a>
             <span>•</span>
-            <button onClick={() => handleLinkClick('privacy')} className="hover:text-orange-400 cursor-pointer">Privacy</button>
+            <a
+              href="/privacy"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/privacy');
+              }}
+              className="hover:text-orange-400 cursor-pointer"
+            >
+              Privacy
+            </a>
             <span>•</span>
-            <button onClick={() => handleLinkClick('cookies')} className="hover:text-orange-400 cursor-pointer">Cookie Policy</button>
+            <a
+              href="/cookies"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/cookies');
+              }}
+              className="hover:text-orange-400 cursor-pointer"
+            >
+              Cookie Policy
+            </a>
             <span>•</span>
-            <button onClick={() => handleLinkClick('disclaimer')} className="hover:text-orange-400 cursor-pointer">Disclaimer</button>
+            <a
+              href="/disclaimer"
+              onClick={(e) => {
+                e.preventDefault();
+                handleLinkClick('/disclaimer');
+              }}
+              className="hover:text-orange-400 cursor-pointer"
+            >
+              Disclaimer
+            </a>
           </div>
         </div>
       </div>

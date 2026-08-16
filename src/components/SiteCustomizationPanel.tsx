@@ -1338,7 +1338,7 @@ export const SiteCustomizationPanel: React.FC = () => {
                   type="text"
                   value={settingsForm.certificateSignerName || ''}
                   onChange={(e) => setSettingsForm(prev => ({ ...prev, certificateSignerName: e.target.value }))}
-                  placeholder="Controller Exams (e.g. Engr. Jameel Akhter)"
+                  placeholder="Lead Instructor (e.g. Javed Hattar)"
                   className="w-full text-xs px-3 py-2.5 bg-white rounded-xl border border-slate-300 focus:outline-none focus:ring-2 focus:ring-orange-400 font-semibold"
                 />
               </div>

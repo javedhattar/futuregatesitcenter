@@ -6,351 +6,916 @@
 import { BlogPost, Course, Service, StudentResult, Testimonial } from './types';
 
 export const COURSES: Course[] = [
+  // 1. CORE COMPUTER & OFFICE
   {
-    id: 'computer-fundamentals',
-    title: 'Computer Fundamentals',
+    id: 'computer-basics',
+    title: 'Computer Basics & Digital Literacy',
     duration: '3 Months',
-    category: 'Technical',
-    description: 'Learn essential computer operations, internet usage, typing, file management, and productivity tools.',
-    longDescription: 'This foundational digital skills program is designed to guide beginners into professional computer operation. Perfect for students, office helpers, and individuals looking to start an online career, it covers everything from physical hardware mechanics to secure file structures, typing efficiency, and modern cloud collaboration suites.',
+    category: 'Computer & Office',
+    description: 'Learn essential computer operations, Windows OS administration, touch typing, file management, and internet productivity tools.',
+    longDescription: 'This foundational digital literacy program is designed to guide beginners into professional computer operation. Perfect for students, office staff, and individuals looking to build essential computer proficiency, it covers hardware fundamentals, typing speed, file directories, and cloud productivity tools.',
     fee: 'PKR 8,000',
     skillsGained: [
       'Touch Typing Speed (WPM optimization)',
       'Secure File Management & Directories',
-      'Standard Google Drive & Cloud syncing',
-      'Smart Google Workspace tools',
-      'Antivirus & online browsing safety rules',
-      'System installation & troubleshooting'
+      'Standard Google Drive & Cloud Syncing',
+      'Windows OS Administration & Shortcuts',
+      'Online Safety & Phishing Protection',
+      'Hardware & Troubleshooting Basics'
     ],
     syllabus: [
-      'Introduction to Computer System Interfaces & Peripherals',
-      'Windows OS Administration, Control Panels & Shortcuts',
-      'Rigorous Touch Typing Practice (Aims for 40+ WPM)',
-      'Organizing data: Folder nesting, compression and backups',
-      'Web Browsing dynamics, smart searching, and bookmarking',
-      'Google Workspace: Docs formatting & Drive folders sharing',
-      'Internet safety: Secure passwords, Email phishing audits, and Antivirus defaults'
+      'Introduction to Computer Hardware & Peripherals',
+      'Windows OS Settings, Control Panel & Shortcuts',
+      'Rigorous Touch Typing Drills (40+ WPM Target)',
+      'Organizing Files, Folder Structures & Backups',
+      'Internet Browsing, Smart Search & Email Etiquette',
+      'Google Workspace & Cloud Document Sharing',
+      'Cyber Safety, Password Security & Antivirus Defaults'
     ],
-    featured: true
+    featured: true,
+    status: 'Available Now',
+    order: 0
   },
   {
     id: 'ms-office',
-    title: 'Microsoft Office Professional',
+    title: 'MS Office Automation',
     duration: '3 Months',
-    category: 'Technical',
+    category: 'Computer & Office',
     description: 'Master Word, Excel, PowerPoint, Outlook, and professional office productivity skills.',
-    longDescription: 'An industry-standard office automation course that transforms you into a highly efficient executive assistant, coordinator, or data analyst. You will master detailed document layouts in Word, advanced mathematical models in Excel, stunning animated pitches in PowerPoint, and automated incoming email workflows in Outlook.',
+    longDescription: 'An industry-standard office automation course that transforms you into an efficient executive assistant, coordinator, or office administrator. Master document formatting in Word, mathematical formulas in Excel, presentations in PowerPoint, and email management in Outlook.',
     fee: 'PKR 10,000',
     skillsGained: [
-      'Advanced MS Word template creation',
-      'In-depth MS Excel Formulas & Data Pivot Filters',
-      'MS PowerPoint Dynamic templates and presentations',
-      'MS Outlook Meeting dispatch & Inbox rules',
-      'Multi-currency spreadsheet auditing',
-      'Professional CV & Business Invoice printing'
+      'Advanced MS Word Document Layouts',
+      'MS Excel Formulas & Data Pivot Tables',
+      'MS PowerPoint Dynamic Master Presentations',
+      'MS Outlook Inbox Rules & Meetings',
+      'Multi-sheet Spreadsheet Auditing',
+      'Professional Reports & Invoicing'
     ],
     syllabus: [
-      'MS Word: Custom newsletters layout, Table designs, Page dimensions & Mail Merges',
-      'MS Excel Basics: Formulas, Cells referencing, formatting, Custom styling',
-      'MS Excel Advanced: VLOOKUP, HLOOKUP, Dynamic Pivot Tables, Logic gates IF/AND/OR',
-      'MS PowerPoint: Creating customized master cards, animations, slides transition',
-      'MS Outlook: Contacts logging, task sheets, filters, out-of-office setup',
-      'Document conversion formats (Converting PDF to Word/Excel without losing styles)'
+      'MS Word: Advanced Formatting, Tables, Headers, Footers & Mail Merge',
+      'MS Excel: Cell Referencing, Mathematical Formulas & Formatting',
+      'MS Excel Advanced: VLOOKUP, HLOOKUP, Pivot Tables & Logic Gates',
+      'MS PowerPoint: Slide Masters, Custom Transitions & Visual Decks',
+      'MS Outlook: Email Organization, Calendar Scheduling & Tasks',
+      'Document Conversion & Export Standards (PDF to Word/Excel)'
     ],
-    featured: true
+    featured: true,
+    status: 'Available Now',
+    order: 1
   },
   {
-    id: 'graphic-design',
-    title: 'Graphic Design',
-    duration: '3 Months',
-    category: 'Design',
-    description: 'Learn Adobe Photoshop, Illustrator, Canva, branding, logo design, social media design, and print media.',
-    longDescription: 'Master the elements of visual balance, typography pairing, contrast, and color psychology to engineer professional commercial brand vectors, custom logos, stunning social media ad carousels, and high-impact physical print billboards using the industry\'s best platforms.',
-    fee: 'PKR 15,000',
+    id: 'advanced-excel',
+    title: 'Advanced MS Excel',
+    duration: '2 Months',
+    category: 'Computer & Office',
+    description: 'Master complex Excel formulas, nested functions, dynamic Pivot Tables, data modeling, Power Query, and automated business dashboards.',
+    longDescription: 'Elevate your spreadsheet capabilities to advanced corporate levels. Designed for accountants, managers, and data professionals who need to clean messy datasets, build interactive dynamic KPI dashboards, perform advanced financial modeling, and automate repetitive calculations using Power Query and macros.',
+    fee: 'PKR 12,000',
     skillsGained: [
-      'Adobe Illustrator vector trace & paths',
-      'Adobe Photoshop layered masking & retouches',
-      'Canva team kit administration',
-      'Logo identity design execution',
-      'Bespoke social media carousel grids',
-      'Print-ready business assets rendering'
+      'Advanced Lookup & Reference Functions (XLOOKUP, INDEX/MATCH)',
+      'Dynamic Pivot Tables & Multi-source Slicers',
+      'Power Query ETL Data Transformations',
+      'Conditional Logic & Data Validation Rules',
+      'Interactive Business KPI Dashboards',
+      'Automated Spreadsheet Financial Modeling'
     ],
     syllabus: [
-      'Design Theory Core: Alignment, Proximity, Golden ratio, and hex structures',
-      'Adobe Illustrator: Mastering paths, shape builders, pen tool and SVG vectors',
-      'Adobe Photoshop: Color grading, smart objects, crop layers, background remove',
-      'Canva platforms: Editing templates, organizing assets, and scheduling content',
-      'Corporate Identity: Logo brainstorming, brand cards, and commercial labels design',
-      'Social Graphics: Sizing layouts for FB, Instagram banners, stories & TikTok covers',
-      'Prep for Print: CMYK parameters, safe bleed boundaries, PDF vector export guidelines'
+      'Advanced Formula Mastery: XLOOKUP, INDEX/MATCH, Dynamic Arrays & Nested Conditions',
+      'Data Cleaning & Transformation with Power Query',
+      'Interactive Reporting: Multi-source Pivot Tables, Calculated Fields & Slicers',
+      'What-If Analysis: Goal Seek, Scenario Manager & Data Tables',
+      'Financial & Statistical Modeling in Spreadsheets',
+      'Automated Summary Dashboards with Dynamic Charts & Controls'
     ],
-    featured: true
+    featured: false,
+    status: 'Coming Soon',
+    order: 2
+  },
+  {
+    id: 'powerpoint',
+    title: 'PowerPoint & Professional Presentation Design',
+    duration: '1 Month',
+    category: 'Computer & Office',
+    description: 'Design high-impact corporate pitch decks, animated slide decks, visual infographics, and executive presentations.',
+    longDescription: 'Transform boring bullet points into visually compelling slide decks that capture attention. Learn the principles of slide hierarchy, typography, data visualization, custom motion animation, master layouts, and executive presentation delivery.',
+    fee: 'PKR 6,000',
+    skillsGained: [
+      'Executive Slide Layout & Visual Hierarchy',
+      'Slide Master Templates Creation',
+      'Infographic & Data Visualization Design',
+      'Custom Morph Transitions & Timed Animations',
+      'Corporate Pitch Deck Storyboarding',
+      'Exporting Formats (Interactive PDF, Video & Slideshow)'
+    ],
+    syllabus: [
+      'Foundations of Slide Composition & Visual Storytelling',
+      'Building Custom Slide Masters, Grids & Color Palettes',
+      'Designing Infographics, Charts & Icon-driven Concepts',
+      'Advanced Morph Transitions & Professional Kinetic Animations',
+      'Pitch Deck Structures: Problem-Solution-Market-Financials',
+      'Presenter Mode, Rehearsal Timings & High-Resolution Exports'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 3
+  },
+
+  // 2. DESIGN & MEDIA
+  {
+    id: 'graphic-designing',
+    title: 'Graphic Designing with Adobe Photoshop',
+    duration: '3 Months',
+    category: 'Design & Media',
+    description: 'Master Adobe Photoshop, layered photo manipulation, branding assets, social media banners, retouches, and commercial graphics.',
+    longDescription: 'Master commercial image editing and visual design using Adobe Photoshop. Learn professional layer masks, frequency separation retouching, commercial product compositing, social media graphics creation, and print-ready banner formatting.',
+    fee: 'PKR 15,000',
+    skillsGained: [
+      'Adobe Photoshop Layer Masks & Smart Objects',
+      'Photo Retouching & Color Grading',
+      'Commercial Product Mockups',
+      'Social Media Ad Creative Design',
+      'Print Media Layouts & CMYK Calibration',
+      'Typography & Visual Composition'
+    ],
+    syllabus: [
+      'Photoshop Interface, Selection Tools & Layer Hierarchy',
+      'Non-destructive Editing with Layer Masks & Adjustment Layers',
+      'Portrait Retouching, Frequency Separation & Lighting Corrections',
+      'Product Manipulation & High-End Advertising Composites',
+      'Social Media Post Banners & YouTube Thumbnail Design',
+      'Preparing Print Files: CMYK, Resolution, Bleeds & Exporting'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 4
+  },
+  {
+    id: 'adobe-illustrator',
+    title: 'Adobe Illustrator',
+    duration: '2 Months',
+    category: 'Design & Media',
+    description: 'Master vector graphics, logo design, typography, brand identity kits, vector illustrations, and commercial print assets.',
+    longDescription: 'Master Adobe Illustrator to build scalable vector graphics from scratch. Focus on pen tool precision, corporate logo drafting, custom iconography, typographic manipulation, packaging design, and commercial brand identity development.',
+    fee: 'PKR 12,000',
+    skillsGained: [
+      'Pen Tool & Shape Builder Vector Precision',
+      'Corporate Logo Design & Guidelines',
+      'Custom Iconography & Vector Illustration',
+      'Brand Identity Kits & Style Guides',
+      'Packaging & Print Die-lines',
+      'Vector Export Optimization (SVG, EPS, PDF)'
+    ],
+    syllabus: [
+      'Vector Mechanics: Pen Tool, Anchor Points & Shape Builder',
+      'Color Theory, Gradients, Mesh & Swatch Management',
+      'Corporate Logo Brainstorming, Grid Systems & Vectorization',
+      'Custom Typography, Glyphs & Lettering Modifications',
+      'Packaging Design, Die-lines & Label Layouts',
+      'Brand Identity Style Guides & Vector Production Workflow'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 5
+  },
+  {
+    id: 'video-editing',
+    title: 'Video Editing with Adobe Premiere Pro',
+    duration: '3 Months',
+    category: 'Design & Media',
+    description: 'Professional video editing using Adobe Premiere Pro, timeline trimming, audio enhancement, transitions, and cinematic color grading.',
+    longDescription: 'Master professional timeline video editing for YouTube, commercial ads, podcasts, and documentaries. Learn multi-camera editing, speed ramping, audio cleanup, LUT color grading, and broadcast export encoding.',
+    fee: 'PKR 15,000',
+    skillsGained: [
+      'Adobe Premiere Pro Timeline Trimming',
+      'Audio Equalization & Noise Filtering',
+      'Cinematic Color Correction & LUTs',
+      'Speed Ramping & Dynamic Transitions',
+      'Subtitle Captions & Lower Thirds',
+      'Multi-platform Video Encoding'
+    ],
+    syllabus: [
+      'Premiere Pro Interface, Ingest & Project Organization',
+      'Timeline Cutting, Ripple Edits & Pacing Techniques',
+      'Audio Mixing, Denoising & Sound Effects Synchronization',
+      'Color Correction, Curves & Cinematic LUT Grading',
+      'Text Animation, Titles & Lower Thirds Design',
+      'Exporting for YouTube, Reels, TV & Client Revisions'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 6
+  },
+  {
+    id: 'after-effects',
+    title: 'Motion Graphics & Adobe After Effects',
+    duration: '3 Months',
+    category: 'Design & Media',
+    description: 'Create animated logos, kinetic typography, visual effects, motion titles, and explainer animations using Adobe After Effects.',
+    longDescription: 'Bring still graphics to life with Adobe After Effects. Master keyframing, graph editor easing, shape animations, kinetic typography, 3D layer space, masking, tracking, and motion graphics for broadcast and digital campaigns.',
+    fee: 'PKR 18,000',
+    skillsGained: [
+      'Keyframe Animation & Graph Editor Easing',
+      'Kinetic Typography & Title Sequences',
+      'Logo Reveal Animations & Intros',
+      'Masking, Track Mattes & Rotoscoping',
+      '3D Layers & Camera Movements',
+      'Render Queue & Media Encoder Optimization'
+    ],
+    syllabus: [
+      'After Effects Interface, Compositions & Spatial Properties',
+      'Keyframe Interpolation, Velocity Curves & Graph Editor',
+      'Kinetic Typography, Text Animators & Title Sequences',
+      'Logo Animation, Shape Layer Morphing & Visual Accents',
+      'Masking, Rotoscoping, Green Screen & Camera Tracking',
+      'Exporting Motion Assets & Dynamic Link with Premiere Pro'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 7
+  },
+  {
+    id: 'short-form-video',
+    title: 'Short-Form Video & Reels Creation',
+    duration: '1 Month',
+    category: 'Design & Media',
+    description: 'Master viral short-form video editing for TikTok, Instagram Reels, and YouTube Shorts using CapCut and mobile/desktop tools.',
+    longDescription: 'Learn the high-retention frameworks behind viral short-form vertical videos. Master hook structuring, dynamic auto-captions, trending audio synchronization, sound design effects, kinetic zooms, and rapid editing workflows in CapCut.',
+    fee: 'PKR 8,000',
+    skillsGained: [
+      '3-Second Hook Video Structure',
+      'CapCut Desktop & Mobile Editing',
+      'Dynamic Animated Text Captions',
+      'Sound Design & SFX Placement',
+      'Kinetic Zooms & Pacing Rhythms',
+      'Vertical Video Formatting & Safe Zones'
+    ],
+    syllabus: [
+      'Short-Form Psychology: Retention Curves & Viral Hooks',
+      'CapCut Desktop Workflow: Trimming, Speeds & Rhythms',
+      'Dynamic Captions: Animations, Highlights & Emojis',
+      'Sound Design: Layering SFX, Whooshes & Trending Music',
+      'Visual Effects: Overlays, Transitions & Green Screens',
+      'Publishing Strategy for TikTok, IG Reels & YouTube Shorts'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 8
+  },
+
+  // 3. WEB & FREELANCING
+  {
+    id: 'wordpress',
+    title: 'WordPress Website Designing',
+    duration: '3 Months',
+    category: 'Web & Freelancing',
+    description: 'Build professional business websites, blogs, corporate portals, and portfolio sites on WordPress without coding.',
+    longDescription: 'Command the world\'s most popular CMS. Learn how to install WordPress, configure themes, organize navigation menus, set up custom forms, optimize page loading speed, and manage website backups and security.',
+    fee: 'PKR 12,500',
+    skillsGained: [
+      'WordPress Core CMS Architecture',
+      'Theme Customization & Child Themes',
+      'Plugin Setup & Configuration',
+      'Contact Forms & Lead Capture Integration',
+      'WordPress Speed & Caching Setup',
+      'Site Migration & Backup Procedures'
+    ],
+    syllabus: [
+      'WordPress Architecture, Domain, DNS & Local Sandbox Setup',
+      'Theme Selection, Customizer & Page Layouts',
+      'Essential Plugins: Forms, SEO, Security & Speed',
+      'Creating Business Pages: Home, About, Services, Contact',
+      'WordPress Security Practices & Anti-Spam Measures',
+      'Migrating from Localhost to Live Web Hosting Servers'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 9
+  },
+  {
+    id: 'elementor',
+    title: 'Elementor Pro & WordPress Business Websites',
+    duration: '2 Months',
+    category: 'Web & Freelancing',
+    description: 'Design custom responsive landing pages, dynamic headers, footers, popups, and advanced web layouts with Elementor Pro.',
+    longDescription: 'Take WordPress website building to the next level with Elementor Pro. Learn visual container layouts (Flexbox/Grid), theme builder for dynamic headers and footers, interactive popups, scroll animations, and dynamic custom post types.',
+    fee: 'PKR 12,000',
+    skillsGained: [
+      'Elementor Flexbox Container Layouts',
+      'Theme Builder (Headers, Footers, Single Posts)',
+      'Custom Form Integrations & Webhooks',
+      'Interactive Popups & Slide-in Banners',
+      'Motion Effects & Responsive Breakpoints',
+      'Dynamic Content with ACF & Custom Fields'
+    ],
+    syllabus: [
+      'Elementor Pro Interface & Flexbox Container Fundamentals',
+      'Building Global Design Systems: Fonts, Colors & Global Widgets',
+      'Theme Builder: Dynamic Headers, Footers & 404 Pages',
+      'Creating High-Converting Sales Landing Pages & Lead Forms',
+      'Motion Effects, Entrance Animations & Sticky Navbars',
+      'Advanced Dynamic Content Integration & Performance Tuning'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 10
+  },
+  {
+    id: 'freelancing',
+    title: 'Freelancing & Online Earning',
+    duration: '3 Months',
+    category: 'Web & Freelancing',
+    description: 'Learn profile building, proposal writing, client communication, and international payment withdrawals on Upwork, Fiverr, and freelance marketplaces.',
+    longDescription: 'Bridge the gap between digital skills and international freelancing income. Learn how to craft winning Upwork proposals, optimize Fiverr gigs, negotiate with global clients, handle milestone deliveries, and securely withdraw foreign earnings.',
+    fee: 'PKR 10,000',
+    skillsGained: [
+      'Upwork 100% Profile Optimization',
+      'Fiverr Gig SEO & Ranking Strategy',
+      'High-Conversion Bid Proposal Writing',
+      'Client Negotiation & Project Milestones',
+      'Payoneer & Local Bank Account Integration',
+      'Building a Verifiable Freelance Portfolio'
+    ],
+    syllabus: [
+      'Freelance Marketplaces Overview: Upwork, Fiverr, Guru & Direct Clients',
+      'Creating Standout Profiles with Portfolio Showcases',
+      'Fiverr Gigs Setup: Search Keywords, Video Pitch & Pricing Tiers',
+      'Crafting Custom Winning Proposals on Upwork',
+      'Client Communication, Dealing with Revisions & Review Management',
+      'Financial Setup: Payoneer, Wire Transfers & Safe Foreign Remittances'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 11
+  },
+  {
+    id: 'ecommerce',
+    title: 'E-Commerce Website Development',
+    duration: '3 Months',
+    category: 'Web & Freelancing',
+    description: 'Build complete online stores with WooCommerce and Shopify, configure product catalogs, shopping carts, and cash on delivery checkout.',
+    longDescription: 'Master the complete pipeline of building online shopping stores. Learn WooCommerce setup, product attributes, inventory management, shipping fee rules, payment gateway integrations, Cash On Delivery (COD) workflows, and cart optimization.',
+    fee: 'PKR 15,000',
+    skillsGained: [
+      'WooCommerce Online Store Architecture',
+      'Product Cataloging (Simple, Variable, Digital)',
+      'Shopping Cart & Checkout Customization',
+      'Cash-on-Delivery (COD) & Payment Gateways',
+      'Shipping Zones & Order Tracking Rules',
+      'Store Speed & Conversion Rate Optimization'
+    ],
+    syllabus: [
+      'E-Commerce Fundamentals: Business Models & Platform Selection',
+      'Setting Up WooCommerce: Store Settings, Currencies & Taxes',
+      'Product Management: Categories, Attributes, Stock & Images',
+      'Designing Custom Store Pages: Shop, Cart, Checkout & Account',
+      'Integrating Payment Methods & Cash on Delivery Systems',
+      'Order Management, Invoice Generation & Customer Email Templates'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 12
   },
   {
     id: 'web-design-dev',
     title: 'Web Design & Development',
     duration: '6 Months',
-    category: 'Development',
-    description: 'Build modern responsive websites using HTML, CSS, JavaScript, Bootstrap, WordPress, and modern web technologies.',
-    longDescription: 'Our hallmark technical training course for aspiring web engineers. Go from zero layout expertise to designing premium mobile-responsive templates, writing client-side dynamic validation codes, styling grids with robust utility classes, and structuring complete dynamic e-commerce catalogs on WordPress.',
+    category: 'Web & Freelancing',
+    description: 'Comprehensive web development covering HTML5, CSS3, JavaScript, Bootstrap, responsive design, and full site deployment.',
+    longDescription: 'Our premier coding bootcamp for web development. Learn semantic HTML5, modern CSS3 styling, responsive grid frameworks, DOM manipulation in JavaScript, and live site deployment.',
     fee: 'PKR 25,000',
     skillsGained: [
-      'Semantic HTML5 & responsive CSS3 stylesheets',
-      'Bootstrap grid and container utilities',
-      'Standard client-side JavaScript DOM logic',
-      'WordPress setup with full custom settings',
-      'XAMPP installation & active local sandbox stage',
-      'Modern web hosting (FTP, Domains, DNS, SSL)'
+      'Semantic HTML5 & Responsive CSS3',
+      'Bootstrap 5 Grid System & Utilities',
+      'Vanilla JavaScript DOM & Event Handlers',
+      'Form Validation & Client-side Logic',
+      'Cross-browser Compatibility & Responsive Layouts',
+      'Domain, DNS, FTP & SSL Live Deployment'
     ],
     syllabus: [
-      'Semantic HTML5 Layout nesting & form parameters',
-      'CSS3: Styling properties, borders, spacing models, and keyframe animations',
-      'Responsive design guidelines: CSS Media queries and Bootstrap grid utilities',
-      'JavaScript fundamentals: Var declarations, Conditionals, Loops, Event listeners',
-      'WordPress setup: Local database configs, themes mounting & general setup',
-      'E-commerce Integration: WooCommerce catalogs, billing, and cart page creations',
-      'Site Launch: SSL certificate activation, redirect mappings, and live deployment'
+      'Semantic HTML5 Document Structure & Semantic Tags',
+      'CSS3 Styling, Box Model, Flexbox & Grid Layouts',
+      'Responsive Web Design with Media Queries & Bootstrap 5',
+      'JavaScript Basics: Variables, Functions, Loops & Arrays',
+      'DOM Manipulation, Form Validations & Event Listeners',
+      'Building Interactive Real-world Web Pages & Hosting Deployment'
     ],
-    featured: true
+    featured: true,
+    status: 'Available Now',
+    order: 13
+  },
+
+  // 4. ARTIFICIAL INTELLIGENCE
+  {
+    id: 'artificial-intelligence',
+    title: 'AI for Beginners',
+    duration: '3 Months',
+    category: 'Artificial Intelligence',
+    description: 'Practical introduction to modern AI tools, ChatGPT, Gemini, prompt engineering, content automation, and productivity workflows.',
+    longDescription: 'Gain practical digital literacy in artificial intelligence. Learn how to use ChatGPT, Google Gemini, Copilot, and productivity AI tools for copywriting, data research, document summarization, and daily workflow automation.',
+    fee: 'PKR 18,000',
+    skillsGained: [
+      'AI Literacy & Prompt Engineering Basics',
+      'Research & Document Summarization with AI',
+      'Productivity Automation with Gemini & ChatGPT',
+      'AI-Powered Data Cleaning & Excel Formulas',
+      'Creating Visuals & Presentations with AI',
+      'Ethical AI Usage & Fact-checking'
+    ],
+    syllabus: [
+      'Introduction to AI, LLMs & Real-World Use Cases',
+      'Crafting Effective Prompts: Context, Persona & Constraints',
+      'Using AI for Writing, Proofreading & Business Communication',
+      'Spreadsheet Assistance & Formula Generation with AI',
+      'AI Presentation & Visual Generation Overview',
+      'Workplace Productivity Frameworks with AI Assistants'
+    ],
+    featured: true,
+    status: 'Available Now',
+    order: 14
   },
   {
-    id: 'wordpress-dev',
-    title: 'WordPress Development',
-    duration: '3 Months',
-    category: 'Development',
-    description: 'Create professional business websites, blogs, e-commerce stores, and portfolio websites.',
-    longDescription: 'Command 43%+ of the entire web. This specialized backend course empowers students to quickly engineer state-of-the-art websites for corporate companies and clients. Learn premium theme setups, master Elementor Pro grid builders, manage active WooCommerce portals, and optimize site speed.',
-    fee: 'PKR 12,500',
+    id: 'generative-ai',
+    title: 'Generative AI & Prompt Engineering',
+    duration: '2 Months',
+    category: 'Artificial Intelligence',
+    description: 'Master advanced prompt engineering techniques, zero-shot/few-shot prompts, chain-of-thought, LLM system instructions, and structured outputs.',
+    longDescription: 'Master the art and science of prompt engineering. Learn advanced prompting architectures like Chain-of-Thought, few-shot prompting, system message constraints, JSON output formatting, and building custom GPTs and AI workflows.',
+    fee: 'PKR 15,000',
     skillsGained: [
-      'Elementor Pro page builder layouts',
-      'WooCommerce online cart architectures',
-      'Custom plugin integration & settings',
-      'WordPress security patches installation',
-      'Caching and speed performance audits',
-      'Database migration & backup procedures'
+      'Advanced Prompt Engineering Architectures',
+      'Chain-of-Thought & Tree-of-Thought Reasoning',
+      'Custom GPTs & System Instruction Design',
+      'Structured Output Formatting (JSON, Tables, Markdown)',
+      'Prompt Auditing, Guardrails & Hallucination Reduction',
+      'Multi-modal Prompting (Text + Image Analysis)'
     ],
     syllabus: [
-      'Understanding WordPress File Structuring & Hosting Servers',
-      'Direct Elementor Pro Grid designing: Creating Headers, Footers & Loops templates',
-      'Building professional service landing pages & contact forms with Recaptcha',
-      'Setting up WooCommerce: Creating products categories, stock counts & tax rates',
-      'Speed optimization: Asset compression, Lazy loading & Caching setups (LiteSpeed)',
-      'Database backings: Migrating from local sandbox to live hosting dashboard'
+      'Foundations of Large Language Model Behavior & Token Limits',
+      'Zero-Shot, Few-Shot & Role-Based Prompt Engineering',
+      'Chain-of-Thought & Step-by-Step Reasoning Frameworks',
+      'Designing Custom System Instructions & Knowledge Bases',
+      'Building Structured Outputs for Business Automation',
+      'Multi-modal Analysis & Real-world Prompting Case Studies'
     ],
-    featured: false
+    featured: false,
+    status: 'Coming Soon',
+    order: 15
   },
+  {
+    id: 'ai-content-creation',
+    title: 'AI Content Creation',
+    duration: '1 Month',
+    category: 'Artificial Intelligence',
+    description: 'Produce SEO articles, social media captions, video scripts, ad copy, and email newsletters using AI writing workflows.',
+    longDescription: 'Learn how to combine AI speed with human creativity to produce high-quality written content. Master AI-assisted SEO blog writing, YouTube video scriptwriting, social media content matrices, email sales copy, and tone matching.',
+    fee: 'PKR 10,000',
+    skillsGained: [
+      'AI-Assisted SEO Article Generation',
+      'YouTube & Short-form Video Scriptwriting',
+      'Social Media Caption & Hook Creation',
+      'Sales Copywriting & Email Marketing Templates',
+      'Brand Voice & Tone Matching with AI',
+      'Humanizing AI Content & Editorial Review'
+    ],
+    syllabus: [
+      'The AI Content Workflow: Research, Outline, Draft & Edit',
+      'SEO Blog Generation: Keywords, Headings & Content Depth',
+      'Scriptwriting for YouTube, Reels & TikTok Videos',
+      'Social Media Content Planning & Bulk Text Generation',
+      'Drafting High-Converting Email Newsletters & Sales Pitches',
+      'Fact-Checking, Editorial Polishing & Avoiding AI Redundancies'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 16
+  },
+  {
+    id: 'ai-image-video',
+    title: 'AI Image & Video Generation',
+    duration: '2 Months',
+    category: 'Artificial Intelligence',
+    description: 'Generate commercial quality visual art, product mockups, illustrations, and AI video animations using Midjourney, Stable Diffusion, and AI video tools.',
+    longDescription: 'Explore the frontier of synthetic media. Learn visual prompt engineering in Midjourney and Leonardo AI, photorealistic product rendering, custom avatar generation, AI voice synthesis, and generative video clips.',
+    fee: 'PKR 14,000',
+    skillsGained: [
+      'Midjourney & Leonardo AI Visual Prompting',
+      'Aspect Ratios, Camera Angles & Lighting Prompts',
+      'AI Product Mockup & Commercial Rendering',
+      'AI Voiceover Synthesis & Audio Cloning Tools',
+      'Generative Video Clips & Motion Inpainting',
+      'Commercial Usage Rights & Visual Upscaling'
+    ],
+    syllabus: [
+      'Generative Art Foundations: Diffusion Models & Image Prompts',
+      'Mastering Midjourney: Parameters, Styles, Weights & Seeds',
+      'Creating Commercial Product Photos & Marketing Assets',
+      'AI Character Consistency & Custom Avatar Design',
+      'AI Voice Synthesis, Text-to-Speech & Syncing',
+      'Text-to-Video Generation & Video Upscaling Workflows'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 17
+  },
+  {
+    id: 'ai-automation',
+    title: 'AI Automation & AI Agents',
+    duration: '2 Months',
+    category: 'Artificial Intelligence',
+    description: 'Build automated business workflows, AI-powered chatbots, webhook integrations, and multi-step agentic pipelines using no-code/low-code tools.',
+    longDescription: 'Learn how to automate repetitive business tasks by combining AI with automation platforms like Make.com, Zapier, and webhook integrations. Build autonomous AI workflows for customer inquiry handling, lead sorting, and automated reporting.',
+    fee: 'PKR 18,000',
+    skillsGained: [
+      'No-Code Workflow Automation (Make.com / Zapier)',
+      'AI Chatbot Setup & Custom Knowledge Bases',
+      'Webhook & API Integration Fundamentals',
+      'Automated Lead Capture & Email Dispatch',
+      'Agentic Task Execution Pipelines',
+      'Business Process Automation Auditing'
+    ],
+    syllabus: [
+      'Automation Foundations: Triggers, Actions & Webhooks',
+      'Connecting LLM APIs with Google Sheets & CRM Systems',
+      'Building Customer Support Chatbots with Knowledge Bases',
+      'Automated Social Media & Email Marketing Pipelines',
+      'Multi-Step AI Agent Pipelines & Conditional Routing',
+      'Deploying & Monitoring Real-World Automation Workflows'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 18
+  },
+
+  // 5. PROGRAMMING & DATA
+  {
+    id: 'python',
+    title: 'Python Programming',
+    duration: '3 Months',
+    category: 'Programming & Data',
+    description: 'Learn foundational computer programming using Python, data structures, algorithms, object-oriented concepts, and practical scripts.',
+    longDescription: 'Start your software engineering journey with Python, the world\'s most versatile language. Master Python syntax, functions, object-oriented programming (OOP), file I/O operations, error handling, and building real-world terminal scripts.',
+    fee: 'PKR 15,000',
+    skillsGained: [
+      'Python Syntax, Variables & Data Types',
+      'Control Flow (Conditionals & Loops)',
+      'Functions & Modular Code Architecture',
+      'Object-Oriented Programming (Classes & Objects)',
+      'File Handling & JSON Data Manipulation',
+      'Debugging, Testing & Clean Code Standards'
+    ],
+    syllabus: [
+      'Python Environment Setup & VS Code Workflow',
+      'Variables, Data Types, Strings & Mathematical Operations',
+      'Lists, Tuples, Dictionaries & Sets Manipulation',
+      'Control Structures: If/Else Statements & For/While Loops',
+      'Functions, Parameters, Lambda & Modular Scripting',
+      'Object-Oriented Python: Classes, Inheritance & Methods',
+      'File I/O, Error Handling with Try/Except & Mini Projects'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 19
+  },
+  {
+    id: 'python-ai-data',
+    title: 'Python for AI & Data Science',
+    duration: '3 Months',
+    category: 'Programming & Data',
+    description: 'Master NumPy, Pandas, Matplotlib, Seaborn, exploratory data analysis, and introductory machine learning algorithms.',
+    longDescription: 'Level up Python programming for data science and AI applications. Learn data manipulation with Pandas, numerical array computing with NumPy, statistical visualization, exploratory data analysis (EDA), and machine learning foundations.',
+    fee: 'PKR 20,000',
+    skillsGained: [
+      'Numerical Computing with NumPy Arrays',
+      'Data Wrangling & Cleaning with Pandas',
+      'Statistical Visualization (Matplotlib & Seaborn)',
+      'Exploratory Data Analysis (EDA) Techniques',
+      'Feature Engineering & Data Preprocessing',
+      'Introductory Scikit-Learn Machine Learning Models'
+    ],
+    syllabus: [
+      'NumPy Fundamentals: Multi-dimensional Arrays & Vectorization',
+      'Pandas DataFrames: Reading CSV/Excel, Filtering & Grouping',
+      'Data Cleaning: Handling Nulls, Duplicates & Outliers',
+      'Data Visualization: Line Charts, Histograms, Heatmaps & Boxplots',
+      'Exploratory Data Analysis Case Studies on Real Datasets',
+      'Introduction to Machine Learning: Linear Regression & Classification'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 20
+  },
+  {
+    id: 'data-analytics-power-bi',
+    title: 'Data Analytics with Excel & Power BI',
+    duration: '3 Months',
+    category: 'Programming & Data',
+    description: 'Transform raw business data into actionable visual insights, interactive dashboards, DAX measures, and Power BI reports.',
+    longDescription: 'Bridge the gap between raw data and business intelligence. Master data modeling, Power Query transformations, DAX formula calculations, interactive Power BI visualizations, and corporate KPI dashboard deployment.',
+    fee: 'PKR 16,000',
+    skillsGained: [
+      'Power BI Desktop Report Authoring',
+      'Data Modeling (Star Schema & Relationships)',
+      'DAX Measures & Calculated Columns',
+      'Interactive Slicers, Cross-filtering & Drill-downs',
+      'Power Query ETL Data Transformations',
+      'Executive Business Dashboard Design'
+    ],
+    syllabus: [
+      'Data Analytics Core: Business Questions & KPI Metrics',
+      'Importing & Transforming Data in Power Query',
+      'Data Modeling: Star Schema, Tables & Relationships',
+      'DAX Essentials: SUM, CALCULATE, RELATED & Time Intelligence',
+      'Building Visual Reports: Cards, Charts, Tables & Maps',
+      'Publishing, Sharing & Scheduling Automated Data Refreshes'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 21
+  },
+  {
+    id: 'sql',
+    title: 'SQL & Database Fundamentals',
+    duration: '2 Months',
+    category: 'Programming & Data',
+    description: 'Master relational database concepts, SQL queries, table joins, aggregations, data normalization, and MySQL/PostgreSQL.',
+    longDescription: 'Master Structured Query Language (SQL) to store, query, and manage relational business data. Learn table schemas, CRUD operations, multi-table JOINs, subqueries, group aggregations, indexes, and database normalization.',
+    fee: 'PKR 12,000',
+    skillsGained: [
+      'Relational Database Design & Normalization',
+      'SQL CRUD Operations (SELECT, INSERT, UPDATE, DELETE)',
+      'Multi-Table JOINs (INNER, LEFT, RIGHT)',
+      'Aggregate Functions (GROUP BY, HAVING, ORDER BY)',
+      'Subqueries & Common Table Expressions (CTEs)',
+      'Database Indexing & Query Performance Basics'
+    ],
+    syllabus: [
+      'Relational Database Concepts & Schema Architecture',
+      'SQL Syntax Basics: SELECT, WHERE, Operators & Sorting',
+      'Aggregate Functions: COUNT, SUM, AVG & Grouping Data',
+      'Joining Tables: Relational Keys & Multi-Table Queries',
+      'Subqueries, Nested Expressions & String Operations',
+      'Data Definition Language (DDL): CREATE, ALTER, Constraints & Backups'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 22
+  },
+
+  // 6. DIGITAL BUSINESS
   {
     id: 'digital-marketing',
     title: 'Digital Marketing',
     duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Learn SEO, Social Media Marketing, Google Ads, Content Marketing, Email Marketing, and Marketing Strategy.',
-    longDescription: 'Master the high-income mechanisms used to attract targeted customers, scale sales conversions, write hyper-converting ad copy, configure pixel tracking scripts, and manage daily client advertising budget metrics.',
+    category: 'Digital Business',
+    description: 'Master digital marketing strategy, conversion funnels, Google Ads, Meta advertising, email campaigns, and analytics tracking.',
+    longDescription: 'Learn comprehensive digital marketing strategies to acquire customers and scale sales. Master lead generation funnels, paid advertising campaigns on Google and Meta, email marketing automation, conversion tracking, and campaign ROI reporting.',
     fee: 'PKR 15,000',
     skillsGained: [
-      'Marketing Funnel layout and metrics',
-      'Converting copy development skills',
-      'Setup analytics metrics and track outcomes',
-      'Highly targeted digital audience segmentation',
-      'Paid advertising strategy configurations',
-      'Campaign performance auditing and reporting'
+      'Digital Marketing Funnel Strategy',
+      'Meta Ads Manager Campaign Setup',
+      'Google Search Ads & Bidding Strategies',
+      'Email Marketing Automation & Lead Magnets',
+      'Pixel Tracking, Conversion Events & Analytics',
+      'Client Marketing Audits & ROI Reporting'
     ],
     syllabus: [
-      'Understanding Customer Lifecycles: Lead generation, Nurture & Conversion',
-      'Content Marketing: Blogging, scheduling calendars & dynamic lead magnets',
-      'Constructing professional email automation campaigns on Mailchimp',
-      'Data parameters: Adding pixel codes & setting custom conversion scopes',
-      'Calculating Budgeting metrics, ROI targets, and Cost-Per-Click averages',
-      'Drafting and presenting executive agency client marketing files'
+      'Digital Marketing Core: Funnels, Target Personas & Customer Journeys',
+      'Meta Ads: Campaign Objectives, Ad Sets, Creatives & Targeting',
+      'Google Ads: Search Keywords, Match Types & Quality Score',
+      'Email Marketing: Building Subscriber Lists & Automated Sequences',
+      'Analytics & Pixel Tracking: Measuring Conversion Rates',
+      'Agency Client Reporting: KPI Presentations & Campaign Scaling'
     ],
-    featured: true
-  },
-  {
-    id: 'seo',
-    title: 'Search Engine Optimization (SEO)',
-    duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Master keyword research, on-page SEO, off-page SEO, technical SEO, and ranking strategies.',
-    longDescription: 'Get discovered at the top of Google Search Page Results. Learn how to audit, optimize, and rank websites naturally. Understand key metrics like search intent, optimize crawl configurations, identify slow page speeds, and construct authority backlink profiles.',
-    fee: 'PKR 15,000',
-    skillsGained: [
-      'Targeted Keyword research metrics',
-      'On-Page HTML Tags Optimization',
-      'XML Sitemaps & robots directory logs',
-      'Link Building & backlink analysis',
-      'Ahrefs, SEMrush & Moz diagnostics',
-      'Google Search Console setup'
-    ],
-    syllabus: [
-      'How Search Engine Crawlers index web pages',
-      'Targeting Search Queries: Volume, Cost-per-click, Competition analysis',
-      'On-Page: Layout title tags, Meta outlines, slug formats & media alt targets',
-      'Technical SEO: Canonical URL logs, schema markup codes & fast core vitals',
-      'Off-Page: Secure outreach guest blog posts, index directories, and link audits',
-      'Auditing: Competitor crawling failures & fixing console index warnings'
-    ],
-    featured: false
+    featured: true,
+    status: 'Available Now',
+    order: 23
   },
   {
     id: 'social-media-marketing',
     title: 'Social Media Marketing',
     duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Learn Facebook, Instagram, TikTok, LinkedIn, and YouTube marketing techniques.',
-    longDescription: 'Unlock viral audience growth and transaction scale across social channels. Master organic content creation, reel video pacing, community comment handling, social page branding, and detailed client reports configurations.',
+    category: 'Digital Business',
+    description: 'Grow brands and engage audiences across Facebook, Instagram, TikTok, LinkedIn, and YouTube with organic and paid marketing.',
+    longDescription: 'Master audience growth and engagement across modern social networks. Learn content calendar planning, organic community management, brand voice development, influencer collaborations, and performance analytics.',
     fee: 'PKR 12,000',
     skillsGained: [
-      'Social Platform Algorithmic parameters',
-      'Kinetic social content generation script writing',
-      'Managing community engagement profiles',
-      'Creating structured brand guidelines',
-      'Audience demographic clustering tactics',
-      'Monthly performance dashboard design'
+      'Platform-Specific Content Strategy (FB, IG, TikTok, LinkedIn)',
+      'Content Calendar Planning & Scheduling',
+      'Community Management & Comment Moderation',
+      'Influencer Marketing & Brand Partnerships',
+      'Social Media Metrics & Engagement Analysis',
+      'Building Organic Brand Authority'
     ],
     syllabus: [
-      'Deconstructing major social platforms: FB, Insta, TikTok, LinkedIn & YT',
-      'Drafting clean social sheets: Formulating content topics & visual prompts',
-      'Video Reels scheduling: Audio sync, title captions & hashtag tools',
-      'Fostering organic growth: Moderation rules, direct messaging setups',
-      'Designing and presenting standard monthly social reports to clients'
+      'Deconstructing Social Algorithms: Engagement Signals & Reach',
+      'Planning Monthly Content Calendars & Visual Assets',
+      'Short-form Video & Stories Content Strategy',
+      'Community Building: Comments, DMs & Customer Care',
+      'Paid Boosting vs Organic Growth Strategies',
+      'Social Media Auditing & Monthly Reporting for Clients'
     ],
-    featured: false
+    featured: true,
+    status: 'Available Now',
+    order: 24
   },
   {
-    id: 'ecommerce-management',
-    title: 'E-Commerce Management',
+    id: 'seo',
+    title: 'Search Engine Optimization (SEO)',
     duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Manage online stores, product listings, customer handling, and online sales strategies.',
-    longDescription: 'Learn exactly how to set up, operate, and optimize e-commerce stores, catalog listings, inventory sheets, checkouts, local Cash-On-Delivery partners, and support operations.',
+    category: 'Digital Business',
+    description: 'Rank websites on Google Search with keyword research, technical SEO, on-page optimization, content strategy, and link building.',
+    longDescription: 'Learn proven white-hat SEO techniques to drive targeted organic traffic from Google Search. Master keyword research, technical site audits, on-page HTML tags, structured data, high-quality backlink building, and Google Search Console.',
     fee: 'PKR 15,000',
     skillsGained: [
-      'Product listing and catalog copywriting',
-      'Inventory sheets data tracking',
-      'Courier portals integration (COD)',
-      'Customer support ticket systems',
-      'Checkout conversions optimization',
-      'Supplier outsourcing protocols'
+      'Targeted Keyword Research & Search Intent',
+      'On-Page SEO (Meta Tags, Headings, Internal Links)',
+      'Technical SEO (Core Web Vitals, Sitemaps, Robots.txt)',
+      'White-Hat Backlink Building & Outreach',
+      'Google Search Console & Analytics Audits',
+      'Competitor SEO Analysis with Industry Tools'
     ],
     syllabus: [
-      'E-commerce Roadmaps: Standalone Shopify vs Multiprovider WooCommerce',
-      'Adding Products: Sizing, configurations, descriptions, search optimizing titles',
-      'Order Processings: Fulfilling tickets, packing checks, and printing labels',
-      'Logistics: Partnering with leading local couriers (TCS, Leopard, BlueEx)',
-      'Constructing responsive customer responses for complaints and query resolutions',
-      'Conversion strategies: Installing exit intents, coupons, and upsell packages'
+      'Search Engine Fundamentals: Crawling, Indexing & Ranking Algorithms',
+      'Keyword Research: Search Volume, Intent, Keyword Difficulty',
+      'On-Page Optimization: Title Tags, URLs, Headings & Content Structuring',
+      'Technical SEO: Site Speed, Sitemaps, Canonicalization & Mobile Optimization',
+      'Off-Page SEO: Digital PR, Guest Articles & Authority Building',
+      'Google Search Console Audits & Performance Reporting'
     ],
-    featured: false
+    featured: true,
+    status: 'Available Now',
+    order: 25
   },
   {
-    id: 'freelancing',
-    title: 'Freelancing Training',
+    id: 'accounting',
+    title: 'Accounting & Bookkeeping',
     duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Learn how to build a professional profile, acquire clients, and work on global freelancing platforms.',
-    longDescription: 'Build a bridge from technical skills to international foreign currency earnings. Learn how to curate world-class profiles on Upwork, Fiverr, and Guru, compile high-conversion proposals, handle clients smoothly, and withdraw secure remittances to Pakistan.',
+    category: 'Digital Business',
+    description: 'Master bookkeeping principles, double-entry accounting, financial statements, bank reconciliations, and practical accounting in Excel.',
+    longDescription: 'A practical business accounting program covering bookkeeping rules, financial ledgers, balance sheets, profit and loss statements, payroll registers, and spreadsheet accounting for small to medium businesses.',
     fee: 'PKR 10,000',
     skillsGained: [
-      '100% complete Upwork Profile setup',
-      'Fiverr gig SEO optimizations',
-      'High-Conversion proposal drafting',
-      'Hourly tracker verification measures',
-      'Payoneer & Local Bank payout linkages',
-      'Professional client dispute management'
+      'Double-Entry Bookkeeping Principles',
+      'General Ledger & Journal Entries Management',
+      'Income Statements & Balance Sheet Preparation',
+      'Bank Reconciliation & Petty Cash Controls',
+      'Payroll Management & Tax Deduction Tracking',
+      'Computerized Accounting Workflows in Excel'
     ],
     syllabus: [
-      'Ecosystem of freelance platforms: Direct jobs, fixed milestones, hourly rates',
-      'Writing bespoke bid proposals that bypass global filters and win calls',
-      'Designing beautiful responsive PDF project portfolios matching target niches',
-      'How to safely log hours, verify payments and negotiate premium retainers',
-      'Creating fully verified financial remittance accounts (Payoneer, Wise, Local Banks)'
+      'Foundations of Accounting: Assets, Liabilities, Equity & Equations',
+      'Recording Transactions: Journal Entries, Ledgers & Trial Balance',
+      'Preparing Financial Statements: Profit & Loss, Balance Sheets',
+      'Cash Management: Bank Reconciliation Statements & Petty Cash',
+      'Payroll Registers, Invoicing & Accounts Receivable/Payable',
+      'Practical Excel Templates for Financial Audits & Record Keeping'
     ],
-    featured: true
+    featured: false,
+    status: 'Available Now',
+    order: 26
+  },
+
+  // 7. ADVANCED IT
+  {
+    id: 'cybersecurity',
+    title: 'Cybersecurity Fundamentals',
+    duration: '3 Months',
+    category: 'Advanced IT',
+    description: 'Learn essential information security principles, threat analysis, network defense, password security, vulnerability scanning, and safe computing practices.',
+    longDescription: 'An introductory program into information and cyber defense. Learn core cybersecurity concepts including the CIA triad, malware taxonomy, phishing attack mechanics, vulnerability assessments, firewall basics, and security hygiene.',
+    fee: 'Inquire at Campus',
+    skillsGained: [
+      'Information Security Core Concepts (CIA Triad)',
+      'Threat Analysis (Malware, Ransomware, Phishing)',
+      'Vulnerability Assessment & Port Scanning Basics',
+      'Password Security, 2FA & Identity Management',
+      'Network Defense & Basic Firewall Configuration',
+      'Security Incident Response Protocols'
+    ],
+    syllabus: [
+      'Introduction to Cybersecurity Landscape & Threat Vectors',
+      'Authentication, Authorization & Access Control Principles',
+      'Malware Analysis & Social Engineering Defense',
+      'Network Security Basics: Ports, Protocols & Firewalls',
+      'Vulnerability Scanning Fundamentals & Security Audits',
+      'Incident Response, Data Backup & Security Compliance Basics'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 27
   },
   {
-    id: 'video-editing',
-    title: 'Video Editing',
-    duration: '3 Months',
-    category: 'Design',
-    description: 'Professional video editing using Adobe Premiere Pro, CapCut, After Effects, and content creation tools.',
-    longDescription: 'An immersive digital video production and editing blueprint. Master video timeline management, audio noise filtering, transitions, color lookup profiles, and kinetic captions to launch a career creating viral shorts.',
+    id: 'networking',
+    title: 'Networking Fundamentals',
+    duration: '2 Months',
+    category: 'Advanced IT',
+    description: 'Understand computer network architectures, TCP/IP, OSI model, IP addressing, subnetting, routers, switches, and LAN/WLAN setup.',
+    longDescription: 'Master the foundational protocols and hardware that connect the internet. Learn OSI model layers, IPv4/IPv6 addressing, subnet calculations, router and switch configuration basics, wireless networks, and network troubleshooting.',
+    fee: 'Inquire at Campus',
+    skillsGained: [
+      'OSI Model & TCP/IP Protocol Suite',
+      'IPv4 Addressing & Subnetting Calculations',
+      'Routers, Switches & Network Topologies',
+      'LAN & Wireless WLAN Setup & Security',
+      'Network Diagnostic Tools (Ping, Traceroute, Wireshark)',
+      'DNS, DHCP & Gateway Troubleshooting'
+    ],
+    syllabus: [
+      'Introduction to Computer Networks & Topologies',
+      'The OSI 7-Layer Model & TCP/IP Stack Explained',
+      'IP Addressing: IPv4 Classes, Subnetting & IPv6 Basics',
+      'Network Hardware: Ethernet Cables, Switches & Routers',
+      'Configuring Local Area Networks (LAN) & Wi-Fi Security',
+      'Network Troubleshooting with Diagnostic Command Line Tools'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 28
+  },
+  {
+    id: 'cloud-computing',
+    title: 'Cloud Computing Fundamentals',
+    duration: '2 Months',
+    category: 'Advanced IT',
+    description: 'Explore cloud architectures, IaaS, PaaS, SaaS, virtualization, storage, compute instances, and modern cloud deployment models.',
+    longDescription: 'Understand modern cloud infrastructure that powers global software. Learn cloud service models (IaaS, PaaS, SaaS), public vs private clouds, virtual machines, cloud object storage, serverless concepts, and basic cloud security.',
+    fee: 'Inquire at Campus',
+    skillsGained: [
+      'Cloud Service Models (IaaS, PaaS, SaaS)',
+      'Virtualization & Cloud Compute Instances',
+      'Cloud Storage Types (Block, Object, File Storage)',
+      'Cloud Networking & Content Delivery Networks (CDNs)',
+      'Identity & Access Management (IAM) Basics',
+      'Cost Estimation & Cloud Deployment Architecture'
+    ],
+    syllabus: [
+      'Introduction to Cloud Computing & Historical Evolution',
+      'Cloud Models: Public, Private, Hybrid & Multi-Cloud',
+      'Compute Services: Virtual Machines & Container Concepts',
+      'Cloud Storage Solutions & Database Management',
+      'Cloud Security Fundamentals & IAM Access Controls',
+      'Deploying Simple Web Applications to Cloud Hosting'
+    ],
+    featured: false,
+    status: 'Coming Soon',
+    order: 29
+  },
+  {
+    id: 'ui-ux',
+    title: 'UI/UX Design with Figma',
+    duration: '2 Months',
+    category: 'Advanced IT',
+    description: 'Design intuitive web and mobile app user interfaces, wireframes, interactive prototypes, and design systems using Figma.',
+    longDescription: 'Master user experience and user interface design in Figma. Learn user research, information architecture, wireframing, typography, color styles, auto layout, component variants, interactive prototyping, and developer handoff.',
     fee: 'PKR 15,000',
     skillsGained: [
-      'Adobe Premiere Pro timeline cutting',
-      'After Effects keyframe tracking styles',
-      'CapCut desktop dynamic captions presets',
-      'Audio leveling & noise filter controls',
-      'Aspect ratio responsive layouts rendering',
-      'Advanced LUT color grade configurations'
+      'User Experience (UX) Research & User Journeys',
+      'Wireframing & Information Architecture',
+      'Figma Auto Layout & Responsive UI Design',
+      'Component Libraries, Variants & Design Systems',
+      'Interactive Clickable Prototyping',
+      'Design Specifications & Developer Handoff'
     ],
     syllabus: [
-      'Foundations of Audio/Video formats, resolutions and bitrates',
-      'Premiere Pro essentials: Cutting clips, assembling drafts',
-      'Sound editing: Layering SFX, audio enhancements & ambient soundtrack syncing',
-      'Pacing hooks: Cutting with speed charts and smooth slides transitions',
-      'Motion graphics: Designing headers, lower-thirds and callout assets',
-      'CapCut workflow: Mass-producing high-retention video stories and shorts'
+      'Foundations of UX: User Personas, User Flows & Problem Statements',
+      'Figma Workspace: Frames, Grids, Shapes & Vector Networks',
+      'Wireframing: Low-Fidelity to High-Fidelity App Layouts',
+      'Auto Layout, Constraints & Responsive Component Variants',
+      'Building Design Systems: Color Tokens, Typography & Buttons',
+      'Interactive Prototyping, Micro-Interactions & Developer Handoff'
     ],
-    featured: false
+    featured: false,
+    status: 'Coming Soon',
+    order: 30
   },
   {
-    id: 'accounting-courses',
-    title: 'Accounting Courses',
-    duration: '3 Months',
-    category: 'Short Courses',
-    description: 'Learn bookkeeping, accounting fundamentals, financial statements, and Excel techniques for accountants.',
-    longDescription: 'A practical accounting program covering core bookkeeping practices, financial reporting, reconciliation, and Excel skills tailored for accounting workflows. Ideal for beginners and office staff aiming to handle day-to-day financial tasks.',
-    fee: 'PKR 10,000',
+    id: 'odoo-erp',
+    title: 'Odoo / ERP Fundamentals',
+    duration: '2 Months',
+    category: 'Advanced IT',
+    description: 'Learn Enterprise Resource Planning (ERP) concepts, inventory, sales, invoicing, purchasing, and business workflow management using Odoo.',
+    longDescription: 'Discover how modern enterprises manage end-to-end operations using ERP systems like Odoo. Learn sales pipelines, purchase orders, inventory tracking, warehouse management, invoicing workflows, and reporting.',
+    fee: 'Inquire at Campus',
     skillsGained: [
-      'Basic bookkeeping and ledger management',
-      'Preparing income statements and balance sheets',
-      'Bank reconciliation and petty cash handling',
-      'Excel for accounting: formulas, pivot tables, and reporting'
+      'Enterprise Resource Planning (ERP) Core Concepts',
+      'Odoo CRM & Sales Order Processing',
+      'Purchasing & Vendor Management Workflows',
+      'Inventory Control & Warehouse Stock Tracking',
+      'Automated Invoicing & Customer Billing Modules',
+      'Business Performance Analytics & ERP Reporting'
     ],
     syllabus: [
-      'Introduction to accounting principles and terminology',
-      'Recording transactions: Journals and ledgers',
-      'Financial statements: Preparation and analysis',
-      'Practical Excel for accounting and reporting'
+      'Introduction to ERP Architecture & Business Process Integration',
+      'Odoo Platform Navigation & User Role Permissions',
+      'Sales & CRM: Managing Leads, Quotations & Sales Orders',
+      'Purchase Management: Vendor Quotations & Purchase Orders',
+      'Inventory & Warehouse: Stock Adjustments, Barcodes & Tracking',
+      'Invoicing & Financial Reporting: Generating Statements & Analytics'
     ],
-    featured: false
-  },
-  {
-    id: 'artificial-intelligence',
-    title: 'Artificial Intelligence & Tools',
-    duration: '3 Months',
-    category: 'Artificial Intelligence',
-    description: 'Gain practical AI skills in machine learning workflows, automation, generative tools, and business intelligence.',
-    longDescription: 'Learn the fundamentals of modern artificial intelligence from model selection to deployment. This course prepares you for data-driven automation, AI-powered business tools, and practical prompt engineering in real-world workflows.',
-    fee: 'PKR 18,000',
-    skillsGained: [
-      'Aesthetic Prompt Engineering layouts',
-      'Fine-tuning custom agent assistants',
-      'AI Voicing & cloning setup options',
-      'Automated spreadsheet formulas script writing',
-      'Midjourney & Canva AI artwork design',
-      'Bulk campaigns auto-scheduling systems',
-      'Prompt engineering for large language models',
-      'Business automation with AI workflows',
-      'Dataset preparation and evaluation',
-      'AI image generation and content automation',
-      'Model deployment basics and performance tuning'
-    ],
-    syllabus: [
-      'Core LLM architectures & prompt parameters',
-      'Mastering prompt techniques: Zero-shot, Few-shot & Chain-of-Thought formulas',
-      'AI Copywriting: Drafting sales copies, SEO blogs, and captions with Gemini/GPT',
-      'Visuals: Generating hyper-realistic illustrations in Midjourney & Stable Diffusion',
-      'Automating workflows: Bulk writing content matrices to bulk schedule posts in minutes',
-      'Ethics of Artificial Intelligence: Copyright checks and editing outputs',
-      'Introduction to AI concepts and practical use cases',
-      'Overview of machine learning, neural networks, and model training',
-      'Dataset selection, cleaning, and validation techniques',
-      'Generative AI tools for copywriting, design, and process automation',
-      'Deploying AI workflows and building smart productivity assistants',
-      'Ethics, safety, and responsible AI for business applications'
-    ],
-    featured: true
+    featured: false,
+    status: 'Coming Soon',
+    order: 31
   }
 ];
 
@@ -590,7 +1155,7 @@ export const SERVICES: Service[] = [
       'Precise formatting of digital documents (sizing, compressions)',
       'Direct online invoice challan deposits & printable confirmations',
       'Real-time sms and portal application tracking assistance',
-      'Complete school board files and affiliation paper assemblies'
+      'Complete school board examination and registration file preparation'
     ],
     techStack: ['Government Job Hubs', 'FPSC & PPSC Portals', 'HEC Equivalence System', 'BISE Board'],
     category: 'local-hub'
@@ -788,106 +1353,193 @@ export const TESTIMONIALS: Testimonial[] = [
 
 export const BLOGS: BlogPost[] = [
   {
-    id: 'blog-ai-tips',
-    slug: 'artificial-intelligence-for-small-businesses',
-    title: 'Artificial Intelligence for Small Businesses',
-    excerpt: 'Explore practical AI applications that help local teams automate workflows, improve customer service, and accelerate sales without heavy technical overhead.',
+    id: 'blog-freelance-pakistan',
+    slug: 'how-to-start-freelancing-in-pakistan-step-by-step',
+    title: 'How to Start Freelancing in Pakistan: Step-by-Step Career Blueprint',
+    excerpt: 'A practical, actionable roadmap for Pakistani students and professionals to launch successful freelance careers on Upwork, Fiverr, and LinkedIn with direct payment withdrawal via Payoneer and local banks.',
+    category: 'Freelancing',
+    author: 'Javed Hattar',
+    publishedAt: 'August 2026',
+    readTime: '6 min read',
+    tags: ['Freelancing', 'Upwork', 'Fiverr', 'Payoneer', 'Career'],
+    highlight: 'Turn high-demand IT skills into sustainable international foreign exchange income.',
+    content: [
+      'Freelancing offers Pakistani youths and professionals a direct pathway to global career independence and international foreign exchange earnings. However, succeeding as a freelancer requires a strategic combination of a marketable technical skill, a polished portfolio, and a client-focused communication style.',
+      'The first fundamental step is mastering a specific, high-demand technical skill rather than trying to offer everything at once. Whether you specialize in WordPress website design, Adobe Photoshop graphic design, Premiere Pro video editing, or Microsoft Excel financial modeling, narrow your focus to solve specific client problems efficiently.',
+      'Next, construct a 100% complete profile on platforms like Upwork and Fiverr. Avoid generic bios. Instead, clearly articulate what business problem you solve, who your ideal client is, and include verifiable work samples or live project links demonstrating your capabilities.',
+      'When submitting proposals or bidding on projects, avoid copy-pasting template text. Read the client’s job description thoroughly, reference their specific requirements in the first two sentences, and propose a concise implementation plan with realistic turnaround times.',
+      'Finally, establish a reliable financial remittance pipeline. Link your freelance platform earnings to a verified Payoneer or international banking account connected to local Pakistani commercial banks for secure, low-fee foreign currency withdrawals.'
+    ]
+  },
+  {
+    id: 'blog-ai-prompt-engineering',
+    slug: 'practical-ai-tools-and-prompt-engineering-guide',
+    title: 'Practical AI Tools & Prompt Engineering Guide for 2026',
+    excerpt: 'Master practical generative AI workflows, large language model prompt engineering techniques, and automation tools that double workplace productivity.',
     category: 'Artificial Intelligence',
     author: 'Ayesha Khan',
-    publishedAt: 'June 2026',
-    readTime: '4 min read',
-    tags: ['AI', 'Business', 'Automation'],
-    highlight: 'Simple AI tools for faster business results.',
-    content: [
-      'Small businesses can use AI to automate customer replies, schedule appointments, and analyze sales without hiring a full technical team. Tools like chatbots and automated email flows save time and reduce repetitive work.',
-      'Start by identifying the repetitive tasks that take the most time. Common candidates include lead follow-up, quote requests, and invoice reminders. Then pick a simple AI tool that integrates with your current workflow, such as WhatsApp automation or email automation via a business platform.',
-      'AI does not have to be expensive. Use browser-based tools for drafting marketing copy, answering customer questions, and producing proposal templates. You can also leverage spreadsheet automation to summarize sales data and highlight trends without manual formulas.',
-      'Protect your business by using AI tools that respect privacy and do not expose customer data. Keep your prompts simple, validate outputs manually, and build a culture of learning around the new workflow so your team adopts the tools confidently.'
-    ]
-  },
-  {
-    id: 'blog-digital-skills',
-    slug: 'top-5-digital-skills-employers-want-now',
-    title: 'Top 5 Digital Skills Employers Want Now',
-    excerpt: 'A quick guide to the most in-demand IT and design skills, including web development, digital marketing, and certification-ready tools.',
-    category: 'Career',
-    author: 'Ali Raza',
-    publishedAt: 'May 2026',
-    readTime: '3 min read',
-    tags: ['Career', 'Skills', 'Training'],
-    content: [
-      'Employers are looking for candidates who can deliver results quickly. The top digital skills right now are web development, graphic design, social media marketing, search engine optimization, and AI-assisted content creation.',
-      'Web development remains strong because every business needs a modern website. Learn basic HTML, CSS, and JavaScript, then build a portfolio project that shows a real landing page or store.',
-      'Digital marketing skills are also in demand. Understanding how to create campaigns on Facebook, Instagram, and Google, combined with an ability to analyze performance, makes a candidate very attractive.',
-      'Finally, being able to work with AI tools to generate copy, design social graphics, or automate tasks is a differentiator. Show employers that you can blend technical skills with productivity tools to create more value.'
-    ]
-  },
-  {
-    id: 'blog-web-design-trends',
-    slug: 'web-design-trends-that-convert-in-2026',
-    title: 'Web Design Trends That Convert in 2026',
-    excerpt: 'Learn which website design patterns, accessibility choices, and conversion-led layouts are winning customers this year.',
-    category: 'Design',
-    author: 'Sara Malik',
-    publishedAt: 'April 2026',
+    publishedAt: 'July 2026',
     readTime: '5 min read',
-    tags: ['Web Design', 'UX', 'Conversion'],
+    tags: ['AI', 'Prompt Engineering', 'Automation', 'Productivity'],
+    highlight: 'AI does not replace professionals; professionals using AI replace those who do not.',
     content: [
-      'Web visitors prefer clear, fast pages with strong visual hierarchy. Use large headlines, clear call-to-action buttons, and concise sections so people can scan quickly and convert faster.',
-      'Accessibility is not optional. Provide good color contrast, readable fonts, and keyboard-friendly navigation. This not only helps all visitors, it also improves search engine trust.',
-      'Use real images or clean illustrations to build trust. A well-designed hero section with a headline, supporting paragraph, and an action button is one of the most effective conversion patterns.',
-      'Keep mobile design a priority. More than half of users browse on phones, so layouts should work on narrow screens with easy touch targets and short text blocks.'
+      'Generative Artificial Intelligence has shifted from an experimental novelty into an essential productivity driver across modern office workplaces, marketing agencies, and software development teams.',
+      'Effective prompt engineering relies on structured instruction frameworks. Rather than asking vague questions, provide the AI model with a clear role, explicit context, step-by-step task requirements, and desired output formatting (such as tables, markdown bullets, or code snippets).',
+      'For content creators and marketers, tools like Gemini and ChatGPT allow rapid drafting of marketing funnels, email sequences, and SEO outlines. However, human editorial oversight, fact-checking, and brand voice alignment remain critical to producing credible, high-ranking content.',
+      'In administrative and business environments, AI tools can automate spreadsheet formula generation, synthesize complex meeting transcripts, and draft professional bilingual correspondence in minutes.',
+      'At Future Gates IT Center, our practical AI curriculum teaches students how to combine AI prompts with real-world design, development, and administrative workflows for maximum commercial impact.'
     ]
   },
   {
-    id: 'blog-office-automation',
+    id: 'blog-graphic-design-guide',
+    slug: 'graphic-design-fundamentals-and-tools-guide',
+    title: 'Graphic Design Fundamentals: Tools, Typography & Commercial Branding',
+    excerpt: 'An industry overview of visual design principles, Adobe Illustrator vectors, Photoshop raster manipulation, and Canva branding for commercial marketing assets.',
+    category: 'Design',
+    author: 'Zainab Rehman',
+    publishedAt: 'July 2026',
+    readTime: '5 min read',
+    tags: ['Graphic Design', 'Photoshop', 'Illustrator', 'Branding'],
+    highlight: 'Great design is clear visual communication that guides user action and builds brand trust.',
+    content: [
+      'Graphic design is the visual cornerstone of every modern business, from local retail storefronts to global software enterprises. Understanding core design principles is what distinguishes professional designers from casual software users.',
+      'Mastering color harmony, visual hierarchy, optical alignment, and contrast ensures that marketing banners, social media posts, and billboards immediately capture and direct the viewer’s attention.',
+      'Adobe Illustrator serves as the gold standard for vector graphics, logo creation, and print-ready branding assets that scale infinitely without pixelation. Complementing this, Adobe Photoshop provides deep pixel manipulation, photo retouching, and mock-up rendering.',
+      'For rapid digital agency turnarounds, tools like Canva and CorelDraw allow designers to quickly adapt brand assets into social media carousels, business cards, letterheads, and wedding invitation layouts.',
+      'Building a strong commercial portfolio featuring 4 to 6 diverse, realistic client projects—such as complete corporate brand identities or product packaging—is the most effective way to win high-paying freelance contracts.'
+    ]
+  },
+  {
+    id: 'blog-video-editing-workflow',
+    slug: 'video-editing-workflow-premiere-capcut-guide',
+    title: 'Professional Video Editing Workflow: Premiere Pro, CapCut & YouTube Growth',
+    excerpt: 'Learn the modern video editing pipeline for producing high-retention YouTube long-form content, viral TikTok reels, and commercial promotional videos.',
+    category: 'Video Production',
+    author: 'Fatima Noor',
+    publishedAt: 'June 2026',
+    readTime: '5 min read',
+    tags: ['Video Editing', 'Premiere Pro', 'CapCut', 'YouTube', 'Reels'],
+    highlight: 'Pacing, audio clarity, and visual hooks are the three pillars of high-retention video content.',
+    content: [
+      'Short-form and long-form video content currently dominates digital media consumption. Content creators, marketing agencies, and corporate brands constantly seek skilled video editors to turn raw footage into compelling narratives.',
+      'A professional editing workflow begins with efficient file organization, timeline bin structuring, and rough cut assembly. Trimming dead air and maintaining tight narrative pacing within the first 3 seconds is crucial for viewer retention.',
+      'Audio quality often matters more than visual resolution. Professional editors use multi-band compressors, parametric equalizers, noise reduction filters, and balanced background music ducking to ensure spoken dialogue is crisp and intelligible.',
+      'While Adobe Premiere Pro and After Effects handle advanced multi-camera workflows, motion graphics, and color grading, tools like CapCut Desktop enable rapid kinetic captioning, sound effect layering, and vertical aspect ratio exports.',
+      'Students learning video production at Future Gates IT Center gain hands-on practice editing real client podcasts, promo commercials, and social reels with verifiable project certification.'
+    ]
+  },
+  {
+    id: 'blog-wordpress-web-design',
+    slug: 'building-fast-wordpress-websites-in-2026',
+    title: 'Building Fast, Secure WordPress Websites in 2026',
+    excerpt: 'A comprehensive guide to developing professional WordPress and WooCommerce websites with responsive page builders, optimized speed, and robust security.',
+    category: 'Web Development',
+    author: 'Usman Ghani',
+    publishedAt: 'June 2026',
+    readTime: '5 min read',
+    tags: ['WordPress', 'Web Development', 'WooCommerce', 'Elementor', 'SEO'],
+    highlight: 'Powering over 40% of the web, WordPress is the fastest way to launch functional client portals and stores.',
+    content: [
+      'WordPress remains the dominant content management system globally, powering everything from local business websites to high-volume e-commerce catalogs.',
+      'Modern WordPress development focuses on responsive page building using clean block builders or Elementor Pro, structured custom post types, and lightweight child themes that ensure fast load times.',
+      'For e-commerce, WooCommerce provides an extensible foundation. Integrating local Pakistani payment gateways, Cash-on-Delivery (COD) checkout flows, and automated SMS order notifications creates seamless customer shopping experiences.',
+      'Website performance directly impacts search engine rankings and conversions. Implementing server-level caching (such as LiteSpeed or Redis), next-generation WebP image compression, and minimal plugin bloat keeps page load times under 2 seconds.',
+      'Security is paramount: always enforce strong administrative passwords, install trusted security plugins, configure automated cloud backups, and keep WordPress core and plugin updates synchronized.'
+    ]
+  },
+  {
+    id: 'blog-office-productivity',
     slug: 'office-productivity-with-ms-office-and-ai',
-    title: 'Office Productivity with MS Office & AI',
-    excerpt: 'From automated Excel dashboards to AI-assisted document workflows, discover how to save hours every week with practical office tools.',
+    title: 'Office Productivity with Microsoft Office & AI Automation',
+    excerpt: 'From automated Excel formulas and dynamic pivot tables to AI-assisted Word documentation, discover how to streamline daily office administration.',
     category: 'Productivity',
     author: 'Bilal Ahmed',
-    publishedAt: 'March 2026',
+    publishedAt: 'May 2026',
     readTime: '4 min read',
-    tags: ['MS Office', 'AI', 'Automation'],
+    tags: ['MS Office', 'Excel', 'Word', 'Productivity', 'Office Skills'],
+    highlight: 'Commanding advanced Excel and Word automation makes you an indispensable corporate asset.',
     content: [
-      'MS Office is still one of the best platforms for office automation. Using Excel formulas, templates, and a few built-in shortcuts can improve accuracy and productivity significantly.',
-      'Combine Excel with AI-assisted writing tools to create better reports faster. For example, draft the first version of a summary in the AI assistant, then paste it into Word and format it as a professional document.',
-      'Automate common tasks such as generating invoices, tracking attendance, and preparing monthly summaries. Templates and named ranges in Excel reduce manual work and help maintain a consistent standard.',
-      'As the next step, explore AI tools that can summarize a spreadsheet, generate meeting notes, or draft email replies. This makes your office practice more agile without adding extra headcount.'
+      'Microsoft Office remains the foundational software standard for administrative coordinators, accountants, data analysts, and executive assistants worldwide.',
+      'In Microsoft Excel, moving beyond basic arithmetic to master lookup functions (XLOOKUP, VLOOKUP), logical conditional formulas (IF, AND, OR), and dynamic Pivot Tables enables swift processing of large financial and inventory datasets.',
+      'Microsoft Word formatting skills—including automated table of contents, style sheet consistency, multi-column layouts, and mail merges—ensure that business proposals, official letters, and legal notices look impeccably professional.',
+      'Pairing Microsoft Office with modern AI tools accelerates draft generation for memos, spreadsheet data cleaning, and PowerPoint slide presentation scripting.',
+      'Our Microsoft Office Professional course at Future Gates IT Center provides comprehensive hands-on practice, preparing candidates for both private sector corporate jobs and government administrative postings.'
     ]
   },
   {
-    id: 'blog-freelance-launch',
-    slug: 'start-freelancing-with-a-strong-portfolio',
-    title: 'Start Freelancing with a Strong Portfolio',
-    excerpt: 'Step-by-step guidance for building a freelancer profile, pitching clients, and winning projects with practical sample work.',
-    category: 'Freelancing',
-    author: 'Mariam Shah',
-    publishedAt: 'February 2026',
+    id: 'blog-computer-fundamentals',
+    slug: 'essential-computer-skills-for-modern-workplace',
+    title: 'Essential Computer & CIT Skills Every Beginner Must Master',
+    excerpt: 'A foundational overview of computer operating systems, touch typing speed optimization, cloud storage management, and internet security for career starters.',
+    category: 'Computer Skills',
+    author: 'Javed Hattar',
+    publishedAt: 'May 2026',
     readTime: '4 min read',
-    tags: ['Freelance', 'Portfolio', 'Clients'],
+    tags: ['Computer Skills', 'CIT', 'Typing', 'Internet Safety', 'Basics'],
+    highlight: 'Solid digital fundamentals are the prerequisite for every advanced IT specialization.',
     content: [
-      'A strong portfolio is the best way to attract freelance clients. Show real examples of work, even if those are practice projects or mockups, and explain the impact you delivered.',
-      'Choose a clear niche for your profile. For example, website landing pages for local shops, graphic assets for social media, or complete resume packages for job seekers.',
-      'Write a professional profile description that highlights what you do, who you help, and the results clients can expect. Keep the language simple and client-focused.',
-      'Use client-friendly samples and testimonials whenever possible. Even a few well-presented case studies are better than a long list of generic skills.'
+      'Before diving into advanced coding or graphic design, every student and professional must build rock-solid foundational computer literacy.',
+      'Touch typing proficiency is one of the highest-leverage digital habits. Increasing typing speed from 20 to 45+ Words Per Minute (WPM) directly saves hundreds of working hours every year while reducing transcription errors.',
+      'Systematic file management—including logical directory nesting, file naming conventions, cloud backup synchronization via Google Drive, and zip archive compression—prevents catastrophic data loss and improves workplace collaboration.',
+      'Understanding internet safety practices—such as identifying phishing emails, configuring two-factor authentication (2FA), and maintaining active antivirus protections—safeguards personal and organizational data.',
+      'The Certificate in Information Technology (CIT) and Computer Fundamentals programs at Future Gates IT Center guide absolute beginners into confident, digitally empowered professionals.'
     ]
   },
   {
-    id: 'blog-seo-basics',
+    id: 'blog-digital-marketing-growth',
+    slug: 'digital-marketing-growth-strategies-2026',
+    title: 'Digital Marketing & Paid Ad Strategies for Local and Global Businesses',
+    excerpt: 'How businesses and freelancers use Meta Ads Manager, Google Search Ads, and organic content funnels to scale customer acquisition and revenue.',
+    category: 'Digital Marketing',
+    author: 'Faisal Khan',
+    publishedAt: 'April 2026',
+    readTime: '5 min read',
+    tags: ['Digital Marketing', 'Meta Ads', 'Google Ads', 'SEO', 'Lead Gen'],
+    highlight: 'Data-driven marketing turns advertising spend from an expense into a predictable revenue engine.',
+    content: [
+      'Digital marketing has replaced traditional billboard and print advertising as the most cost-effective method for acquiring qualified leads and customer sales.',
+      'A successful marketing strategy starts with a clear understanding of the customer journey: Awareness, Consideration, and Conversion. Creating targeted top-of-funnel educational content builds trust before presenting sales offers.',
+      'Meta Ads (Facebook & Instagram) excel at interest and demographic targeting. By designing eye-catching visual creatives, writing benefit-driven ad copy, and setting up the Meta Pixel for conversion tracking, advertisers can achieve predictable Return on Ad Spend (ROAS).',
+      'Google Search Ads capture high-intent buyers who are actively searching for specific solutions, while organic Search Engine Optimization (SEO) provides long-term, free search visibility.',
+      'Students in our Digital Marketing course gain practical experience managing real ad budgets, analyzing conversion metrics, and delivering transparent monthly client performance reports.'
+    ]
+  },
+  {
+    id: 'blog-seo-essentials',
     slug: 'seo-essentials-for-small-business-websites',
-    title: 'SEO Essentials for Small Business Websites',
-    excerpt: 'A beginner-friendly SEO checklist that helps local businesses rank faster and show up in search results without paid ads.',
+    title: 'SEO Essentials for Small Business Websites: Local Ranking Guide',
+    excerpt: 'A practical, white-hat search engine optimization checklist to help local businesses and websites achieve organic top rankings on Google Search and Maps.',
     category: 'Marketing',
     author: 'Faisal Khan',
-    publishedAt: 'January 2026',
-    readTime: '3 min read',
-    tags: ['SEO', 'Marketing', 'Organic Traffic'],
+    publishedAt: 'April 2026',
+    readTime: '4 min read',
+    tags: ['SEO', 'Local SEO', 'Google Search', 'Web Traffic'],
+    highlight: 'Organic search rankings deliver continuous, compounding visibility without paying for every click.',
     content: [
-      'SEO begins with a strong website structure and clear headings. Use descriptive page titles, clean URLs, and relevant headings to make your content easier for search engines to index.',
-      'Focus on the customer’s intent. Write short, useful content that answers common questions and solves problems. This improves user experience and helps your pages rank more reliably.',
-      'Add local business information clearly. Include your address, phone number, and operating hours so search engines can match your site to local search queries.',
-      'Use fresh, regular updates when possible. Simple blog posts or news updates help search engines see that your site is active and relevant.'
+      'Search Engine Optimization (SEO) ensures that when prospective clients search for products, services, or training in their region, your website appears at the top of Google search results.',
+      'On-Page SEO begins with search intent keyword research. Every page should feature a unique H1 title, descriptive meta descriptions, clean URL slugs, and semantic headings that comprehensively answer user queries.',
+      'Technical SEO ensures that search engine crawlers can efficiently index your site. This includes generating XML sitemaps, maintaining an accurate robots.txt file, enforcing HTTPS encryption, and optimizing Core Web Vitals for mobile speed.',
+      'For local businesses, maintaining consistent Name, Address, and Phone (NAP) data, embedding a genuine Google Map, and building verified Google Business Profile credentials establishes local geographical authority.',
+      'Future Gates IT Center offers both hands-on SEO training courses for students and professional SEO ranking audit services for business clients.'
+    ]
+  },
+  {
+    id: 'blog-verifiable-certificates',
+    slug: 'why-verifiable-it-certificates-matter',
+    title: 'Why Online Verifiable IT Certificates Matter for Your Career',
+    excerpt: 'How online verifiable credentials, transparent transcripts, and practical project portfolios help students pass employer background checks and secure jobs.',
+    category: 'Career',
+    author: 'Javed Hattar',
+    publishedAt: 'March 2026',
+    readTime: '4 min read',
+    tags: ['Certification', 'Career', 'Verification', 'IT Diploma'],
+    highlight: 'Employers value verified credentials backed by demonstrable real-world project portfolios.',
+    content: [
+      'In today’s competitive job market, an unverified paper certificate is no longer enough. Employers, freelancing clients, and academic institutions demand instant, verifiable proof of technical competence.',
+      'An online verifiable certificate system allows recruiters to enter a student’s Roll Number or Certificate ID into an institutional database to confirm course completion, session dates, and academic grades instantly.',
+      'Future Gates IT Center provides every graduate with an official transcript indexed 24/7 on our public verification portal. This transparency builds trust and eliminates credentials fraud.',
+      'Equally important is the student’s project portfolio. When job candidates can present both an online verifiable certificate and live project URLs demonstrating their code, design, or marketing execution, hiring decisions become simple.',
+      'Whether applying for local corporate positions in Pakistan or bidding on international freelance contracts, verified education provides a significant competitive advantage.'
     ]
   }
 ];

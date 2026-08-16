@@ -113,7 +113,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
               isLight ? 'text-slate-300' : 'text-slate-500'
             }`}
           >
-            Accredited IT Training & Certification Verification
+            Professional IT Training & Certificate Verification
           </span>
         </div>
       )}
