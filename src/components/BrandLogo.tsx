@@ -162,10 +162,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   const subName = nameParts.slice(2).join(' ');
 
   return (
-    <div className={`flex items-center gap-2.5 sm:gap-3 select-none min-w-0 max-w-full ${className}`}>
+    <div className={`flex items-center gap-2 sm:gap-2.5 md:gap-3 select-none min-w-0 max-w-full ${className}`}>
       {/* Official Brand Seal Logo Mark */}
       {useVectorFallback ? (
-        <OfficialSealVector size={numericSize} className="filter drop-shadow-sm hover:scale-105 transition-transform" />
+        <OfficialSealVector size={numericSize} className="filter drop-shadow-sm hover:scale-105 transition-transform shrink-0" />
       ) : (
         <img
           src={currentSrc}
@@ -182,10 +182,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       )}
 
       {!iconOnly && (
-        <div className="flex flex-col justify-center min-w-0 flex-1">
-          <div className="flex items-center gap-1 sm:gap-1.5 flex-nowrap truncate">
+        <div className="flex flex-col justify-center min-w-0 flex-1 overflow-hidden">
+          <div className="flex items-center gap-1 flex-nowrap truncate">
             <span
-              className={`font-display font-extrabold leading-none tracking-tight text-sm sm:text-base md:text-lg uppercase whitespace-nowrap ${
+              className={`font-display font-extrabold leading-none tracking-tight text-xs sm:text-base md:text-lg uppercase whitespace-nowrap truncate ${
                 isLight ? 'text-white' : 'text-slate-900'
               }`}
             >
@@ -193,7 +193,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             </span>
             {subName && (
               <span
-                className={`font-display font-bold leading-none tracking-tight text-sm sm:text-base md:text-lg uppercase whitespace-nowrap ${
+                className={`font-display font-bold leading-none tracking-tight text-xs sm:text-base md:text-lg uppercase whitespace-nowrap truncate ${
                   isLight ? 'text-brand-orange' : 'text-brand-orange-dark'
                 }`}
               >
@@ -203,7 +203,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </div>
 
           <span
-            className={`font-sans font-bold tracking-wider text-[8px] sm:text-[9.5px] uppercase mt-0.5 truncate ${
+            className={`font-sans font-bold tracking-wider text-[7.5px] sm:text-[9.5px] uppercase mt-0.5 truncate ${
               isLight ? 'text-brand-orange opacity-95' : 'text-brand-orange'
             }`}
           >

@@ -19,7 +19,7 @@ export const FloatingWhatsApp: React.FC = () => {
   const [isHovered, setIsHovered] = useState(false);
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex items-center">
+    <div className="fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 flex items-center">
       {/* Tooltip on hover */}
       <div
         className={`absolute right-full mr-3 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-xl shadow-xl pointer-events-none whitespace-nowrap transition-all duration-200 ${

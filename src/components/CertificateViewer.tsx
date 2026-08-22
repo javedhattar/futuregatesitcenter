@@ -63,7 +63,7 @@ export const CertificateViewer: React.FC<CertificateViewerProps> = ({ result, on
       </div>
 
       {/* Official Certificate Document Card */}
-      <div className="print-card bg-white rounded-2xl shadow-xl border-4 border-brand-blue/30 p-4 sm:p-6 md:p-10 relative overflow-hidden">
+      <div className="print-card bg-white rounded-2xl shadow-xl border-4 border-brand-blue/30 p-3 sm:p-6 md:p-10 relative overflow-hidden max-w-full">
         {/* Decorative corner borders */}
         <div className="absolute top-0 left-0 w-10 sm:w-16 h-10 sm:h-16 border-t-4 sm:border-t-8 border-l-4 sm:border-l-8 border-brand-orange" />
         <div className="absolute top-0 right-0 w-10 sm:w-16 h-10 sm:h-16 border-t-4 sm:border-t-8 border-r-4 sm:border-r-8 border-brand-orange" />

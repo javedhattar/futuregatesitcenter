@@ -128,7 +128,7 @@ export const CoursesView: React.FC<CoursesViewProps> = ({
           </div>
 
           {/* Categories Pill Bar */}
-          <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto w-full md:w-auto pb-1 md:pb-0 scrollbar-none max-w-full">
             {categories.map((cat) => (
               <button
                 key={cat}

@@ -54,7 +54,7 @@ export const ServicesView: React.FC = () => {
 
       {/* Category Tabs */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-start sm:justify-center border-b border-slate-200 overflow-x-auto pb-1 sm:pb-0 scrollbar-none">
+        <div className="flex items-center justify-start sm:justify-center border-b border-slate-200 overflow-x-auto pb-1 sm:pb-0 scrollbar-none max-w-full">
           <button
             onClick={() => setActiveCategory('all')}
             className={`px-4 sm:px-6 py-3 font-bold text-xs sm:text-sm transition-all border-b-2 whitespace-nowrap cursor-pointer min-h-[44px] ${

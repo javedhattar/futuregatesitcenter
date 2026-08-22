@@ -216,7 +216,7 @@ export const GlobalSearchBar: React.FC<GlobalSearchBarProps> = ({
       {/* Dropdown Floating Modal */}
       {isOpen && (
         <div 
-          className="absolute left-0 right-0 md:left-auto md:right-0 md:w-[480px] lg:w-[540px] mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden text-slate-800 animate-in fade-in slide-in-from-top-2 duration-150"
+          className="absolute left-0 right-0 w-full max-w-[calc(100vw-24px)] sm:max-w-none md:left-auto md:right-0 md:w-[480px] lg:w-[540px] mt-2 bg-white rounded-2xl border border-slate-200 shadow-2xl z-50 overflow-hidden text-slate-800 animate-in fade-in slide-in-from-top-2 duration-150"
         >
           {/* Filter Pills Bar (when query exists) */}
           {trimmed.length > 0 && (

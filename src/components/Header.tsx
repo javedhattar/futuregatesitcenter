@@ -146,7 +146,7 @@ export const Header: React.FC<HeaderProps> = ({
       )}
 
       {/* Main Navigation Bar */}
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
+      <div className="w-full max-w-7xl mx-auto px-3 sm:px-6 lg:px-8">
         <div className="flex justify-between items-center h-16 sm:h-18 gap-2 sm:gap-4">
           {/* Logo Brand Title */}
           <a
@@ -155,7 +155,7 @@ export const Header: React.FC<HeaderProps> = ({
               e.preventDefault();
               handleNavClick('/');
             }}
-            className="cursor-pointer flex items-center shrink-0"
+            className="cursor-pointer flex items-center shrink min-w-0 max-w-[calc(100%-96px)] xl:max-w-none"
             title="Future Gates IT Center Homepage"
           >
             <BrandLogo variant="dark" customLogoUrl={settings?.headerLogoUrl} />
@@ -204,8 +204,8 @@ export const Header: React.FC<HeaderProps> = ({
             />
           </div>
 
-          {/* Right Action Call (Verify Card & CTA) */}
-          <div className="hidden sm:flex items-center gap-2 shrink-0">
+          {/* Right Action Call for Large Screens (Verify Card & CTA) */}
+          <div className="hidden xl:flex items-center gap-2 shrink-0">
             <a
               href="/verification"
               onClick={(e) => {
@@ -230,7 +230,7 @@ export const Header: React.FC<HeaderProps> = ({
             </a>
           </div>
 
-          {/* Mobile and Tablet Menu & Search Toggle Buttons (Visible below xl) */}
+          {/* Mobile and Tablet Action Buttons (Visible below xl: 320px to 1279px) */}
           <div className="xl:hidden flex items-center gap-1 shrink-0">
             <button
               onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
@@ -243,21 +243,9 @@ export const Header: React.FC<HeaderProps> = ({
               <Search className="w-5 h-5" />
             </button>
 
-            <a
-              href="/verification"
-              onClick={(e) => {
-                e.preventDefault();
-                handleNavClick('/verification');
-              }}
-              className="sm:hidden px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider min-h-[38px] shrink-0"
-            >
-              <ShieldCheck className="w-3.5 h-3.5" />
-              <span>Verify</span>
-            </a>
-
             <button
               onClick={() => setIsOpen(!isOpen)}
-              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center"
+              className="p-2 text-slate-700 hover:text-slate-900 hover:bg-slate-100 rounded-lg focus:outline-none cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center shrink-0"
               aria-label={isOpen ? 'Close navigation menu' : 'Open navigation menu'}
               aria-expanded={isOpen}
               aria-controls="mobile-navigation"
@@ -303,7 +291,7 @@ export const Header: React.FC<HeaderProps> = ({
           id="mobile-navigation"
           role="navigation"
           aria-label="Mobile Navigation"
-          className="xl:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto"
+          className="xl:hidden bg-slate-900 border-t border-slate-800 px-3 sm:px-4 pt-3 pb-6 space-y-3 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto w-full max-w-full"
         >
           {/* Search bar inside drawer */}
           <div className="pb-1">
@@ -343,13 +331,13 @@ export const Header: React.FC<HeaderProps> = ({
                     e.preventDefault();
                     handleNavClick(item.path);
                   }}
-                  className={`w-full text-left px-3.5 py-3 rounded-xl text-xs font-bold tracking-wider uppercase transition-all min-h-[44px] flex items-center cursor-pointer ${
+                  className={`w-full text-left px-3 py-2.5 sm:px-3.5 sm:py-3 rounded-xl text-xs font-bold tracking-wider uppercase transition-all min-h-[44px] flex items-center cursor-pointer truncate ${
                     active
                       ? 'bg-blue-600 text-white font-extrabold shadow-md'
                       : 'text-slate-300 hover:bg-slate-800 hover:text-white bg-slate-800/40'
                   }`}
                 >
-                  {item.label}
+                  <span className="truncate">{item.label}</span>
                 </a>
               );
             })}
@@ -357,13 +345,25 @@ export const Header: React.FC<HeaderProps> = ({
 
           <div className="pt-3 border-t border-slate-800 space-y-2">
             <a
+              href="/verification"
+              onClick={(e) => {
+                e.preventDefault();
+                handleNavClick('/verification');
+              }}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-xs transition-colors cursor-pointer uppercase tracking-wider shadow-md min-h-[44px]"
+            >
+              <ShieldCheck className="w-4 h-4 text-emerald-300" />
+              <span>Verify Student Certificate</span>
+            </a>
+
+            <a
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-[#25D366] hover:bg-[#20bd5a] text-white rounded-xl font-bold text-xs transition-colors cursor-pointer uppercase tracking-wider shadow-md shadow-emerald-900/30 min-h-[44px]"
             >
-              <WhatsAppIcon className="w-4 h-4 text-white" />
-              WhatsApp Support ({headerPhone})
+              <WhatsAppIcon className="w-4 h-4 text-white shrink-0" />
+              <span className="truncate">WhatsApp Support ({headerPhone})</span>
             </a>
 
             <a
@@ -375,8 +375,8 @@ export const Header: React.FC<HeaderProps> = ({
               }}
               className="w-full flex items-center justify-center gap-2 px-4 py-3 bg-orange-500 text-white rounded-xl font-bold text-xs hover:bg-orange-600 transition-colors cursor-pointer uppercase tracking-wider shadow-md min-h-[44px]"
             >
-              <GraduationCap className="w-4 h-4" />
-              {ctaText}
+              <GraduationCap className="w-4 h-4 shrink-0" />
+              <span>{ctaText}</span>
             </a>
           </div>
         </div>
