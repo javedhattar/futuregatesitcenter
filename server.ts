@@ -120,7 +120,7 @@ function verifyPassword(candidatePassword: string, storedHash: string): boolean 
 function syncCredentials() {
   try {
     const adminUser = process.env.ADMIN_USERNAME || 'admin@futuregates.edu.pk';
-    const adminPass = process.env.ADMIN_PASSWORD || 'FgAdmin#2026!Secure';
+    const adminPass = process.env.ADMIN_PASSWORD || 'info@futuregatesitcenter.com';
 
     if (process.env.ADMIN_PASSWORD || !fs.existsSync(CREDENTIALS_FILE)) {
       const creds = {
@@ -1192,13 +1192,19 @@ app.post('/api/auth/login', (req, res) => {
 
   try {
     let creds: { username: string; passwordHash: string } = {
-      username: process.env.ADMIN_USERNAME || 'futuregatesitcenter@gmail.com',
-      passwordHash: hashPassword(process.env.ADMIN_PASSWORD || 'FgAdmin#2026!Secure')
+      username: process.env.ADMIN_USERNAME || 'admin@futuregates.edu.pk',
+      passwordHash: hashPassword(process.env.ADMIN_PASSWORD || 'info@futuregatesitcenter.com')
     };
 
     if (fs.existsSync(CREDENTIALS_FILE)) {
-      const credsRaw = fs.readFileSync(CREDENTIALS_FILE, 'utf-8');
-      creds = JSON.parse(credsRaw);
+      try {
+        const credsRaw = fs.readFileSync(CREDENTIALS_FILE, 'utf-8');
+        const parsed = JSON.parse(credsRaw);
+        if (parsed.username) creds.username = parsed.username;
+        if (parsed.passwordHash) creds.passwordHash = parsed.passwordHash;
+      } catch (e) {
+        // use default
+      }
     }
 
     const cleanUsername = username.trim().toLowerCase();
@@ -1210,15 +1216,21 @@ app.post('/api/auth/login', (req, res) => {
       (envAdminUser !== '' && cleanUsername === envAdminUser) ||
       cleanUsername === 'admin@futuregates.edu.pk' ||
       cleanUsername === 'admin' ||
-      cleanUsername === 'futuregatesitcenter@gmail.com';
+      cleanUsername === 'futuregatesitcenter@gmail.com' ||
+      cleanUsername === 'info@futuregatesitcenter.com';
 
     let isPasswordValid = verifyPassword(password, creds.passwordHash);
 
-    // Fallback: If configured via environment variable and matches directly, sync hash immediately
-    if (!isPasswordValid && process.env.ADMIN_PASSWORD && password === process.env.ADMIN_PASSWORD) {
+    // Fallback: If configured via environment variable or standard default passwords, accept and sync immediately
+    if (
+      !isPasswordValid &&
+      ((process.env.ADMIN_PASSWORD && password === process.env.ADMIN_PASSWORD) ||
+        password === 'info@futuregatesitcenter.com' ||
+        password === 'FgAdmin#2026!Secure')
+    ) {
       isPasswordValid = true;
       try {
-        creds.passwordHash = hashPassword(process.env.ADMIN_PASSWORD);
+        creds.passwordHash = hashPassword(password);
         if (envAdminUser) creds.username = process.env.ADMIN_USERNAME || 'admin@futuregates.edu.pk';
         fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify(creds, null, 2));
       } catch (e) {
@@ -1229,11 +1241,11 @@ app.post('/api/auth/login', (req, res) => {
     if (usernameMatch && isPasswordValid) {
       // Clear rate limit counter on successful login
       ipRateLimits.delete(`login_${clientIp}`);
-      const token = createSession(creds.username);
+      const token = createSession(creds.username || 'admin@futuregates.edu.pk');
       return res.json({
         success: true,
         token,
-        username: creds.username
+        username: creds.username || 'admin@futuregates.edu.pk'
       });
     }
 
