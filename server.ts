@@ -1,4 +1,5 @@
 import express from 'express';
+import compression from 'compression';
 import path from 'path';
 import fs from 'fs';
 import crypto from 'crypto';
@@ -8,6 +9,15 @@ import { COURSES, SERVICES, BLOGS, STUDENT_RESULTS, TESTIMONIALS } from './src/d
 
 const app = express();
 const PORT = process.env.PORT ? parseInt(process.env.PORT, 10) : 3000;
+
+// Enable HTTP Compression (Gzip / Deflate) for lightning-fast mobile TTFB & FCP
+app.use(compression({
+  filter: (req, res) => {
+    if (req.headers['x-no-compression']) return false;
+    return compression.filter(req, res);
+  },
+  threshold: 1024 // compress anything over 1KB
+}));
 
 // Security: Disable x-powered-by banner
 app.disable('x-powered-by');
@@ -1990,8 +2000,23 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
-    app.use(express.static(distPath));
+    // Static assets with long-term immutable caching for hashed files
+    app.use(
+      express.static(distPath, {
+        maxAge: '1y',
+        immutable: true,
+        setHeaders: (res, filePath) => {
+          if (filePath.endsWith('.html')) {
+            // HTML files should never be cached long-term to ensure fresh deployments
+            res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+          } else {
+            res.setHeader('Cache-Control', 'public, max-age=31536000, immutable');
+          }
+        }
+      })
+    );
     app.get('*', (req, res) => {
+      res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
       res.sendFile(path.join(distPath, 'index.html'));
     });
   }

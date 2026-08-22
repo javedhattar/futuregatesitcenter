@@ -136,6 +136,10 @@ export const MentorSection: React.FC<MentorSectionProps> = ({ onOpenEnrollment }
                     alt={`${mentor.name} — ${mentor.title} at Future Gates IT Center`}
                     className="w-full h-full object-cover object-center transform group-hover:scale-105 transition-transform duration-500"
                     referrerPolicy="no-referrer"
+                    loading="lazy"
+                    decoding="async"
+                    width="400"
+                    height="400"
                   />
                   {/* Subtle Gradient Shadow Base */}
                   <div className="absolute bottom-0 inset-x-0 h-20 bg-gradient-to-t from-slate-900 to-transparent pointer-events-none" />
