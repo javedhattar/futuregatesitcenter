@@ -11,7 +11,7 @@ interface BrandLogoProps {
   className?: string;
   variant?: 'light' | 'dark';
   iconOnly?: boolean;
-  size?: number;
+  size?: number | 'sm' | 'md' | 'lg' | 'xl';
   customLogoUrl?: string;
 }
 
@@ -19,13 +19,27 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   className = '',
   variant = 'dark',
   iconOnly = false,
-  size = 50,
+  size = 48,
   customLogoUrl,
 }) => {
   const { data } = useData();
   const settings = data?.settings;
 
   const isLight = variant === 'light';
+
+  // Normalize size
+  let numericSize = 48;
+  if (typeof size === 'number') {
+    numericSize = size;
+  } else if (size === 'sm') {
+    numericSize = 36;
+  } else if (size === 'md') {
+    numericSize = 48;
+  } else if (size === 'lg') {
+    numericSize = 64;
+  } else if (size === 'xl') {
+    numericSize = 80;
+  }
 
   // Determine active logo URL
   let logoSrc = brandLogo;
@@ -57,22 +71,22 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   const subName = nameParts.slice(2).join(' ');
 
   return (
-    <div className={`flex items-center gap-3 select-none ${className}`}>
+    <div className={`flex items-center gap-2.5 sm:gap-3 select-none min-w-0 max-w-full ${className}`}>
       {/* Official Brand Seal Logo Mark */}
       {errorCount >= 2 ? (
         <div
-          style={{ width: `${size}px`, height: `${size}px` }}
-          className="rounded-xl bg-gradient-to-br from-blue-600 via-slate-900 to-orange-500 flex items-center justify-center text-white font-extrabold text-lg shadow-md shrink-0 border border-white/20"
+          style={{ width: `${numericSize}px`, height: `${numericSize}px` }}
+          className="rounded-xl bg-gradient-to-br from-blue-600 via-slate-900 to-orange-500 flex items-center justify-center text-white font-extrabold text-base sm:text-lg shadow-md shrink-0 border border-white/20"
         >
           FG
         </div>
       ) : (
         <img
           src={activeLogoSrc}
-          alt={`${instituteName} Logo`}
-          width={size}
-          height={size}
-          style={{ width: `${size}px`, height: `${size}px` }}
+          alt={`${instituteName} Official Logo`}
+          width={numericSize}
+          height={numericSize}
+          style={{ width: `${numericSize}px`, height: `${numericSize}px` }}
           className="object-contain shrink-0 filter drop-shadow-sm hover:scale-105 transition-transform"
           referrerPolicy="no-referrer"
           onError={() => setErrorCount((prev) => prev + 1)}
@@ -80,10 +94,10 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
       )}
 
       {!iconOnly && (
-        <div className="flex flex-col justify-center">
-          <div className="flex items-center gap-1.5 flex-wrap">
+        <div className="flex flex-col justify-center min-w-0 flex-1">
+          <div className="flex items-center gap-1 sm:gap-1.5 flex-nowrap truncate">
             <span
-              className={`font-display font-extrabold leading-none tracking-tight text-base sm:text-lg uppercase ${
+              className={`font-display font-extrabold leading-none tracking-tight text-sm sm:text-base md:text-lg uppercase whitespace-nowrap ${
                 isLight ? 'text-white' : 'text-slate-900'
               }`}
             >
@@ -91,7 +105,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
             </span>
             {subName && (
               <span
-                className={`font-display font-light leading-none tracking-tight text-base sm:text-lg uppercase ${
+                className={`font-display font-bold leading-none tracking-tight text-sm sm:text-base md:text-lg uppercase whitespace-nowrap ${
                   isLight ? 'text-brand-orange' : 'text-brand-orange-dark'
                 }`}
               >
@@ -101,7 +115,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </div>
 
           <span
-            className={`font-sans font-bold tracking-wider text-[8.5px] sm:text-[9.5px] uppercase mt-0.5 ${
+            className={`font-sans font-bold tracking-wider text-[8px] sm:text-[9.5px] uppercase mt-0.5 truncate ${
               isLight ? 'text-brand-orange opacity-95' : 'text-brand-orange'
             }`}
           >
@@ -109,7 +123,7 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </span>
 
           <span
-            className={`text-[7.5px] sm:text-[8px] leading-tight hidden sm:block ${
+            className={`text-[7.5px] sm:text-[8px] leading-tight hidden md:block truncate ${
               isLight ? 'text-slate-300' : 'text-slate-500'
             }`}
           >

@@ -26,11 +26,11 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
   return (
     <div className="pb-16 space-y-12 bg-slate-50">
       {/* Hero Section with Geometric Balance Accent */}
-      <section className="relative bg-slate-900 text-white py-16 sm:py-20 px-6 sm:px-12 lg:px-16 overflow-hidden border-b border-slate-800">
-        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+      <section className="relative bg-slate-900 text-white py-14 sm:py-20 px-4 sm:px-6 lg:px-8 overflow-hidden border-b border-slate-800">
+        <div className="relative z-10 max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-12 items-center">
           
           {/* Left Text Column */}
-          <div className="lg:col-span-7 space-y-6">
+          <div className="lg:col-span-7 space-y-6 min-w-0">
             <motion.div
               initial={{ opacity: 0, y: -15 }}
               animate={{ opacity: 1, y: 0 }}
@@ -44,7 +44,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.6, delay: 0.1 }}
-              className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight font-display"
+              className="text-3xl sm:text-5xl lg:text-6xl font-extrabold leading-tight font-display"
             >
               {hp.heroTitle || 'Advance Your Tech'} <br />
               <span className="text-orange-500">{hp.heroSubtitle || 'Skills & Income.'}</span>
@@ -54,7 +54,7 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ duration: 0.6, delay: 0.2 }}
-              className="text-slate-300 text-base sm:text-lg max-w-xl leading-relaxed"
+              className="text-slate-300 text-sm sm:text-base lg:text-lg max-w-xl leading-relaxed"
             >
               {hp.heroDescription ||
                 'Expert-led training in Full-Stack Web Development, Graphic Design, Digital Marketing, AI Tools, and Office Automation. Verifiable certificates & direct job placement support.'}
@@ -91,34 +91,34 @@ export const HomeView: React.FC<HomeViewProps> = ({ setTab, onOpenEnrollment }) 
           </div>
 
           {/* Right Geometric Stats Cards Grid */}
-          <div className="lg:col-span-5 relative">
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg">
-                <div className="text-3xl font-extrabold text-orange-500 mb-1 font-display">
+          <div className="lg:col-span-5 relative min-w-0 w-full">
+            <div className="grid grid-cols-2 gap-3 sm:gap-4">
+              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 shadow-lg min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-orange-500 mb-1 font-display">
                   {hp.stats?.studentsCertified || '1,000+'}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Graduates Trained</div>
+                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400">Graduates Trained</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg">
-                <div className="text-3xl font-extrabold text-blue-500 mb-1 font-display">
+              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 shadow-lg min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-blue-500 mb-1 font-display">
                   {hp.stats?.practicalLabs || '100%'}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Practical Labs</div>
+                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400">Practical Labs</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg">
-                <div className="text-3xl font-extrabold text-emerald-400 mb-1 font-display">
+              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 shadow-lg min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-emerald-400 mb-1 font-display">
                   {hp.stats?.corporateClients || '20+'}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Agency Clients</div>
+                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400">Agency Clients</div>
               </div>
 
-              <div className="bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-lg">
-                <div className="text-3xl font-extrabold text-yellow-400 mb-1 font-display">
+              <div className="bg-white/5 backdrop-blur-md p-4 sm:p-6 rounded-2xl border border-white/10 shadow-lg min-w-0">
+                <div className="text-2xl sm:text-3xl font-extrabold text-yellow-400 mb-1 font-display">
                   {hp.stats?.experiencedFaculty || '15+'}
                 </div>
-                <div className="text-xs font-bold uppercase tracking-widest text-slate-400">Expert Instructors</div>
+                <div className="text-[10px] sm:text-xs font-bold uppercase tracking-widest text-slate-400">Expert Instructors</div>
               </div>
             </div>
           </div>

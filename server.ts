@@ -106,20 +106,33 @@ function verifyPassword(candidatePassword: string, storedHash: string): boolean 
   }
 }
 
-// Initialize Credentials if missing (Uses secure environment seed without plaintext fallback)
-if (!fs.existsSync(CREDENTIALS_FILE)) {
-  const defaultAdminUser = process.env.ADMIN_USERNAME || 'futuregatesitcenter@gmail.com';
-  const defaultAdminPass = process.env.ADMIN_PASSWORD || 'FgAdmin#2026!Secure';
-  const initialCreds = {
-    username: defaultAdminUser,
-    passwordHash: hashPassword(defaultAdminPass)
-  };
+// Initialize or synchronize Credentials with environment variables
+function syncCredentials() {
   try {
-    fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify(initialCreds, null, 2));
+    const adminUser = process.env.ADMIN_USERNAME || 'admin@futuregates.edu.pk';
+    const adminPass = process.env.ADMIN_PASSWORD || 'FgAdmin#2026!Secure';
+
+    if (process.env.ADMIN_PASSWORD || !fs.existsSync(CREDENTIALS_FILE)) {
+      const creds = {
+        username: adminUser,
+        passwordHash: hashPassword(adminPass)
+      };
+      fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify(creds, null, 2));
+    } else if (fs.existsSync(CREDENTIALS_FILE)) {
+      const credsRaw = fs.readFileSync(CREDENTIALS_FILE, 'utf-8');
+      const creds = JSON.parse(credsRaw);
+      // If the stored hash is legacy format (without $), update to scrypt format
+      if (!creds.passwordHash || !creds.passwordHash.includes('$')) {
+        creds.passwordHash = hashPassword(adminPass);
+        if (adminUser) creds.username = adminUser;
+        fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify(creds, null, 2));
+      }
+    }
   } catch (err) {
-    console.warn('Could not write credentials file', err);
+    console.warn('Could not sync credentials file', err);
   }
 }
+syncCredentials();
 
 /* ==========================================================================
    SESSION & AUTHENTICATION TOKEN STORE
@@ -1179,14 +1192,29 @@ app.post('/api/auth/login', (req, res) => {
     }
 
     const cleanUsername = username.trim().toLowerCase();
-    const storedUsername = creds.username.trim().toLowerCase();
+    const storedUsername = (creds.username || '').trim().toLowerCase();
+    const envAdminUser = (process.env.ADMIN_USERNAME || '').trim().toLowerCase();
 
     const usernameMatch =
       cleanUsername === storedUsername ||
+      (envAdminUser !== '' && cleanUsername === envAdminUser) ||
+      cleanUsername === 'admin@futuregates.edu.pk' ||
       cleanUsername === 'admin' ||
       cleanUsername === 'futuregatesitcenter@gmail.com';
 
-    const isPasswordValid = verifyPassword(password, creds.passwordHash);
+    let isPasswordValid = verifyPassword(password, creds.passwordHash);
+
+    // Fallback: If configured via environment variable and matches directly, sync hash immediately
+    if (!isPasswordValid && process.env.ADMIN_PASSWORD && password === process.env.ADMIN_PASSWORD) {
+      isPasswordValid = true;
+      try {
+        creds.passwordHash = hashPassword(process.env.ADMIN_PASSWORD);
+        if (envAdminUser) creds.username = process.env.ADMIN_USERNAME || 'admin@futuregates.edu.pk';
+        fs.writeFileSync(CREDENTIALS_FILE, JSON.stringify(creds, null, 2));
+      } catch (e) {
+        // Non-blocking
+      }
+    }
 
     if (usernameMatch && isPasswordValid) {
       // Clear rate limit counter on successful login

@@ -161,10 +161,10 @@ export const Header: React.FC<HeaderProps> = ({
             <BrandLogo variant="dark" customLogoUrl={settings?.headerLogoUrl} />
           </a>
 
-          {/* Desktop Navigation Links */}
+          {/* Desktop Navigation Links (xl breakpoint for guaranteed viewport containment) */}
           <nav 
             aria-label="Main Navigation"
-            className="hidden lg:flex items-center gap-2.5 xl:gap-5 2xl:gap-7 text-[11px] xl:text-xs font-bold uppercase tracking-wider text-slate-600"
+            className="hidden xl:flex items-center justify-center flex-1 min-w-0 gap-2 2xl:gap-5 text-[11px] 2xl:text-xs font-bold uppercase tracking-wider text-slate-600"
           >
             {navItems.map((item) => {
               const active = currentTab === item.id || (item.id === 'courses' && currentTab === 'course-detail') || (item.id === 'blogs' && currentTab === 'blog-detail');
@@ -177,7 +177,7 @@ export const Header: React.FC<HeaderProps> = ({
                     handleNavClick(item.path);
                   }}
                   id={`nav-btn-${item.id}`}
-                  className={`py-1 whitespace-nowrap transition-colors duration-200 cursor-pointer ${
+                  className={`py-1 px-1.5 whitespace-nowrap transition-colors duration-200 cursor-pointer ${
                     active
                       ? 'text-blue-600 border-b-2 border-blue-600 font-extrabold'
                       : 'hover:text-blue-600'
@@ -190,7 +190,7 @@ export const Header: React.FC<HeaderProps> = ({
           </nav>
 
           {/* Desktop Global Search Bar */}
-          <div className="hidden xl:block w-52 2xl:w-64 shrink-0">
+          <div className="hidden xl:block w-36 2xl:w-56 shrink-0">
             <GlobalSearchBar
               onSelectCourse={(course) => {
                 onSelectCourse?.(course);
@@ -224,14 +224,14 @@ export const Header: React.FC<HeaderProps> = ({
                 e.preventDefault();
                 handleCtaClick();
               }}
-              className="bg-orange-500 hover:bg-orange-600 text-white px-4 xl:px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
+              className="bg-orange-500 hover:bg-orange-600 text-white px-3.5 2xl:px-5 py-2 rounded-full font-bold text-xs uppercase tracking-wider transition-all shadow-md flex items-center gap-1.5 cursor-pointer shrink-0"
             >
               <GraduationCap className="w-4 h-4" /> <span className="whitespace-nowrap">{ctaText}</span>
             </a>
           </div>
 
-          {/* Mobile menu and search toggle buttons */}
-          <div className="lg:hidden flex items-center gap-1">
+          {/* Mobile and Tablet Menu & Search Toggle Buttons (Visible below xl) */}
+          <div className="xl:hidden flex items-center gap-1 shrink-0">
             <button
               onClick={() => setIsMobileSearchOpen(!isMobileSearchOpen)}
               className={`p-2 rounded-lg transition-colors cursor-pointer min-h-[44px] min-w-[44px] flex items-center justify-center ${
@@ -249,7 +249,7 @@ export const Header: React.FC<HeaderProps> = ({
                 e.preventDefault();
                 handleNavClick('/verification');
               }}
-              className="sm:hidden px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider min-h-[38px]"
+              className="sm:hidden px-2 py-1.5 bg-blue-600 text-white text-[11px] font-bold rounded-lg flex items-center gap-1 cursor-pointer uppercase tracking-wider min-h-[38px] shrink-0"
             >
               <ShieldCheck className="w-3.5 h-3.5" />
               <span>Verify</span>
@@ -267,9 +267,9 @@ export const Header: React.FC<HeaderProps> = ({
           </div>
         </div>
 
-        {/* Mobile Expandable Search Bar Header Strip */}
+        {/* Mobile & Tablet Expandable Search Bar Header Strip */}
         {isMobileSearchOpen && (
-          <div className="lg:hidden py-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-1 duration-150">
+          <div className="xl:hidden py-3 border-t border-slate-100 animate-in fade-in slide-in-from-top-1 duration-150">
             <GlobalSearchBar
               isMobile={true}
               onSelectCourse={(course) => {
@@ -297,13 +297,13 @@ export const Header: React.FC<HeaderProps> = ({
         )}
       </div>
 
-      {/* Mobile Menu Drawer */}
+      {/* Mobile & Tablet Menu Drawer */}
       {isOpen && (
         <div 
           id="mobile-navigation"
           role="navigation"
           aria-label="Mobile Navigation"
-          className="lg:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto"
+          className="xl:hidden bg-slate-900 border-t border-slate-800 px-4 pt-3 pb-6 space-y-3 shadow-2xl max-h-[calc(100vh-4rem)] overflow-y-auto"
         >
           {/* Search bar inside drawer */}
           <div className="pb-1">
