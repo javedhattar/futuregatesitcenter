@@ -644,7 +644,7 @@ function getSmtpConfig() {
   const port = parseInt(process.env.SMTP_PORT || '465', 10);
   const user = process.env.SMTP_USER || '';
   const pass = process.env.SMTP_PASSWORD || '';
-  const secure = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : port === 465;
+  const secure = process.env.SMTP_SECURE !== undefined ? process.env.SMTP_SECURE === 'true' : (port === 465);
   const isConfigured = Boolean(user && pass);
 
   return { host, port, user, pass, secure, isConfigured };
@@ -663,7 +663,7 @@ function createMailTransporter() {
       pass: config.pass
     },
     tls: {
-      rejectUnauthorized: true
+      rejectUnauthorized: false
     }
   });
 }
@@ -1720,16 +1720,17 @@ app.post('/api/notifications/test', async (req, res) => {
   if (!verifyAuth(req)) return res.status(401).json({ success: false, error: 'Unauthorized' });
   const db = getDB();
   const settings = db.settings || defaultSiteSettings;
-  const recipient = (process.env.EMAIL_TO || settings.notificationEmails || 'futuregatesitcenter@gmail.com').trim();
+  const rawRecipient = req.body.testEmail || req.body.email || process.env.EMAIL_TO || settings.notificationEmails || 'futuregatesitcenter@gmail.com';
+  const recipient = (typeof rawRecipient === 'string' ? rawRecipient : 'futuregatesitcenter@gmail.com').trim();
 
   const testRecord = {
     id: `test-${Date.now()}`,
-    name: 'Admin Test System',
-    email: 'futuregatesitcenter@gmail.com',
+    name: 'Admin Diagnostics Test',
+    email: recipient,
     phone: '+923016775690',
     subject: 'SMTP Diagnostics Test Message',
     message:
-      'This is a test notification email dispatched from Future Gates IT Center Admin Diagnostics. If you receive this, SMTP email delivery is operational.',
+      'This is a test notification email dispatched from Future Gates IT Center Admin Diagnostics. If you receive this, your SMTP email delivery is operational.',
     submittedAt: new Date().toISOString(),
     source: 'Admin Diagnostics'
   };
@@ -1737,6 +1738,8 @@ app.post('/api/notifications/test', async (req, res) => {
   const result = await dispatchOfficialEmailNotification('inquiry', testRecord);
   res.json({
     success: result.success,
+    error: result.error,
+    message: result.success ? 'Test email dispatched successfully!' : result.error,
     result,
     recipient
   });
@@ -2012,6 +2015,8 @@ async function startServer() {
     app.use(vite.middlewares);
   } else {
     const distPath = path.join(process.cwd(), 'dist');
+    const publicPath = path.join(process.cwd(), 'public');
+
     // Static assets with long-term immutable caching for hashed files
     app.use(
       express.static(distPath, {
@@ -2027,6 +2032,21 @@ async function startServer() {
         }
       })
     );
+
+    // Also serve public directory files (e.g. brandlogo.png, robots.txt, sitemap.xml)
+    if (fs.existsSync(publicPath)) {
+      app.use(
+        express.static(publicPath, {
+          maxAge: '7d',
+          setHeaders: (res, filePath) => {
+            if (filePath.endsWith('.html')) {
+              res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
+            }
+          }
+        })
+      );
+    }
+
     app.get('*', (req, res) => {
       res.setHeader('Cache-Control', 'public, max-age=0, must-revalidate');
       res.sendFile(path.join(distPath, 'index.html'));

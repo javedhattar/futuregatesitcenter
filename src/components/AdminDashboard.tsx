@@ -207,7 +207,8 @@ export const AdminDashboard: React.FC<AdminDashboardProps> = ({ isOpen, onClose 
       if (res.ok && json.success) {
         setTestEmailResult({ success: true, message: json.message || 'Test email dispatched successfully!' });
       } else {
-        setTestEmailResult({ success: false, message: json.error || json.message || 'SMTP Test failed. Check credentials.' });
+        const errMsg = json.error || json.message || (json.result && json.result.error) || 'SMTP Test failed. Check credentials.';
+        setTestEmailResult({ success: false, message: errMsg });
       }
       fetchSmtpStatus();
     } catch (err: any) {
